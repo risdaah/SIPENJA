@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>SIPENJA - Sistem Informasi Pencatatan Transaksi Bengkel Any Jaya</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Icon Font -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <link href="css/login.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Spinner -->
+    <div id="spinner">
+        <div class="spinner-ring"></div>
+    </div>
+
+    <div class="login-wrapper">
+
+        <!-- Left: Image Panel -->
+        <div class="login-image-panel">
+            <div class="image-overlay"></div>
+            <div class="brand-block">
+                <div class="brand-logo">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <h1 class="brand-name">SIPENJA</h1>
+                <p class="brand-tagline">Sistem Informasi Pencatatan Transaksi<br>Bengkel Any Jaya</p>
+            </div>
+            <div class="image-deco deco-1"></div>
+            <div class="image-deco deco-2"></div>
+        </div>
+
+        <!-- Right: Form Panel -->
+        <div class="login-form-panel">
+            <div class="form-container">
+                <div class="form-header">
+                    <h2 class="form-greeting">Halo!</h2>
+                    <p class="form-subtitle">Masukkan akun Anda untuk melanjutkan</p>
+                </div>
+
+                <div class="form-body">
+                    <div class="input-group-custom">
+                        <span class="input-icon"><i class="fas fa-envelope"></i></span>
+                        <input type="email" id="inputEmail" placeholder="Email" autocomplete="email">
+                    </div>
+
+                    <div class="input-group-custom">
+                        <span class="input-icon"><i class="fas fa-lock"></i></span>
+                        <input type="password" id="inputPassword" placeholder="Kata Sandi"
+                            autocomplete="current-password">
+                        <button class="toggle-password" type="button" id="togglePass" aria-label="Show password">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+
+                    <button type="button" class="btn-login" id="btnLogin">
+                        <span>Masuk</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="js/login.js"></script>
+</body>
+
+</html>

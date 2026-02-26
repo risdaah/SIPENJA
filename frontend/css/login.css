@@ -1,0 +1,337 @@
+/********** login.css — only styles needed for login page **********/
+
+:root {
+    --primary: #009CFF;
+    --primary-dark: #0077cc;
+    --light: #F3F6F9;
+    --dark: #191C24;
+    --panel-bg: #F5F6F8;
+    --image-bg: #D8DCE3;
+    --accent: #009CFF;
+    --text-muted: #6b7280;
+    --radius: 12px;
+    --transition: 0.3s ease;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--dark);
+}
+
+/* ── Spinner ── */
+#spinner {
+    position: fixed;
+    inset: 0;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+#spinner.hide {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.spinner-ring {
+    width: 48px;
+    height: 48px;
+    border: 4px solid var(--light);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ── Layout ── */
+.login-wrapper {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* ── Left: Image Panel ── */
+.login-image-panel {
+    flex: 1;
+    background: var(--image-bg);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.image-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0, 156, 255, 0.15) 0%, rgba(25, 28, 36, 0.25) 100%);
+    z-index: 1;
+}
+
+.brand-block {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: var(--dark);
+    padding: 2rem;
+    animation: fadeUp 0.8s ease both;
+}
+
+.brand-logo {
+    width: 80px;
+    height: 80px;
+    background: var(--primary);
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.25rem;
+    box-shadow: 0 12px 40px rgba(0, 156, 255, 0.35);
+}
+
+.brand-logo i {
+    font-size: 2rem;
+    color: #fff;
+}
+
+.brand-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    color: var(--dark);
+}
+
+.brand-tagline {
+    margin-top: 0.75rem;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+/* Decorative circles */
+.image-deco {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(0, 156, 255, 0.12);
+    z-index: 0;
+}
+
+.deco-1 {
+    width: 380px;
+    height: 380px;
+    bottom: -100px;
+    left: -80px;
+}
+
+.deco-2 {
+    width: 220px;
+    height: 220px;
+    top: -60px;
+    right: -50px;
+    background: rgba(0, 156, 255, 0.08);
+}
+
+/* ── Right: Form Panel ── */
+.login-form-panel {
+    width: 50%;
+    max-width: 640px;
+    background: var(--panel-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+    animation: fadeIn 0.6s ease both;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 400px;
+}
+
+/* ── Form Header ── */
+.form-header {
+    margin-bottom: 2.5rem;
+    text-align: center;
+}
+
+.form-greeting {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: var(--dark);
+    line-height: 1.1;
+}
+
+.form-subtitle {
+    margin-top: 0.6rem;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+}
+
+/* ── Inputs ── */
+.form-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+
+.input-group-custom {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border: 1.5px solid #d1d5db;
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.input-group-custom:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(0, 156, 255, 0.15);
+}
+
+.input-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    flex-shrink: 0;
+}
+
+.input-group-custom input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 14px 12px 14px 0;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--dark);
+}
+
+.input-group-custom input::placeholder {
+    color: #9ca3af;
+}
+
+.toggle-password {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0 14px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    transition: color var(--transition);
+}
+
+.toggle-password:hover {
+    color: var(--primary);
+}
+
+/* ── Login Button ── */
+.btn-login {
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    width: 100%;
+    padding: 15px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+    box-shadow: 0 6px 20px rgba(0, 156, 255, 0.3);
+}
+
+.btn-login:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(0, 156, 255, 0.4);
+}
+
+.btn-login:active {
+    transform: translateY(0);
+}
+
+.btn-login i {
+    font-size: 0.85rem;
+    transition: transform var(--transition);
+}
+
+.btn-login:hover i {
+    transform: translateX(4px);
+}
+
+/* ── Animations ── */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .login-wrapper {
+        flex-direction: column;
+    }
+
+    .login-image-panel {
+        flex: none;
+        height: 220px;
+    }
+
+    .brand-name {
+        font-size: 2rem;
+    }
+
+    .login-form-panel {
+        width: 100%;
+        max-width: 100%;
+        flex: 1;
+    }
+
+    .form-greeting {
+        font-size: 2.5rem;
+    }
+}
