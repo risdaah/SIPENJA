@@ -20,11 +20,11 @@
     <script src="https://kit.fontawesome.com/e943a573af.js" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
-
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Template Stylesheet -->
     <link href="../css/kategori-sparepart.css" rel="stylesheet">
@@ -119,7 +119,7 @@
 
                     <!-- Table -->
                     <div class="table-wrapper rounded">
-                        <table class="table table-bordered table-hover align-middle mb-0" id="tabelKategori">
+                        <table class="table table-bordered table-hover align-middle mb-0">
                             <thead>
                                 <tr>
                                     <th class="text-center" style="width: 60px;">No</th>
@@ -139,9 +139,9 @@
                             </tbody>
                         </table>
                     </div>
+
                     <!-- Pagination -->
                     <div id="paginationContainer"></div>
-                    <!-- End Table -->
                 </div>
             </div>
             <!-- Main Content End -->
@@ -154,8 +154,7 @@
                             &copy; <a href="#">SIPENJA - Bengkel Any Jaya</a>, All Right Reserved.
                         </div>
                         <div class="col-12 col-sm-6 text-center text-sm-end">
-                            Designed By <a href="https://htmlcodex.com">HTML Codex</a>
-                            </br>
+                            Designed By <a href="https://htmlcodex.com">HTML Codex</a><br>
                             Distributed By <a class="border-bottom" href="https://themewagon.com"
                                 target="_blank">ThemeWagon</a>
                         </div>
@@ -222,17 +221,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="modal-body">
-        <p>Apakah Anda yakin ingin menghapus kategori ini?</p>
-        <input type="hidden" id="hapusId">
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
-        <button type="button" class="btn btn-danger btn-sm" onclick="hapusKategori()">Hapus</button>
-    </div>
-    </div>
-    </div>
     </div>
 
     <!-- JavaScript Libraries -->
