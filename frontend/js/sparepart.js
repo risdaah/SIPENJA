@@ -93,7 +93,7 @@ function renderTable(data) {
                 <button class="btn btn-warning btn-sm btn-square me-1" title="Edit" onclick="bukaModalEdit(${item.IDSPAREPART})">
                     <i class="fa fa-pen-to-square"></i>
                 </button>
-                <button class="btn btn-danger btn-sm btn-square" title="Hapus" onclick="bukaModalHapus(${item.IDSPAREPART})">
+                <button class="btn btn-danger btn-sm btn-square" title="Hapus" onclick="konfirmasiHapus(${item.IDSPAREPART})">
                     <i class="fa fa-trash"></i>
                 </button>
             </td>
@@ -117,14 +117,12 @@ function renderPagination(totalItems) {
 
     let pages = '';
 
-    // Prev button
     pages += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
         <a class="page-link" href="#" onclick="goToPage(${currentPage - 1}); return false;">
             <i class="fa fa-chevron-left" style="font-size:11px;"></i>
         </a>
     </li>`;
 
-    // Page numbers — show max 5 pages around current
     let startPage = Math.max(1, currentPage - 2);
     let endPage = Math.min(totalPages, startPage + 4);
     if (endPage - startPage < 4) startPage = Math.max(1, endPage - 4);
@@ -145,7 +143,6 @@ function renderPagination(totalItems) {
         pages += `<li class="page-item"><a class="page-link" href="#" onclick="goToPage(${totalPages}); return false;">${totalPages}</a></li>`;
     }
 
-    // Next button
     pages += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
         <a class="page-link" href="#" onclick="goToPage(${currentPage + 1}); return false;">
             <i class="fa fa-chevron-right" style="font-size:11px;"></i>
@@ -168,8 +165,8 @@ function goToPage(page) {
 }
 
 function renderError(msg) {
-    const tbody = document.getElementById('tableBody');
-    tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-danger"><i class="fa fa-circle-exclamation me-2"></i>${msg}</td></tr>`;
+    document.getElementById('tableBody').innerHTML =
+        `<tr><td colspan="8" class="text-center py-4 text-danger"><i class="fa fa-circle-exclamation me-2"></i>${msg}</td></tr>`;
     document.getElementById('paginationContainer').innerHTML = '';
 }
 
@@ -218,9 +215,7 @@ function searchData() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('searchInput').addEventListener('keyup', function (e) {
-        if (e.key === 'Enter') searchData();
-        // Live search
+    document.getElementById('searchInput').addEventListener('keyup', function () {
         const keyword = this.value.toLowerCase();
         filteredData = allData.filter(item =>
             (item.NAMA ?? '').toLowerCase().includes(keyword) ||
@@ -247,7 +242,7 @@ async function simpanSparepart() {
     };
 
     if (!payload.KODESPAREPART || !payload.NAMA) {
-        alert('Kode dan Nama sparepart wajib diisi.');
+        Swal.fire({ icon: 'warning', title: 'Perhatian', text: 'Kode dan Nama sparepart wajib diisi.' });
         return;
     }
 
@@ -262,9 +257,10 @@ async function simpanSparepart() {
         document.getElementById('modalTambah').querySelectorAll('input[type=text], input[type=number]').forEach(el => el.value = '');
         document.getElementById('inputKategori').value = '';
         document.getElementById('inputSupplier').value = '';
-        loadSparepart();
+        await loadSparepart();
+        Swal.fire({ icon: 'success', title: 'Berhasil!', text: 'Sparepart berhasil ditambahkan.', timer: 1800, showConfirmButton: false });
     } catch (err) {
-        alert(err.message);
+        Swal.fire({ icon: 'error', title: 'Gagal!', text: err.message });
     }
 }
 
@@ -301,7 +297,7 @@ async function updateSparepart() {
     };
 
     if (!payload.KODESPAREPART || !payload.NAMA) {
-        alert('Kode dan Nama sparepart wajib diisi.');
+        Swal.fire({ icon: 'warning', title: 'Perhatian', text: 'Kode dan Nama sparepart wajib diisi.' });
         return;
     }
 
@@ -313,28 +309,36 @@ async function updateSparepart() {
         });
         if (!res.ok) throw new Error('Gagal mengupdate data');
         bootstrap.Modal.getInstance(document.getElementById('modalEdit')).hide();
-        loadSparepart();
+        await loadSparepart();
+        Swal.fire({ icon: 'success', title: 'Berhasil!', text: 'Sparepart berhasil diupdate.', timer: 1800, showConfirmButton: false });
     } catch (err) {
-        alert(err.message);
+        Swal.fire({ icon: 'error', title: 'Gagal!', text: err.message });
     }
 }
 
 /* ===== HAPUS ===== */
-function bukaModalHapus(id) {
-    document.getElementById('hapusId').value = id;
-    new bootstrap.Modal(document.getElementById('modalHapus')).show();
-}
-
-async function hapusSparepart() {
-    const id = document.getElementById('hapusId').value;
-    try {
-        const res = await fetch(`${API_BASE_URL}/api/sparepart/delete/${id}`, { method: 'DELETE' });
-        if (!res.ok) throw new Error('Gagal menghapus data');
-        bootstrap.Modal.getInstance(document.getElementById('modalHapus')).hide();
-        loadSparepart();
-    } catch (err) {
-        alert(err.message);
-    }
+function konfirmasiHapus(id) {
+    Swal.fire({
+        title: 'Hapus Sparepart?',
+        text: 'Data yang dihapus tidak dapat dikembalikan.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/sparepart/delete/${id}`, { method: 'DELETE' });
+                if (!res.ok) throw new Error('Gagal menghapus data');
+                await loadSparepart();
+                Swal.fire({ icon: 'success', title: 'Terhapus!', text: 'Sparepart berhasil dihapus.', timer: 1800, showConfirmButton: false });
+            } catch (err) {
+                Swal.fire({ icon: 'error', title: 'Gagal!', text: err.message });
+            }
+        }
+    });
 }
 
 /* ===== UTIL ===== */

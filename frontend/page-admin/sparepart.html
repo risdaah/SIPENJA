@@ -21,6 +21,9 @@
     <!-- Customized Bootstrap Stylesheet -->
     <link href="../css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- Template Stylesheet -->
     <link href="../css/sparepart.css" rel="stylesheet">
 </head>
@@ -275,25 +278,16 @@
             </div>
         </div>
     </div>
-
-    <!-- Modal Konfirmasi Hapus -->
-    <div class="modal fade" id="modalHapus" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Konfirmasi Hapus</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Apakah Anda yakin ingin menghapus sparepart ini?</p>
-                    <input type="hidden" id="hapusId">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-danger btn-sm" onclick="hapusSparepart()">Hapus</button>
-                </div>
-            </div>
-        </div>
+    <div class="modal-body">
+        <p>Apakah Anda yakin ingin menghapus sparepart ini?</p>
+        <input type="hidden" id="hapusId">
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+        <button type="button" class="btn btn-danger btn-sm" onclick="hapusSparepart()">Hapus</button>
+    </div>
+    </div>
+    </div>
     </div>
 
     <!-- JavaScript Libraries -->
