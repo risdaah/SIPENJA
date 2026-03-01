@@ -26,7 +26,11 @@ const DetailTransaksiServis = {
     for (const item of ITEMS) {
       const { IDLAYANANSERVIS, KETERANGAN } = item;
 
-      // Ambil biaya dari tabel master LAYANANSERVIS
+      if (!IDLAYANANSERVIS) {
+        throw new Error('IDLAYANANSERVIS wajib diisi pada setiap layanan');
+      }
+
+      // Ambil biaya pokok dari tabel master LAYANANSERVIS
       const [layanan] = await db.query(
         'SELECT BIAYAPOKOK FROM LAYANANSERVIS WHERE IDLAYANANSERVIS = ?',
         [IDLAYANANSERVIS]
@@ -36,28 +40,53 @@ const DetailTransaksiServis = {
         throw new Error(`Layanan dengan ID ${IDLAYANANSERVIS} tidak ditemukan`);
       }
 
-      const BIAYA = layanan[0].BIAYAPOKOK;
+      // Biaya default dari master, bisa di-override jika dikirim
+      const BIAYA = item.BIAYA !== undefined ? item.BIAYA : layanan[0].BIAYAPOKOK;
 
       await db.query(
         `INSERT INTO DETAILTRANSAKSISERVIS (IDSERVIS, IDLAYANANSERVIS, IDDETAILTRANSAKSISERVIS, BIAYA, KETERANGAN)
          VALUES (?, ?, ?, ?, ?)`,
-        [IDSERVIS, IDLAYANANSERVIS, newId, BIAYA, KETERANGAN]
+        [IDSERVIS, IDLAYANANSERVIS, newId, BIAYA, KETERANGAN || null]
       );
 
       newId++;
     }
   },
 
+  // FIX: Mekanik bisa update BIAYA dan KETERANGAN
   update: async (IDDETAILTRANSAKSISERVIS, data) => {
-    const { KETERANGAN } = data;
+    const { BIAYA, KETERANGAN } = data;
 
-    // Hanya bisa update KETERANGAN, BIAYA tetap dari master
+    // Setidaknya salah satu harus diisi
+    const updates = [];
+    const values = [];
+
+    if (BIAYA !== undefined && BIAYA !== null) {
+      if (BIAYA < 0) throw new Error('BIAYA tidak boleh negatif');
+      updates.push('BIAYA = ?');
+      values.push(BIAYA);
+    }
+    if (KETERANGAN !== undefined) {
+      updates.push('KETERANGAN = ?');
+      values.push(KETERANGAN);
+    }
+
+    if (updates.length === 0) {
+      throw new Error('Minimal BIAYA atau KETERANGAN harus diisi untuk update');
+    }
+
+    values.push(IDDETAILTRANSAKSISERVIS);
     await db.query(
-      'UPDATE DETAILTRANSAKSISERVIS SET KETERANGAN = ? WHERE IDDETAILTRANSAKSISERVIS = ?',
-      [KETERANGAN, IDDETAILTRANSAKSISERVIS]
+      `UPDATE DETAILTRANSAKSISERVIS SET ${updates.join(', ')} WHERE IDDETAILTRANSAKSISERVIS = ?`,
+      values
     );
 
-    return { IDDETAILTRANSAKSISERVIS, KETERANGAN };
+    // Ambil data terbaru
+    const [rows] = await db.query(
+      'SELECT * FROM DETAILTRANSAKSISERVIS WHERE IDDETAILTRANSAKSISERVIS = ?',
+      [IDDETAILTRANSAKSISERVIS]
+    );
+    return rows[0];
   },
 
   deleteById: async (IDDETAILTRANSAKSISERVIS) => {

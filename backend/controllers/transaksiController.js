@@ -2,6 +2,7 @@ const db = require('../config/db');
 const Transaksi = require('../models/transaksiModel');
 const Servis = require('../models/servisModel');
 const DetailTransaksiServis = require('../models/detailTransaksiServisModel');
+const ServisSparepart = require('../models/servisSparepartModel');
 const ProgressServis = require('../models/progressServisModel');
 const TransaksiPembelianSparepart = require('../models/transaksiPembelianSparepartModel');
 
@@ -18,6 +19,21 @@ const getTransaksiById = async (req, res) => {
   try {
     const data = await Transaksi.getById(req.params.id);
     if (!data) return res.status(404).json({ success: false, message: 'Transaksi tidak ditemukan' });
+
+    // Sertakan detail sesuai jenis transaksi
+    if (data.JENISTRANSAKSI === 'PEMBELIAN') {
+      data.ITEMS = await TransaksiPembelianSparepart.getDetailByTransaksi(data.IDTRANSAKSI);
+    } else if (data.JENISTRANSAKSI === 'SERVIS') {
+      const [servisRows] = await db.query('SELECT * FROM SERVIS WHERE IDTRANSAKSI = ?', [data.IDTRANSAKSI]);
+      if (servisRows[0]) {
+        const servis = servisRows[0];
+        servis.LAYANAN = await DetailTransaksiServis.getByServis(servis.IDSERVIS);
+        servis.SPAREPART = await ServisSparepart.getByServis(servis.IDSERVIS);
+        servis.PROGRESS = await ProgressServis.getByServis(servis.IDSERVIS);
+        data.SERVIS = servis;
+      }
+    }
+
     res.json({ success: true, data });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -31,6 +47,50 @@ const getTransaksiByJenis = async (req, res) => {
       return res.status(400).json({ success: false, message: 'JENIS harus SERVIS atau PEMBELIAN' });
     }
     const data = await Transaksi.getByJenis(jenis.toUpperCase());
+    res.json({ success: true, data });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Filter transaksi by rentang tanggal (opsional filter jenis)
+// GET /transaksi/filter?startDate=2026-01-01&endDate=2026-01-31&jenis=SERVIS
+const getTransaksiByDateRange = async (req, res) => {
+  try {
+    const { startDate, endDate, jenis } = req.query;
+
+    if (!startDate || !endDate) {
+      return res.status(400).json({ success: false, message: 'startDate dan endDate wajib diisi (format: YYYY-MM-DD)' });
+    }
+
+    if (jenis && !['SERVIS', 'PEMBELIAN'].includes(jenis.toUpperCase())) {
+      return res.status(400).json({ success: false, message: 'jenis harus SERVIS atau PEMBELIAN' });
+    }
+
+    const data = await Transaksi.getByDateRange(startDate, endDate, jenis ? jenis.toUpperCase() : null);
+    res.json({ success: true, data });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Filter transaksi by bulan dan tahun
+// GET /transaksi/filter-bulan?bulan=2&tahun=2026&jenis=PEMBELIAN
+const getTransaksiByBulan = async (req, res) => {
+  try {
+    const { bulan, tahun, jenis } = req.query;
+
+    if (!bulan || !tahun) {
+      return res.status(400).json({ success: false, message: 'bulan dan tahun wajib diisi' });
+    }
+    if (isNaN(bulan) || bulan < 1 || bulan > 12) {
+      return res.status(400).json({ success: false, message: 'bulan harus antara 1-12' });
+    }
+    if (jenis && !['SERVIS', 'PEMBELIAN'].includes(jenis.toUpperCase())) {
+      return res.status(400).json({ success: false, message: 'jenis harus SERVIS atau PEMBELIAN' });
+    }
+
+    const data = await Transaksi.getByBulan(bulan, tahun, jenis ? jenis.toUpperCase() : null);
     res.json({ success: true, data });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -83,13 +143,13 @@ const createTransaksi = async (req, res) => {
       // Create SERVIS (IDUSER = mekanik)
       const servis = await Servis.create({ IDUSER_MEKANIK, IDTRANSAKSI: transaksi.IDTRANSAKSI, NAMAPELANGGAN, KELUHAN });
 
-      // Create DETAILTRANSAKSISERVIS (biaya otomatis dari master)
+      // Create DETAILTRANSAKSISERVIS (biaya otomatis dari master, bisa di-override)
       await DetailTransaksiServis.create(servis.IDSERVIS, LAYANAN);
 
-      // Create PROGRESSSERVIS awal
-      await ProgressServis.create(servis.IDSERVIS, 'Belum', 'Servis baru masuk');
+      // Create PROGRESSSERVIS awal: kendaraan masuk
+      await ProgressServis.create(servis.IDSERVIS, 'Belum', 'Kendaraan masuk, menunggu dikerjakan');
 
-      // Hitung TOTAL otomatis dari master
+      // Hitung TOTAL otomatis dari detail layanan
       const total = await Servis.updateTotal(servis.IDSERVIS);
 
       return res.status(201).json({
@@ -117,7 +177,7 @@ const createTransaksi = async (req, res) => {
     }
 
     // ==============================
-    // FLOW PEMBELIAN
+    // FLOW PEMBELIAN SPAREPART
     // ==============================
     if (JENISTRANSAKSI === 'PEMBELIAN') {
       if (!ITEMS || ITEMS.length === 0) {
@@ -127,22 +187,25 @@ const createTransaksi = async (req, res) => {
         if (!item.IDSPAREPART || !item.JUMLAH) {
           return res.status(400).json({ success: false, message: 'IDSPAREPART dan JUMLAH wajib diisi pada setiap item' });
         }
+        if (item.JUMLAH <= 0) {
+          return res.status(400).json({ success: false, message: 'JUMLAH harus lebih dari 0' });
+        }
       }
 
-      // Create TRANSAKSI (TOTAL = 0 dulu, akan diupdate setelah detail dibuat)
+      // Create TRANSAKSI dulu dengan TOTAL = 0
       const transaksi = await Transaksi.create({ IDUSER: IDUSER_KASIR, JENISTRANSAKSI, TOTAL: 0, CATATAN });
 
-      // Create TRANSAKSIPEMBELIANSPAREPART (harga otomatis dari master, stok otomatis naik)
+      // Create detail (harga dari master, stok berkurang otomatis)
       await TransaksiPembelianSparepart.createDetail(transaksi.IDTRANSAKSI, ITEMS);
 
-      // Ambil TOTAL yang sudah dihitung dari master
+      // Ambil TOTAL yang sudah terhitung dari detail
       const [totalRow] = await db.query(
         'SELECT COALESCE(SUM(SUB_TOTAL), 0) as total FROM TRANSAKSIPEMBELIANSPAREPART WHERE IDTRANSAKSI = ?',
         [transaksi.IDTRANSAKSI]
       );
       const TOTAL = totalRow[0].total;
 
-      // Update TOTAL di TRANSAKSI
+      // Update TOTAL di tabel TRANSAKSI
       await db.query('UPDATE TRANSAKSI SET TOTAL = ? WHERE IDTRANSAKSI = ?', [TOTAL, transaksi.IDTRANSAKSI]);
 
       return res.status(201).json({
@@ -164,4 +227,8 @@ const createTransaksi = async (req, res) => {
   }
 };
 
-module.exports = { getAllTransaksi, getTransaksiById, getTransaksiByJenis, createTransaksi };
+module.exports = {
+  getAllTransaksi, getTransaksiById, getTransaksiByJenis,
+  getTransaksiByDateRange, getTransaksiByBulan,
+  createTransaksi,
+};

@@ -5,7 +5,7 @@ const Servis = {
     const [rows] = await db.query(`
       SELECT s.*, 
              m.NAMA as NAMA_MEKANIK, 
-             t.NOTRANSAKSI, t.TOTAL,
+             t.NOTRANSAKSI, t.TOTAL, t.CATATAN,
              k.NAMA as NAMA_KASIR
       FROM SERVIS s
       LEFT JOIN USER m ON s.IDUSER = m.IDUSER
@@ -20,7 +20,7 @@ const Servis = {
     const [rows] = await db.query(`
       SELECT s.*, 
              m.NAMA as NAMA_MEKANIK,
-             t.NOTRANSAKSI, t.TOTAL,
+             t.NOTRANSAKSI, t.TOTAL, t.CATATAN,
              k.NAMA as NAMA_KASIR
       FROM SERVIS s
       LEFT JOIN USER m ON s.IDUSER = m.IDUSER
@@ -31,11 +31,26 @@ const Servis = {
     return rows[0];
   },
 
+  // Endpoint publik untuk pelanggan track status via kode antrian
+  getByKodeAntrian: async (kodeAntrian) => {
+    const [rows] = await db.query(`
+      SELECT s.IDSERVIS, s.KODEANTRIAN, s.TANGGALMASUK, s.TANGGALSELESAI,
+             s.STATUS, s.KELUHAN, s.NAMAPELANGGAN,
+             m.NAMA as NAMA_MEKANIK,
+             t.NOTRANSAKSI, t.TOTAL
+      FROM SERVIS s
+      LEFT JOIN USER m ON s.IDUSER = m.IDUSER
+      LEFT JOIN TRANSAKSI t ON s.IDTRANSAKSI = t.IDTRANSAKSI
+      WHERE s.KODEANTRIAN = ?
+    `, [kodeAntrian]);
+    return rows[0];
+  },
+
   getByMekanik: async (IDUSER) => {
     const [rows] = await db.query(`
       SELECT s.*, 
              m.NAMA as NAMA_MEKANIK,
-             t.NOTRANSAKSI, t.TOTAL,
+             t.NOTRANSAKSI, t.TOTAL, t.CATATAN,
              k.NAMA as NAMA_KASIR
       FROM SERVIS s
       LEFT JOIN USER m ON s.IDUSER = m.IDUSER
@@ -51,7 +66,7 @@ const Servis = {
     const [rows] = await db.query(`
       SELECT s.*, 
              m.NAMA as NAMA_MEKANIK,
-             t.NOTRANSAKSI, t.TOTAL,
+             t.NOTRANSAKSI, t.TOTAL, t.CATATAN,
              k.NAMA as NAMA_KASIR
       FROM SERVIS s
       LEFT JOIN USER m ON s.IDUSER = m.IDUSER
@@ -60,6 +75,23 @@ const Servis = {
       WHERE s.STATUS = ?
       ORDER BY s.TANGGALMASUK DESC
     `, [status]);
+    return rows;
+  },
+
+  // Filter by tanggal masuk (rentang tanggal)
+  getByDateRange: async (startDate, endDate) => {
+    const [rows] = await db.query(`
+      SELECT s.*, 
+             m.NAMA as NAMA_MEKANIK,
+             t.NOTRANSAKSI, t.TOTAL, t.CATATAN,
+             k.NAMA as NAMA_KASIR
+      FROM SERVIS s
+      LEFT JOIN USER m ON s.IDUSER = m.IDUSER
+      LEFT JOIN TRANSAKSI t ON s.IDTRANSAKSI = t.IDTRANSAKSI
+      LEFT JOIN USER k ON t.IDUSER = k.IDUSER
+      WHERE DATE(s.TANGGALMASUK) BETWEEN ? AND ?
+      ORDER BY s.TANGGALMASUK DESC
+    `, [startDate, endDate]);
     return rows;
   },
 
@@ -119,14 +151,32 @@ const Servis = {
     return total;
   },
 
+  // FIX: Kembalikan stok sparepart via ServisSparepart.delete, bukan raw query
   delete: async (id) => {
-    const [servis] = await db.query('SELECT IDTRANSAKSI FROM SERVIS WHERE IDSERVIS = ?', [id]);
+    const [servisRows] = await db.query('SELECT IDTRANSAKSI FROM SERVIS WHERE IDSERVIS = ?', [id]);
+    if (!servisRows[0]) return;
+
+    const IDTRANSAKSI = servisRows[0].IDTRANSAKSI;
+
+    // Kembalikan stok semua sparepart yang dipakai di servis ini
+    const [sparepartItems] = await db.query(
+      'SELECT QTY, IDSPAREPART FROM SERVISSPAREPART WHERE IDSERVIS = ?',
+      [id]
+    );
+    for (const item of sparepartItems) {
+      await db.query(
+        'UPDATE SPAREPART SET STOK = STOK + ? WHERE IDSPAREPART = ?',
+        [item.QTY, item.IDSPAREPART]
+      );
+    }
+
+    // Hapus child records dulu (urutan penting karena FK RESTRICT)
     await db.query('DELETE FROM PROGRESSSERVIS WHERE IDSERVIS = ?', [id]);
     await db.query('DELETE FROM SERVISSPAREPART WHERE IDSERVIS = ?', [id]);
     await db.query('DELETE FROM DETAILTRANSAKSISERVIS WHERE IDSERVIS = ?', [id]);
     await db.query('DELETE FROM SERVIS WHERE IDSERVIS = ?', [id]);
-    if (servis[0].IDTRANSAKSI) {
-      await db.query('DELETE FROM TRANSAKSI WHERE IDTRANSAKSI = ?', [servis[0].IDTRANSAKSI]);
+    if (IDTRANSAKSI) {
+      await db.query('DELETE FROM TRANSAKSI WHERE IDTRANSAKSI = ?', [IDTRANSAKSI]);
     }
   },
 };

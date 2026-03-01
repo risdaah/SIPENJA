@@ -5,52 +5,48 @@
     <meta charset="utf-8">
     <title>SIPENJA - Bengkel Ani Jaya</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
 
     <!-- Favicon -->
     <link href="../img/favicon.ico" rel="icon">
 
-    <!-- Google Web Fonts -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Icon Font Stylesheet -->
+    <!-- Icons -->
     <script src="https://kit.fontawesome.com/e943a573af.js" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
-    <!-- Libraries Stylesheet -->
-    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
-
-    <!-- Customized Bootstrap Stylesheet -->
+    <!-- Bootstrap -->
     <link href="../css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Template Stylesheet -->
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Page CSS -->
     <link href="../css/transaksi.css" rel="stylesheet">
 </head>
 
 <body>
     <div class="container-xxl position-relative bg-white d-flex p-0">
-        <!-- Spinner Start -->
+
+        <!-- Spinner -->
         <div id="spinner"
             class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <div class="spinner-border text-primary" style="width:3rem;height:3rem;" role="status">
                 <span class="sr-only">Loading...</span>
             </div>
         </div>
-        <!-- Spinner End -->
 
-
-        <!-- Sidebar Start -->
+        <!-- ══ SIDEBAR ══ -->
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-light navbar-light">
                 <a href="dashboard-admin.html" class="navbar-brand mx-4 mb-3">
                     <h3 class="text-primary">SIPENJA</h3>
                 </a>
                 <div class="navbar-nav w-100">
-                    <a href="dashboard-admin.html" class="nav-item nav-link "><i
+                    <a href="dashboard-admin.html" class="nav-item nav-link"><i
                             class="fa-solid fa-square-poll-vertical me-2"></i>Dashboard</a>
                     <a href="kategori-sparepart.html" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Kategori
                         Sparepart</a>
@@ -68,19 +64,16 @@
                 </div>
             </nav>
         </div>
-        <!-- Sidebar End -->
 
-
-        <!-- Content Start -->
+        <!-- ══ CONTENT ══ -->
         <div class="content">
-            <!-- Navbar Start -->
+
+            <!-- Navbar -->
             <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
                 <a href="dashboard-admin.html" class="navbar-brand d-flex d-lg-none me-4">
                     <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
                 </a>
-                <a href="#" class="sidebar-toggler flex-shrink-0">
-                    <i class="fa fa-bars"></i>
-                </a>
+                <a href="#" class="sidebar-toggler flex-shrink-0"><i class="fa fa-bars"></i></a>
                 <div class="navbar-nav align-items-center ms-auto">
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
@@ -92,33 +85,125 @@
                                 <small>15 minutes ago</small>
                             </a>
                             <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">New user added</h6>
-                                <small>15 minutes ago</small>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">Password changed</h6>
-                                <small>15 minutes ago</small>
-                            </a>
-                            <hr class="dropdown-divider">
                             <a href="#" class="dropdown-item text-center">See all notifications</a>
                         </div>
                     </div>
                     <div>
-                        <button class="btn btn-danger btn-sm">
-                            LOGOUT
-                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="confirmLogout()">LOGOUT</button>
                     </div>
-
                 </div>
             </nav>
-            <!-- Navbar End -->
 
+            <!-- ══ MAIN CONTENT ══ -->
+            <div class="container-fluid pt-4 px-4">
 
+                <!-- Page Header -->
+                <div class="page-header mb-4">
+                    <div>
+                        <h4 class="page-title">Kelola Transaksi</h4>
+                        <p class="page-subtitle">Data transaksi servis &amp; pembelian sparepart bengkel</p>
+                    </div>
+                </div>
 
+                <!-- Stats Cards -->
+                <div class="stats-row mb-4">
+                    <div class="stat-card">
+                        <div class="stat-icon all"><i class="fa-solid fa-receipt"></i></div>
+                        <div class="stat-info">
+                            <div class="stat-val" id="stat-total">—</div>
+                            <div class="stat-label">Total Transaksi</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon servis"><i class="fa-solid fa-wrench"></i></div>
+                        <div class="stat-info">
+                            <div class="stat-val" id="stat-servis">—</div>
+                            <div class="stat-label">Servis</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon pembelian"><i class="fa-solid fa-bag-shopping"></i></div>
+                        <div class="stat-info">
+                            <div class="stat-val" id="stat-pembelian">—</div>
+                            <div class="stat-label">Pembelian</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon pendapatan"><i class="fa-solid fa-coins"></i></div>
+                        <div class="stat-info">
+                            <div class="stat-val" id="stat-pendapatan">—</div>
+                            <div class="stat-label">Total Pendapatan</div>
+                        </div>
+                    </div>
+                </div>
 
-            <!-- Footer Start -->
+                <!-- Filter Bar -->
+                <div class="filter-bar mb-3">
+                    <div class="filter-group">
+                        <label class="filter-label">Jenis</label>
+                        <select id="filter-jenis" class="filter-control">
+                            <option value="">Semua</option>
+                            <option value="SERVIS">Servis</option>
+                            <option value="PEMBELIAN">Pembelian</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Dari</label>
+                        <input type="date" id="filter-start" class="filter-control">
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Sampai</label>
+                        <input type="date" id="filter-end" class="filter-control">
+                    </div>
+                    <div class="filter-group flex-grow-1">
+                        <label class="filter-label">Cari</label>
+                        <input type="text" id="filter-search" class="filter-control"
+                            placeholder="No. transaksi / kasir / catatan…">
+                    </div>
+                    <div class="filter-actions">
+                        <button class="btn-filter apply" onclick="applyFilter()"><i
+                                class="fa-solid fa-magnifying-glass"></i> Filter</button>
+                        <button class="btn-filter reset" onclick="resetFilter()"><i class="fa-solid fa-rotate-left"></i>
+                            Reset</button>
+                    </div>
+                </div>
+
+                <!-- Table Card -->
+                <div class="table-card">
+                    <div class="table-card-header">
+                        <span id="table-count" class="table-count">Memuat data…</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:46px">No</th>
+                                    <th>No. Transaksi</th>
+                                    <th style="width:130px">Jenis</th>
+                                    <th>Kasir</th>
+                                    <th style="text-align:right">Total</th>
+                                    <th>Tanggal</th>
+                                    <th>Catatan</th>
+                                    <th style="width:110px;text-align:center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body">
+                                <tr class="loading-row">
+                                    <td colspan="8"><span class="spinner-sm"></span> Memuat data…</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Pagination -->
+                    <div class="pagination-bar">
+                        <span id="page-info" class="page-info"></span>
+                        <div id="page-btns" class="page-btns"></div>
+                    </div>
+                </div>
+
+            </div><!-- /container-fluid -->
+
+            <!-- Footer -->
             <div class="container-fluid pt-4 px-4">
                 <div class="bg-light rounded-top p-4">
                     <div class="row">
@@ -126,36 +211,76 @@
                             &copy; <a href="#">SIPENJA - Bengkel Any Jaya</a>, All Right Reserved.
                         </div>
                         <div class="col-12 col-sm-6 text-center text-sm-end">
-                            <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
                             Designed By <a href="https://htmlcodex.com">HTML Codex</a>
-                            </br>
-                            Distributed By <a class="border-bottom" href="https://themewagon.com"
-                                target="_blank">ThemeWagon</a>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- Footer End -->
-        </div>
-        <!-- Content End -->
+        </div><!-- /content -->
 
-
-        <!-- Back to Top -->
+        <!-- Back to top -->
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
 
-    <!-- JavaScript Libraries -->
+
+    <!-- ══════════════════════════════════════════════════
+     MODAL — LIHAT DETAIL
+══════════════════════════════════════════════════ -->
+    <div id="modal-detail" class="modal-overlay">
+        <div class="modal-box modal-lg">
+            <div class="modal-hdr">
+                <div class="modal-hdr-left">
+                    <span id="detail-title" class="modal-title">Detail Transaksi</span>
+                    <span id="detail-jenis-badge" class="jenis-badge"></span>
+                </div>
+                <button class="modal-close" onclick="closeModal('modal-detail')">&times;</button>
+            </div>
+            <div class="modal-content-scroll">
+                <div id="detail-body"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════
+     MODAL — EDIT CATATAN
+══════════════════════════════════════════════════ -->
+    <div id="modal-edit" class="modal-overlay">
+        <div class="modal-box modal-sm">
+            <div class="modal-hdr">
+                <span class="modal-title"><i class="fa-solid fa-pen me-2"></i>Edit Catatan Transaksi</span>
+                <button class="modal-close" onclick="closeModal('modal-edit')">&times;</button>
+            </div>
+            <div class="modal-body-pad">
+                <input type="hidden" id="edit-id">
+                <input type="hidden" id="edit-jenis">
+                <input type="hidden" id="edit-idservis">
+
+                <div class="form-group mb-3">
+                    <label class="form-label-sm">No. Transaksi</label>
+                    <input type="text" id="edit-no" class="form-inp" readonly>
+                </div>
+                <div class="form-group mb-4">
+                    <label class="form-label-sm">Catatan <span class="text-danger">*</span></label>
+                    <textarea id="edit-catatan" class="form-inp" rows="4"
+                        placeholder="Isi catatan transaksi…"></textarea>
+                </div>
+                <div class="modal-footer-btns">
+                    <button class="btn-modal cancel" onclick="closeModal('modal-edit')">Batal</button>
+                    <button class="btn-modal save" onclick="submitEdit()"><i
+                            class="fa-solid fa-floppy-disk me-1"></i>Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- JS Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/chart/chart.min.js"></script>
     <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/waypoints/waypoints.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="lib/tempusdominus/js/moment.min.js"></script>
-    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
-    <!-- Template Javascript -->
+    <!-- Page JS -->
     <script src="../js/transaksi.js"></script>
 </body>
 

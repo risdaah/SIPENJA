@@ -26,6 +26,11 @@ const ServisSparepart = {
     for (const item of ITEMS) {
       const { IDSPAREPART, QTY } = item;
 
+      // Validasi IDSPAREPART dan QTY wajib ada
+      if (!IDSPAREPART || !QTY || QTY <= 0) {
+        throw new Error('IDSPAREPART dan QTY (> 0) wajib diisi pada setiap item');
+      }
+
       // Ambil harga dari tabel master SPAREPART
       const [sparepart] = await db.query(
         'SELECT HARGAJUAL, STOK FROM SPAREPART WHERE IDSPAREPART = ?',
@@ -48,7 +53,7 @@ const ServisSparepart = {
         [IDSERVIS, IDSPAREPART, newId, QTY, HARGASATUAN, SUBTOTAL]
       );
 
-      // Kurangi stok
+      // Kurangi stok (sparepart dipakai untuk servis)
       await db.query(
         'UPDATE SPAREPART SET STOK = STOK - ? WHERE IDSPAREPART = ?',
         [QTY, IDSPAREPART]
@@ -61,25 +66,35 @@ const ServisSparepart = {
   update: async (IDSERVISSPAREPART, data) => {
     const { QTY } = data;
 
-    const [old] = await db.query(
+    if (!QTY || QTY <= 0) {
+      throw new Error('QTY harus lebih dari 0');
+    }
+
+    const [oldRows] = await db.query(
       'SELECT QTY, IDSPAREPART, HARGASATUAN FROM SERVISSPAREPART WHERE IDSERVISSPAREPART = ?',
       [IDSERVISSPAREPART]
     );
 
-    // Cek stok cukup untuk qty baru
-    const qtyDiff = QTY - old[0].QTY;
+    if (!oldRows[0]) {
+      throw new Error('Sparepart servis tidak ditemukan');
+    }
+
+    const old = oldRows[0];
+    const qtyDiff = QTY - old.QTY;
+
+    // Cek stok cukup untuk qty baru jika bertambah
     if (qtyDiff > 0) {
       const [sparepart] = await db.query(
         'SELECT STOK FROM SPAREPART WHERE IDSPAREPART = ?',
-        [old[0].IDSPAREPART]
+        [old.IDSPAREPART]
       );
       if (sparepart[0].STOK < qtyDiff) {
         throw new Error(`Stok tidak cukup, stok tersedia: ${sparepart[0].STOK}`);
       }
     }
 
-    // Harga tetap dari master (tidak berubah)
-    const HARGASATUAN = old[0].HARGASATUAN;
+    // Harga tetap dari data yang sudah tersimpan (tidak berubah)
+    const HARGASATUAN = old.HARGASATUAN;
     const SUBTOTAL = QTY * HARGASATUAN;
 
     await db.query(
@@ -87,25 +102,29 @@ const ServisSparepart = {
       [QTY, SUBTOTAL, IDSERVISSPAREPART]
     );
 
-    // Adjust stok
+    // Adjust stok: positif = tambah pakai (stok berkurang), negatif = kurang pakai (stok kembali)
     await db.query(
       'UPDATE SPAREPART SET STOK = STOK - ? WHERE IDSPAREPART = ?',
-      [qtyDiff, old[0].IDSPAREPART]
+      [qtyDiff, old.IDSPAREPART]
     );
 
     return { IDSERVISSPAREPART, QTY, HARGASATUAN, SUBTOTAL };
   },
 
   deleteById: async (IDSERVISSPAREPART) => {
-    const [item] = await db.query(
+    const [itemRows] = await db.query(
       'SELECT QTY, IDSPAREPART FROM SERVISSPAREPART WHERE IDSERVISSPAREPART = ?',
       [IDSERVISSPAREPART]
     );
 
+    if (!itemRows[0]) {
+      throw new Error('Sparepart servis tidak ditemukan');
+    }
+
     // Kembalikan stok
     await db.query(
       'UPDATE SPAREPART SET STOK = STOK + ? WHERE IDSPAREPART = ?',
-      [item[0].QTY, item[0].IDSPAREPART]
+      [itemRows[0].QTY, itemRows[0].IDSPAREPART]
     );
 
     await db.query(
@@ -114,8 +133,8 @@ const ServisSparepart = {
     );
   },
 
+  // Digunakan saat delete seluruh servis
   delete: async (IDSERVIS) => {
-    // Kembalikan stok semua sparepart
     const [items] = await db.query(
       'SELECT QTY, IDSPAREPART FROM SERVISSPAREPART WHERE IDSERVIS = ?',
       [IDSERVIS]

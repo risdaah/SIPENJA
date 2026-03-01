@@ -32,6 +32,46 @@ const Transaksi = {
     return rows;
   },
 
+  // Filter by rentang tanggal
+  getByDateRange: async (startDate, endDate, jenis = null) => {
+    let query = `
+      SELECT t.*, u.NAMA as NAMA_KASIR
+      FROM TRANSAKSI t
+      LEFT JOIN USER u ON t.IDUSER = u.IDUSER
+      WHERE DATE(t.TANGGAL) BETWEEN ? AND ?
+    `;
+    const params = [startDate, endDate];
+
+    if (jenis) {
+      query += ' AND t.JENISTRANSAKSI = ?';
+      params.push(jenis);
+    }
+
+    query += ' ORDER BY t.TANGGAL DESC';
+    const [rows] = await db.query(query, params);
+    return rows;
+  },
+
+  // Filter by bulan dan tahun
+  getByBulan: async (bulan, tahun, jenis = null) => {
+    let query = `
+      SELECT t.*, u.NAMA as NAMA_KASIR
+      FROM TRANSAKSI t
+      LEFT JOIN USER u ON t.IDUSER = u.IDUSER
+      WHERE MONTH(t.TANGGAL) = ? AND YEAR(t.TANGGAL) = ?
+    `;
+    const params = [bulan, tahun];
+
+    if (jenis) {
+      query += ' AND t.JENISTRANSAKSI = ?';
+      params.push(jenis);
+    }
+
+    query += ' ORDER BY t.TANGGAL DESC';
+    const [rows] = await db.query(query, params);
+    return rows;
+  },
+
   generateNoTransaksi: async (JENISTRANSAKSI) => {
     const prefix = JENISTRANSAKSI === 'SERVIS' ? 'TRX-SRV' : 'TRX-PBL';
     const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
@@ -54,7 +94,7 @@ const Transaksi = {
     await db.query(
       `INSERT INTO TRANSAKSI (IDTRANSAKSI, IDUSER, NOTRANSAKSI, TANGGAL, JENISTRANSAKSI, TOTAL, CATATAN)
        VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [newId, IDUSER, NOTRANSAKSI, now, JENISTRANSAKSI, TOTAL || 0, CATATAN]
+      [newId, IDUSER, NOTRANSAKSI, now, JENISTRANSAKSI, TOTAL || 0, CATATAN || null]
     );
     return { IDTRANSAKSI: newId, IDUSER, NOTRANSAKSI, TANGGAL: now, JENISTRANSAKSI, TOTAL: TOTAL || 0, CATATAN };
   },

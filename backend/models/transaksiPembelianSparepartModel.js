@@ -43,12 +43,30 @@ const TransaksiPembelianSparepart = {
     return rows[0];
   },
 
+  // Filter by tanggal
+  getByDateRange: async (startDate, endDate) => {
+    const [rows] = await db.query(`
+      SELECT t.IDTRANSAKSI, t.IDUSER, t.NOTRANSAKSI, t.TANGGAL, t.JENISTRANSAKSI, t.TOTAL, t.CATATAN,
+             u.NAMA as NAMA_KASIR
+      FROM TRANSAKSI t
+      LEFT JOIN USER u ON t.IDUSER = u.IDUSER
+      WHERE t.JENISTRANSAKSI = 'PEMBELIAN'
+        AND DATE(t.TANGGAL) BETWEEN ? AND ?
+      ORDER BY t.TANGGAL DESC
+    `, [startDate, endDate]);
+    return rows;
+  },
+
   createDetail: async (IDTRANSAKSI, ITEMS) => {
     const [lastRow] = await db.query('SELECT MAX(IDBELISPAREPART) as lastId FROM TRANSAKSIPEMBELIANSPAREPART');
     let newId = (lastRow[0].lastId || 0) + 1;
 
     for (const item of ITEMS) {
       const { IDSPAREPART, JUMLAH } = item;
+
+      if (!IDSPAREPART || !JUMLAH || JUMLAH <= 0) {
+        throw new Error('IDSPAREPART dan JUMLAH (> 0) wajib diisi pada setiap item');
+      }
 
       // Ambil harga dari tabel master SPAREPART
       const [sparepart] = await db.query(
@@ -85,26 +103,35 @@ const TransaksiPembelianSparepart = {
   updateDetail: async (IDBELISPAREPART, data) => {
     const { JUMLAH } = data;
 
-    const [old] = await db.query(
+    if (!JUMLAH || JUMLAH <= 0) {
+      throw new Error('JUMLAH harus lebih dari 0');
+    }
+
+    const [oldRows] = await db.query(
       'SELECT JUMLAH, IDSPAREPART, HARGA_SATUAN, IDTRANSAKSI FROM TRANSAKSIPEMBELIANSPAREPART WHERE IDBELISPAREPART = ?',
       [IDBELISPAREPART]
     );
 
-    const jumlahDiff = JUMLAH - old[0].JUMLAH;
+    if (!oldRows[0]) {
+      throw new Error('Item pembelian tidak ditemukan');
+    }
+
+    const old = oldRows[0];
+    const jumlahDiff = JUMLAH - old.JUMLAH;
 
     // Cek stok cukup jika jumlah bertambah
     if (jumlahDiff > 0) {
       const [sparepart] = await db.query(
         'SELECT STOK FROM SPAREPART WHERE IDSPAREPART = ?',
-        [old[0].IDSPAREPART]
+        [old.IDSPAREPART]
       );
       if (sparepart[0].STOK < jumlahDiff) {
         throw new Error(`Stok tidak cukup, stok tersedia: ${sparepart[0].STOK}`);
       }
     }
 
-    // Harga tetap dari master
-    const HARGA_SATUAN = old[0].HARGA_SATUAN;
+    // Harga tetap dari data yang tersimpan
+    const HARGA_SATUAN = old.HARGA_SATUAN;
     const SUB_TOTAL = JUMLAH * HARGA_SATUAN;
 
     await db.query(
@@ -112,36 +139,42 @@ const TransaksiPembelianSparepart = {
       [JUMLAH, SUB_TOTAL, IDBELISPAREPART]
     );
 
-    // jumlahDiff positif = beli lebih banyak = stok berkurang
-    // jumlahDiff negatif = beli lebih sedikit = stok dikembalikan
+    // jumlahDiff positif = beli lebih → stok makin berkurang
+    // jumlahDiff negatif = beli lebih sedikit → stok sebagian dikembalikan
     await db.query(
       'UPDATE SPAREPART SET STOK = STOK - ? WHERE IDSPAREPART = ?',
-      [jumlahDiff, old[0].IDSPAREPART]
+      [jumlahDiff, old.IDSPAREPART]
     );
 
     // Recalculate TOTAL transaksi
-    const [total] = await db.query(
+    const [totalRows] = await db.query(
       'SELECT COALESCE(SUM(SUB_TOTAL), 0) as total FROM TRANSAKSIPEMBELIANSPAREPART WHERE IDTRANSAKSI = ?',
-      [old[0].IDTRANSAKSI]
+      [old.IDTRANSAKSI]
     );
     await db.query(
       'UPDATE TRANSAKSI SET TOTAL = ? WHERE IDTRANSAKSI = ?',
-      [total[0].total, old[0].IDTRANSAKSI]
+      [totalRows[0].total, old.IDTRANSAKSI]
     );
 
     return { IDBELISPAREPART, JUMLAH, HARGA_SATUAN, SUB_TOTAL };
   },
 
   deleteDetail: async (IDBELISPAREPART) => {
-    const [item] = await db.query(
+    const [itemRows] = await db.query(
       'SELECT JUMLAH, IDSPAREPART, IDTRANSAKSI FROM TRANSAKSIPEMBELIANSPAREPART WHERE IDBELISPAREPART = ?',
       [IDBELISPAREPART]
     );
 
-    // Transaksi dibatalkan → stok dikembalikan
+    if (!itemRows[0]) {
+      throw new Error('Item pembelian tidak ditemukan');
+    }
+
+    const item = itemRows[0];
+
+    // Item dibatalkan → stok dikembalikan
     await db.query(
       'UPDATE SPAREPART SET STOK = STOK + ? WHERE IDSPAREPART = ?',
-      [item[0].JUMLAH, item[0].IDSPAREPART]
+      [item.JUMLAH, item.IDSPAREPART]
     );
 
     await db.query(
@@ -149,14 +182,14 @@ const TransaksiPembelianSparepart = {
       [IDBELISPAREPART]
     );
 
-    // Recalculate TOTAL
-    const [total] = await db.query(
+    // Recalculate TOTAL transaksi
+    const [totalRows] = await db.query(
       'SELECT COALESCE(SUM(SUB_TOTAL), 0) as total FROM TRANSAKSIPEMBELIANSPAREPART WHERE IDTRANSAKSI = ?',
-      [item[0].IDTRANSAKSI]
+      [item.IDTRANSAKSI]
     );
     await db.query(
       'UPDATE TRANSAKSI SET TOTAL = ? WHERE IDTRANSAKSI = ?',
-      [total[0].total, item[0].IDTRANSAKSI]
+      [totalRows[0].total, item.IDTRANSAKSI]
     );
   },
 
