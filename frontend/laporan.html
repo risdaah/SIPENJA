@@ -9,7 +9,7 @@
     <meta content="" name="description">
 
     <!-- Favicon -->
-    <link href="../img/favicon.ico" rel="icon">
+    <link href="img/favicon.ico" rel="icon">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,11 +24,14 @@
     <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
     <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- Customized Bootstrap Stylesheet -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Template Stylesheet -->
-    <link href="../css/layanan-servis-kasir.css" rel="stylesheet">
+    <link href="css/laporan.css" rel="stylesheet">
 </head>
 
 <body>
@@ -50,17 +53,22 @@
                     <h3 class="text-primary">SIPENJA</h3>
                 </a>
                 <div class="navbar-nav w-100">
-                    <a href="transaksi-kasir.html" class="nav-item nav-link"><i
-                            class="fa-solid fa-house me-2"></i>Transaksi</a>
-                    <a href="sparepart-kasir.html" class="nav-item nav-link"><i
-                            class="fa fa-gear me-2"></i>Sparepart</a>
-                    <a href="layanan-servis-kasir.html" class="nav-item nav-link active"><i
-                            class="fa-solid fa-tag me-2"></i>Layanan Servis</a>
-                    <a href="perbarui-transaksi-kasir.html" class="nav-item nav-link"><i
-                            class="fa-solid fa-bag-shopping me-2"></i>Perbarui
-                        Transaksi</a>
-                    <a href="riwayat-transaksi-kasir.html" class="nav-item nav-link"><i
-                            class="fa-solid fa-clock-rotate-left me-2"></i>Riwayat Transaksi</a>
+                    <a href="dashboard-admin.html" class="nav-item nav-link "><i
+                            class="fa-solid fa-square-poll-vertical me-2"></i>Dashboard</a>
+                    <a href="kategori-sparepart.html" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Kategori
+                        Sparepart</a>
+                    <a href="sparepart.html" class="nav-item nav-link"><i
+                            class="fa-solid fa-gear me-2"></i>Sparepart</a>
+                    <a href="layanan-servis.html" class="nav-item nav-link"><i class="fa-solid fa-tag me-2"></i>Layanan
+                        Servis</a>
+                    <a href="supplier.html" class="nav-item nav-link"><i
+                            class="fa-solid fa-cart-flatbed me-2"></i>Supplier</a>
+                    <a href="laporan.html" class="nav-item nav-link active"><i
+                            class="fa-solid fa-copy me-2"></i>Laporan</a>
+                    <a href="transaksi.html" class="nav-item nav-link"><i
+                            class="fa-solid fa-bag-shopping me-2"></i>Transaksi</a>
+                    <a href="karyawan.html" class="nav-item nav-link"><i
+                            class="fa-solid fa-user-group me-2"></i>Karyawan</a>
                 </div>
             </nav>
         </div>
@@ -101,16 +109,23 @@
                             <a href="#" class="dropdown-item text-center">See all notifications</a>
                         </div>
                     </div>
+                    <div class="nav-item me-3 d-none d-sm-flex align-items-center gap-2">
+                        <i class="fa-solid fa-circle-user text-primary" style="font-size:1.3rem"></i>
+                        <div style="line-height:1.2">
+                            <div style="font-size:.82rem;font-weight:600;color:#191C24" id="navbar-nama">—</div>
+                            <div style="font-size:.72rem;color:#8e9bb0;text-transform:capitalize" id="navbar-role">—
+                            </div>
+                        </div>
+                    </div>
                     <div>
-                        <button class="btn btn-danger btn-sm">
-                            LOGOUT
+                        <button class="btn btn-danger btn-sm" onclick="confirmLogout()">
+                            <i class="fa-solid fa-right-from-bracket me-1"></i>LOGOUT
                         </button>
                     </div>
 
                 </div>
             </nav>
             <!-- Navbar End -->
-
 
 
 
@@ -153,7 +168,8 @@
     <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
     <!-- Template Javascript -->
-    <script src="../js/layanan-servis-kasir.js"></script>
+    <script src="js/login.js"></script>
+    <script src="js/laporan.js"></script>
 </body>
 
 </html>

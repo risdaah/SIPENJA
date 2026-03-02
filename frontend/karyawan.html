@@ -5,9 +5,11 @@
     <meta charset="utf-8">
     <title>SIPENJA - Bengkel Ani Jaya</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
 
     <!-- Favicon -->
-    <link href="../img/favicon.ico" rel="icon">
+    <link href="img/favicon.ico" rel="icon">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,10 +24,10 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Customized Bootstrap Stylesheet -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Template Stylesheet -->
-    <link href="../css/layanan-servis.css" rel="stylesheet">
+    <link href="css/karyawan.css" rel="stylesheet">
 </head>
 
 <body>
@@ -52,14 +54,14 @@
                         Sparepart</a>
                     <a href="sparepart.html" class="nav-item nav-link"><i
                             class="fa-solid fa-gear me-2"></i>Sparepart</a>
-                    <a href="layanan-servis.html" class="nav-item nav-link active"><i
-                            class="fa-solid fa-tag me-2"></i>Layanan Servis</a>
+                    <a href="layanan-servis.html" class="nav-item nav-link"><i class="fa-solid fa-tag me-2"></i>Layanan
+                        Servis</a>
                     <a href="supplier.html" class="nav-item nav-link"><i
                             class="fa-solid fa-cart-flatbed me-2"></i>Supplier</a>
                     <a href="laporan.html" class="nav-item nav-link"><i class="fa-solid fa-copy me-2"></i>Laporan</a>
                     <a href="transaksi.html" class="nav-item nav-link"><i
                             class="fa-solid fa-bag-shopping me-2"></i>Transaksi</a>
-                    <a href="karyawan.html" class="nav-item nav-link"><i
+                    <a href="karyawan.html" class="nav-item nav-link active"><i
                             class="fa-solid fa-user-group me-2"></i>Karyawan</a>
                 </div>
             </nav>
@@ -90,8 +92,18 @@
                             <a href="#" class="dropdown-item text-center">See all notifications</a>
                         </div>
                     </div>
+                    <div class="nav-item me-3 d-none d-sm-flex align-items-center gap-2">
+                        <i class="fa-solid fa-circle-user text-primary" style="font-size:1.3rem"></i>
+                        <div style="line-height:1.2">
+                            <div style="font-size:.82rem;font-weight:600;color:#191C24" id="navbar-nama">—</div>
+                            <div style="font-size:.72rem;color:#8e9bb0;text-transform:capitalize" id="navbar-role">—
+                            </div>
+                        </div>
+                    </div>
                     <div>
-                        <button class="btn btn-danger btn-sm">LOGOUT</button>
+                        <button class="btn btn-danger btn-sm" onclick="confirmLogout()">
+                            <i class="fa-solid fa-right-from-bracket me-1"></i>LOGOUT
+                        </button>
                     </div>
                 </div>
             </nav>
@@ -100,13 +112,13 @@
             <!-- Main Content Start -->
             <div class="container-fluid pt-4 px-4">
                 <div class="bg-light rounded p-4">
-                    <h5 class="mb-4 fw-bold">Kelola Data Layanan Servis Bengkel</h5>
+                    <h5 class="mb-4 fw-bold">Kelola Data Karyawan Bengkel</h5>
 
                     <!-- Action Bar -->
                     <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
                         <button class="btn btn-primary btn-sm px-3" data-bs-toggle="modal"
                             data-bs-target="#modalTambah">
-                            <i class="fa fa-plus me-1"></i> Tambah Layanan
+                            <i class="fa fa-plus me-1"></i> Tambah Karyawan
                         </button>
                         <div class="d-flex gap-2">
                             <input type="text" id="searchInput" class="form-control form-control-sm"
@@ -121,16 +133,18 @@
                             <thead>
                                 <tr>
                                     <th class="text-center" style="width:50px;">No</th>
-                                    <th class="text-center">Kode Layanan</th>
-                                    <th class="text-center">Nama Layanan</th>
-                                    <th class="text-center">Biaya Pokok</th>
-                                    <th class="text-center">Deskripsi</th>
-                                    <th class="text-center" style="width:110px;">Aksi</th>
+                                    <th class="text-center">Nama</th>
+                                    <th class="text-center">Username</th>
+                                    <th class="text-center">Tgl. Lahir</th>
+                                    <th class="text-center">Jenis Kelamin</th>
+                                    <th class="text-center">Role</th>
+                                    <th class="text-center">Status</th>
+                                    <th class="text-center" style="width:130px;">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody id="tableBody">
                                 <tr>
-                                    <td colspan="6" class="text-center py-4 text-muted">
+                                    <td colspan="8" class="text-center py-4 text-muted">
                                         <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
                                         </div>
                                         Memuat data...
@@ -169,70 +183,129 @@
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
 
-    <!-- Modal Tambah Layanan -->
+    <!-- Modal Tambah Karyawan -->
     <div class="modal fade" id="modalTambah" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalTambahLabel">Tambah Layanan Servis</h5>
+                    <h5 class="modal-title" id="modalTambahLabel">Tambah Karyawan</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">Kode Layanan</label>
-                        <input type="text" class="form-control" id="inputKode" placeholder="Contoh: SRV-4">
+                        <label class="form-label">Nama Lengkap</label>
+                        <input type="text" class="form-control" id="inputNama" placeholder="Nama lengkap karyawan">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Nama Layanan</label>
-                        <input type="text" class="form-control" id="inputNama" placeholder="Contoh: Ganti Oli">
+                        <label class="form-label">Username</label>
+                        <input type="text" class="form-control" id="inputUsername" placeholder="Username untuk login">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Biaya Pokok</label>
-                        <input type="number" class="form-control" id="inputBiaya" placeholder="0">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" id="inputPassword" placeholder="Password">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Deskripsi</label>
-                        <textarea class="form-control" id="inputDeskripsi" rows="3" placeholder="Opsional"></textarea>
+                        <label class="form-label">Tanggal Lahir</label>
+                        <input type="date" class="form-control" id="inputTanggalLahir">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Jenis Kelamin</label>
+                        <select class="form-select" id="inputJenisKelamin">
+                            <option value="">-- Pilih --</option>
+                            <option value="LAKI-LAKI">Laki-laki</option>
+                            <option value="PEREMPUAN">Perempuan</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Role</label>
+                        <select class="form-select" id="inputRole">
+                            <option value="">-- Pilih Role --</option>
+                            <option value="kasir">Kasir</option>
+                            <option value="mekanik">Mekanik</option>
+                        </select>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-primary btn-sm" onclick="simpanLayanan()">Simpan</button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="simpanKaryawan()">Simpan</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal Edit Layanan -->
+    <!-- Modal Edit Karyawan -->
     <div class="modal fade" id="modalEdit" tabindex="-1" aria-labelledby="modalEditLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalEditLabel">Edit Layanan Servis</h5>
+                    <h5 class="modal-title" id="modalEditLabel">Edit Karyawan</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <input type="hidden" id="editId">
                     <div class="mb-3">
-                        <label class="form-label">Kode Layanan</label>
-                        <input type="text" class="form-control" id="editKode">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Nama Layanan</label>
+                        <label class="form-label">Nama Lengkap</label>
                         <input type="text" class="form-control" id="editNama">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Biaya Pokok</label>
-                        <input type="number" class="form-control" id="editBiaya">
+                        <label class="form-label">Username</label>
+                        <input type="text" class="form-control" id="editUsername">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Deskripsi</label>
-                        <textarea class="form-control" id="editDeskripsi" rows="3"></textarea>
+                        <label class="form-label">Tanggal Lahir</label>
+                        <input type="date" class="form-control" id="editTanggalLahir">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Jenis Kelamin</label>
+                        <select class="form-select" id="editJenisKelamin">
+                            <option value="">-- Pilih --</option>
+                            <option value="LAKI-LAKI">Laki-laki</option>
+                            <option value="PEREMPUAN">Perempuan</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Role</label>
+                        <select class="form-select" id="editRole">
+                            <option value="">-- Pilih Role --</option>
+                            <option value="kasir">Kasir</option>
+                            <option value="mekanik">Mekanik</option>
+                        </select>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-warning btn-sm" onclick="updateLayanan()">Update</button>
+                    <button type="button" class="btn btn-warning btn-sm" onclick="updateKaryawan()">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Ganti Password -->
+    <div class="modal fade" id="modalPassword" tabindex="-1" aria-labelledby="modalPasswordLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalPasswordLabel">Ganti Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="passId">
+                    <p class="text-muted mb-3">Karyawan: <strong id="passNama"></strong></p>
+                    <div class="mb-3">
+                        <label class="form-label">Password Baru</label>
+                        <input type="password" class="form-control" id="inputPasswordBaru"
+                            placeholder="Masukkan password baru">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Konfirmasi Password</label>
+                        <input type="password" class="form-control" id="inputPasswordKonfirm"
+                            placeholder="Ulangi password baru">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-info btn-sm text-white" onclick="gantiPassword()">Simpan
+                        Password</button>
                 </div>
             </div>
         </div>
@@ -243,7 +316,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Template Javascript -->
-    <script src="../js/layanan-servis.js"></script>
+    <script src="js/login.js"></script>
+    <script src="js/karyawan.js"></script>
 </body>
 
 </html>

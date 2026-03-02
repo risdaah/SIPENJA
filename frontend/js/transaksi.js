@@ -44,7 +44,15 @@
     ══════════════════════════════════════════════════════════
     */
 
-  const API = "http://localhost:3000/api"; // ← sesuaikan URL backend
+  const API = "http://localhost:3000/api";
+  /* ===== AUTH HEADERS — kirim token JWT ke setiap request ===== */
+  function getAuthHeaders() {
+    return {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + Session.getToken(),
+    };
+  }
+  // ← sesuaikan URL backend
 
   // ─── State ────────────────────────────────────────────
   let allData = [];
@@ -54,6 +62,15 @@
 
   // ─── Init ─────────────────────────────────────────────
   $(document).ready(function () {
+    // ── SESSION ──────────────────────────────────────────
+    if (!Session.guard(["admin", "kasir"])) return;
+    Session.setupAjax();
+    var _u = Session.getUser();
+    if (_u) {
+      $("#navbar-nama").text(_u.NAMA);
+      $("#navbar-role").text(_u.ROLE);
+    }
+    // ─────────────────────────────────────────────────────
     spinnerOff();
     setDefaultDate();
     loadTransaksi();
@@ -939,3 +956,19 @@
     );
   }
 })(jQuery);
+
+/* ===== LOGOUT ===== */
+function confirmLogout() {
+  Swal.fire({
+    title: "Keluar dari SIPENJA?",
+    text: "Sesi Anda akan diakhiri.",
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonColor: "#ff4757",
+    cancelButtonColor: "#6c757d",
+    confirmButtonText: "Ya, Keluar",
+    cancelButtonText: "Batal",
+  }).then(function (result) {
+    if (result.isConfirmed) Session.logout();
+  });
+}

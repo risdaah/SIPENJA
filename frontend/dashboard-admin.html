@@ -9,7 +9,7 @@
     <meta content="" name="description">
 
     <!-- Favicon -->
-    <link href="../img/favicon.ico" rel="icon">
+    <link href="img/favicon.ico" rel="icon">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,10 +25,10 @@
     <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
 
     <!-- Customized Bootstrap Stylesheet -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Template Stylesheet -->
-    <link href="../css/dashboard-admin.css" rel="stylesheet">
+    <link href="css/dashboard-admin.css" rel="stylesheet">
 </head>
 
 <body>
@@ -105,9 +105,17 @@
                             <a href="#" class="dropdown-item text-center">See all notifications</a>
                         </div>
                     </div>
+                    <div class="nav-item me-3 d-none d-sm-flex align-items-center gap-2">
+                        <i class="fa-solid fa-circle-user text-primary" style="font-size:1.3rem"></i>
+                        <div style="line-height:1.2">
+                            <div style="font-size:.82rem;font-weight:600;color:#191C24" id="navbar-nama">—</div>
+                            <div style="font-size:.72rem;color:#8e9bb0;text-transform:capitalize" id="navbar-role">—
+                            </div>
+                        </div>
+                    </div>
                     <div>
-                        <button class="btn btn-danger btn-sm">
-                            LOGOUT
+                        <button class="btn btn-danger btn-sm" onclick="confirmLogout()">
+                            <i class="fa-solid fa-right-from-bracket me-1"></i>LOGOUT
                         </button>
                     </div>
 
@@ -298,7 +306,8 @@
     <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
     <!-- Template Javascript -->
-    <script src="../js/dashboard-admin.js"></script>
+    <script src="js/dashboard-admin.js"></script>
+    <script src="js/login.js"></script>
 </body>
 
 </html>

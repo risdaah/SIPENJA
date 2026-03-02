@@ -9,7 +9,7 @@
     <meta content="" name="description">
 
     <!-- Favicon -->
-    <link href="../img/favicon.ico" rel="icon">
+    <link href="img/favicon.ico" rel="icon">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,15 +20,18 @@
     <script src="https://kit.fontawesome.com/e943a573af.js" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- Libraries Stylesheet -->
     <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
     <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
 
     <!-- Customized Bootstrap Stylesheet -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Template Stylesheet -->
-    <link href="../css/update-progress.css" rel="stylesheet">
+    <link href="css/perbarui-transaksi-kasir.css" rel="stylesheet">
 </head>
 
 <body>
@@ -46,15 +49,21 @@
         <!-- Sidebar Start -->
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-light navbar-light">
-                <a href="dashboard-admin.html" class="navbar-brand mx-4 mb-3">
+                <a href="transaksi-kasir.html" class="navbar-brand mx-4 mb-3">
                     <h3 class="text-primary">SIPENJA</h3>
                 </a>
                 <div class="navbar-nav w-100">
-                    <a href="update-progress.html" class="nav-item nav-link active"><i
-                            class="fa-solid fa-house me-2"></i>Update Progress</a>
-                    <a href="riwayat-pekerjaan.html" class="nav-item nav-link"><i
-                            class="fa-solid fa-clock-rotate-left me-2"></i>Riwayat
-                        Pekerjaan</a>
+                    <a href="transaksi-kasir.html" class="nav-item nav-link"><i
+                            class="fa-solid fa-house me-2"></i>Transaksi</a>
+                    <a href="sparepart-kasir.html" class="nav-item nav-link"><i
+                            class="fa fa-gear me-2"></i>Sparepart</a>
+                    <a href="layanan-servis-kasir.html" class="nav-item nav-link"><i
+                            class="fa-solid fa-tag me-2"></i>Layanan Servis</a>
+                    <a href="perbarui-transaksi-kasir.html" class="nav-item nav-link active"><i
+                            class="fa-solid fa-bag-shopping me-2"></i>Perbarui
+                        Transaksi</a>
+                    <a href="riwayat-transaksi-kasir.html" class="nav-item nav-link"><i
+                            class="fa-solid fa-clock-rotate-left me-2"></i>Riwayat Transaksi</a>
                 </div>
             </nav>
         </div>
@@ -65,39 +74,25 @@
         <div class="content">
             <!-- Navbar Start -->
             <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
-                <a href="dashboard-admin.html" class="navbar-brand d-flex d-lg-none me-4">
+                <a href="transaksi-kasir.html" class="navbar-brand d-flex d-lg-none me-4">
                     <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
                 </a>
                 <a href="#" class="sidebar-toggler flex-shrink-0">
                     <i class="fa fa-bars"></i>
                 </a>
                 <div class="navbar-nav align-items-center ms-auto">
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <i class="fa fa-bell me-lg-2"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                            <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">Profile updated</h6>
-                                <small>15 minutes ago</small>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">New user added</h6>
-                                <small>15 minutes ago</small>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">Password changed</h6>
-                                <small>15 minutes ago</small>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item text-center">See all notifications</a>
+
+                    <div class="nav-item me-3 d-none d-sm-flex align-items-center gap-2">
+                        <i class="fa-solid fa-circle-user text-primary" style="font-size:1.3rem"></i>
+                        <div style="line-height:1.2">
+                            <div style="font-size:.82rem;font-weight:600;color:#191C24" id="navbar-nama">—</div>
+                            <div style="font-size:.72rem;color:#8e9bb0;text-transform:capitalize" id="navbar-role">—
+                            </div>
                         </div>
                     </div>
                     <div>
-                        <button class="btn btn-danger btn-sm">
-                            LOGOUT
+                        <button class="btn btn-danger btn-sm" onclick="confirmLogout()">
+                            <i class="fa-solid fa-right-from-bracket me-1"></i>LOGOUT
                         </button>
                     </div>
 
@@ -147,7 +142,8 @@
     <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
     <!-- Template Javascript -->
-    <script src="../js/update-progress.js"></script>
+    <script src="js/login.js"></script>
+    <script src="js/perbarui-transaksi-kasir.js"></script>
 </body>
 
 </html>
