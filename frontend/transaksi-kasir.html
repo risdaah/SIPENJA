@@ -5,8 +5,6 @@
     <meta charset="utf-8">
     <title>SIPENJA - Bengkel Ani Jaya</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
 
     <!-- Favicon -->
     <link href="img/favicon.ico" rel="icon">
@@ -23,10 +21,6 @@
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- Libraries Stylesheet -->
-    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
-
     <!-- Customized Bootstrap Stylesheet -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
@@ -35,16 +29,15 @@
 </head>
 
 <body>
-    <div class="container-xxl position-relative bg-white d-flex p-0">
+    <div class="container-xxl position-relative d-flex p-0" style="background:var(--light)">
         <!-- Spinner Start -->
         <div id="spinner"
             class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <div class="spinner-border text-primary" style="width:3rem;height:3rem;" role="status">
                 <span class="sr-only">Loading...</span>
             </div>
         </div>
         <!-- Spinner End -->
-
 
         <!-- Sidebar Start -->
         <div class="sidebar pe-4 pb-3">
@@ -60,15 +53,13 @@
                     <a href="layanan-servis-kasir.html" class="nav-item nav-link"><i
                             class="fa-solid fa-tag me-2"></i>Layanan Servis</a>
                     <a href="perbarui-transaksi-kasir.html" class="nav-item nav-link"><i
-                            class="fa-solid fa-bag-shopping me-2"></i>Perbarui
-                        Transaksi</a>
+                            class="fa-solid fa-bag-shopping me-2"></i>Perbarui Transaksi</a>
                     <a href="riwayat-transaksi-kasir.html" class="nav-item nav-link"><i
                             class="fa-solid fa-clock-rotate-left me-2"></i>Riwayat Transaksi</a>
                 </div>
             </nav>
         </div>
         <!-- Sidebar End -->
-
 
         <!-- Content Start -->
         <div class="content">
@@ -77,11 +68,8 @@
                 <a href="transaksi-kasir.html" class="navbar-brand d-flex d-lg-none me-4">
                     <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
                 </a>
-                <a href="#" class="sidebar-toggler flex-shrink-0">
-                    <i class="fa fa-bars"></i>
-                </a>
+                <a href="#" class="sidebar-toggler flex-shrink-0"><i class="fa fa-bars"></i></a>
                 <div class="navbar-nav align-items-center ms-auto">
-
                     <div class="nav-item me-3 d-none d-sm-flex align-items-center gap-2">
                         <i class="fa-solid fa-circle-user text-primary" style="font-size:1.3rem"></i>
                         <div style="line-height:1.2">
@@ -90,19 +78,173 @@
                             </div>
                         </div>
                     </div>
-                    <div>
-                        <button class="btn btn-danger btn-sm" onclick="confirmLogout()">
-                            <i class="fa-solid fa-right-from-bracket me-1"></i>LOGOUT
-                        </button>
-                    </div>
-
+                    <button class="btn btn-danger btn-sm" onclick="confirmLogout()">
+                        <i class="fa-solid fa-right-from-bracket me-1"></i>LOGOUT
+                    </button>
                 </div>
             </nav>
             <!-- Navbar End -->
 
+            <!-- Main Content Start -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="card border-0 shadow-sm rounded-3">
+                    <div class="card-body p-4">
 
+                        <!-- Card Header -->
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="fw-bold mb-0">Tambahkan Transaksi Baru</h5>
+                            <button class="btn btn-sm btn-outline-secondary rounded-circle" id="btnBantuan"
+                                title="Bantuan" onclick="tampilkanBantuan()">
+                                <i class="fa-solid fa-question"></i>
+                            </button>
+                        </div>
 
+                        <!-- Tanggal & Jenis Transaksi -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Tanggal</label>
+                                <input type="date" class="form-control" id="inputTanggal">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Jenis Transaksi</label>
+                                <select class="form-select" id="selectJenisTransaksi"
+                                    onchange="onJenisTransaksiChange()">
+                                    <option value="">Pilih Jenis Transaksi</option>
+                                    <option value="servis">Servis Kendaraan</option>
+                                    <option value="sparepart">Pembelian Sparepart</option>
+                                </select>
+                            </div>
+                        </div>
 
+                        <!-- ===== SECTION: SERVIS KENDARAAN ===== -->
+                        <div id="sectionServis" class="d-none">
+                            <hr class="my-3">
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Nama Pelanggan</label>
+                                    <input type="text" class="form-control" id="inputNamaPelanggan"
+                                        placeholder="Nama Pelanggan">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Mekanik</label>
+                                    <select class="form-select" id="selectMekanik">
+                                        <option value="">Pilih Mekanik</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Cari Layanan Servis -->
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Cari Jenis Layanan Servis</label>
+                                <div class="input-group" style="max-width:420px">
+                                    <input type="text" class="form-control" id="inputCariLayanan"
+                                        placeholder="Input Layanan Servis">
+                                    <button class="btn btn-secondary" id="btnCariLayanan" type="button">Cari</button>
+                                </div>
+                                <!-- Dropdown hasil pencarian layanan -->
+                                <div id="hasilCariLayanan" class="dropdown-hasil d-none"></div>
+                            </div>
+
+                            <!-- Tabel Layanan Terpilih -->
+                            <div class="table-responsive mb-3">
+                                <table class="table table-bordered table-sm align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th style="width:50px">#</th>
+                                            <th>Layanan Servis</th>
+                                            <th>Biaya Pokok</th>
+                                            <th style="width:70px">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyLayanan">
+                                        <tr id="emptyLayanan">
+                                            <td colspan="4" class="text-center text-muted">Belum ada layanan dipilih
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Catatan Keluhan -->
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Catatan Keluhan</label>
+                                <textarea class="form-control" id="inputKeluhanServis" rows="3"
+                                    placeholder="Keluhan"></textarea>
+                            </div>
+
+                            <!-- Total Servis -->
+                            <div class="d-flex justify-content-end align-items-center mb-2">
+                                <span class="fw-bold me-3">Total Biaya:</span>
+                                <span class="fs-5 fw-bold text-primary" id="totalServis">Rp0</span>
+                            </div>
+                        </div>
+                        <!-- ===== END SECTION SERVIS ===== -->
+
+                        <!-- ===== SECTION: PEMBELIAN SPAREPART ===== -->
+                        <div id="sectionSparepart" class="d-none">
+                            <hr class="my-3">
+
+                            <!-- Cari Sparepart -->
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Cari Sparepart</label>
+                                <div class="input-group" style="max-width:420px">
+                                    <input type="text" class="form-control" id="inputCariSparepart"
+                                        placeholder="Input nama sparepart">
+                                    <button class="btn btn-secondary" id="btnCariSparepart" type="button">Cari</button>
+                                </div>
+                                <div id="hasilCariSparepart" class="dropdown-hasil d-none"></div>
+                            </div>
+
+                            <!-- Tabel Sparepart Terpilih -->
+                            <div class="table-responsive mb-3">
+                                <table class="table table-bordered table-sm align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th style="width:50px">#</th>
+                                            <th>Nama Sparepart</th>
+                                            <th style="width:90px">Qty</th>
+                                            <th>Harga Satuan</th>
+                                            <th>Subtotal</th>
+                                            <th style="width:90px">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodySparepart">
+                                        <tr id="emptySparepart">
+                                            <td colspan="6" class="text-center text-muted">Belum ada sparepart dipilih
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Catatan -->
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Catatan</label>
+                                <textarea class="form-control" id="inputCatatanSparepart" rows="3"
+                                    placeholder="Catatan"></textarea>
+                            </div>
+
+                            <!-- Total Sparepart -->
+                            <div class="d-flex justify-content-end align-items-center mb-2">
+                                <span class="fw-bold me-3">Total Harga:</span>
+                                <span class="fs-5 fw-bold text-primary" id="totalSparepart">Rp0</span>
+                            </div>
+                        </div>
+                        <!-- ===== END SECTION SPAREPART ===== -->
+
+                        <!-- Tombol Tambahkan Transaksi -->
+                        <div class="d-flex justify-content-end mt-3">
+                            <button class="btn btn-primary px-5 py-2 fw-semibold" id="btnTambahTransaksi"
+                                onclick="tambahTransaksi()" style="display:none!important">
+                                Tambahkan Transaksi
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- Main Content End -->
 
             <!-- Footer Start -->
             <div class="container-fluid pt-4 px-4">
@@ -112,9 +254,7 @@
                             &copy; <a href="#">SIPENJA - Bengkel Any Jaya</a>, All Right Reserved.
                         </div>
                         <div class="col-12 col-sm-6 text-center text-sm-end">
-                            <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-                            Designed By <a href="https://htmlcodex.com">HTML Codex</a>
-                            </br>
+                            Designed By <a href="https://htmlcodex.com">HTML Codex</a><br>
                             Distributed By <a class="border-bottom" href="https://themewagon.com"
                                 target="_blank">ThemeWagon</a>
                         </div>
@@ -125,21 +265,33 @@
         </div>
         <!-- Content End -->
 
+        <!-- Sidebar Overlay (mobile) -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
         <!-- Back to Top -->
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
 
+    <!-- Modal Bantuan -->
+    <div class="modal fade" id="modalBantuan" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">Panduan Tambah Transaksi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="modalBantuanBody">
+                    <!-- diisi JS sesuai jenis transaksi -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/chart/chart.min.js"></script>
     <script src="lib/easing/easing.min.js"></script>
     <script src="lib/waypoints/waypoints.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="lib/tempusdominus/js/moment.min.js"></script>
-    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
     <!-- Template Javascript -->
     <script src="js/login.js"></script>

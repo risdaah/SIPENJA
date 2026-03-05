@@ -13,7 +13,6 @@
     z-index: 99;
 }
 
-
 /*** Spinner ***/
 #spinner {
     opacity: 0;
@@ -27,7 +26,6 @@
     visibility: visible;
     opacity: 1;
 }
-
 
 /*** Button ***/
 .btn {
@@ -64,8 +62,12 @@
     border-radius: 50px;
 }
 
-
 /*** Layout ***/
+.container-xxl {
+    min-height: 100vh;
+    align-items: stretch;
+}
+
 .sidebar {
     position: fixed;
     top: 0;
@@ -77,6 +79,7 @@
     background: var(--light);
     transition: 0.5s;
     z-index: 999;
+    flex-shrink: 0;
 }
 
 .content {
@@ -84,8 +87,13 @@
     min-height: 100vh;
     background: #FFFFFF;
     transition: 0.5s;
+    width: calc(100% - 250px);
+    min-width: 0;
+    /* cegah overflow */
+    overflow-x: hidden;
 }
 
+/* Desktop: sidebar di-toggle masuk */
 @media (min-width: 992px) {
     .sidebar {
         margin-left: 0;
@@ -105,6 +113,7 @@
     }
 }
 
+/* Mobile/tablet: sidebar hidden by default */
 @media (max-width: 991.98px) {
     .sidebar {
         margin-left: -250px;
@@ -120,18 +129,11 @@
     }
 }
 
-
 /*** Navbar ***/
 .content .navbar .navbar-nav>div {
     margin-left: 10px;
 }
 
-.content .navbar .navbar-nav .btn-logout {
-    margin-left: 15px;
-    padding: 8px 16px;
-}
-
-/* Remove dropdown arrow from notification bell */
 .content .navbar .nav-item.dropdown .dropdown-toggle::after {
     display: none;
 }
@@ -167,26 +169,6 @@
     background: var(--light);
 }
 
-.sidebar .navbar .dropdown-toggle::after {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    border: none;
-    content: "\f107";
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-    transition: .5s;
-}
-
-.sidebar .navbar .dropdown-toggle[aria-expanded=true]::after {
-    transform: rotate(-180deg);
-}
-
-.sidebar .navbar .dropdown-item {
-    padding-left: 25px;
-    border-radius: 0 30px 30px 0;
-}
-
 .content .navbar .navbar-nav .nav-link {
     margin-left: 25px;
     padding: 12px 0;
@@ -210,82 +192,84 @@
     border-radius: 40px;
 }
 
-.content .navbar .dropdown-toggle::after {
-    margin-left: 6px;
-    vertical-align: middle;
-    border: none;
-    content: "\f107";
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-    transition: .5s;
-}
-
-.content .navbar .dropdown-toggle[aria-expanded=true]::after {
-    transform: rotate(-180deg);
-}
-
 @media (max-width: 575.98px) {
     .content .navbar .navbar-nav .nav-link {
         margin-left: 15px;
     }
 }
 
-
-/*** Date Picker ***/
-.bootstrap-datetimepicker-widget.bottom {
-    top: auto !important;
+/*** Kasir Form Card ***/
+.card {
+    border-radius: 12px;
 }
 
-.bootstrap-datetimepicker-widget .table * {
-    border-bottom-width: 0px;
+/* Pastikan konten tidak melebihi lebar yang tersedia */
+.content .container-fluid {
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
-.bootstrap-datetimepicker-widget .table th {
-    font-weight: 500;
+/* Overlay saat sidebar terbuka di mobile */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .3);
+    z-index: 998;
 }
 
-.bootstrap-datetimepicker-widget.dropdown-menu {
-    padding: 10px;
-    border-radius: 2px;
+.sidebar-overlay.show {
+    display: block;
 }
 
-.bootstrap-datetimepicker-widget table td.active,
-.bootstrap-datetimepicker-widget table td.active:hover {
-    background: var(--primary);
+/* Dropdown hasil pencarian */
+.dropdown-hasil {
+    position: absolute;
+    z-index: 1050;
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    max-height: 220px;
+    overflow-y: auto;
+    width: 420px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, .1);
 }
 
-.bootstrap-datetimepicker-widget table td.today::before {
-    border-bottom-color: var(--primary);
+.dropdown-hasil .hasil-item {
+    padding: 8px 14px;
+    cursor: pointer;
+    font-size: .9rem;
+    border-bottom: 1px solid #f0f0f0;
 }
 
-
-/*** Testimonial ***/
-.progress .progress-bar {
-    width: 0px;
-    transition: 2s;
+.dropdown-hasil .hasil-item:last-child {
+    border-bottom: none;
 }
 
+.dropdown-hasil .hasil-item:hover {
+    background: var(--light);
+}
 
-/*** Testimonial ***/
-.testimonial-carousel .owl-dots {
-    margin-top: 24px;
-    display: flex;
-    align-items: flex-end;
+/* Tabel transaksi */
+#tbodyLayanan td,
+#tbodySparepart td {
+    font-size: .88rem;
+}
+
+/* Tombol qty */
+.btn-qty {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
+    border-radius: 50%;
+    font-size: .85rem;
 }
 
-.testimonial-carousel .owl-dot {
-    position: relative;
-    display: inline-block;
-    margin: 0 5px;
-    width: 15px;
-    height: 15px;
-    border: 5px solid var(--primary);
-    border-radius: 15px;
-    transition: .5s;
-}
-
-.testimonial-carousel .owl-dot.active {
-    background: var(--dark);
-    border-color: var(--primary);
+/* Tombol Tambahkan Transaksi — tampil hanya saat section aktif */
+#btnTambahTransaksi {
+    font-size: 1rem;
+    border-radius: 8px;
 }
