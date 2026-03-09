@@ -13,7 +13,6 @@
     z-index: 99;
 }
 
-
 /*** Spinner ***/
 #spinner {
     opacity: 0;
@@ -27,7 +26,6 @@
     visibility: visible;
     opacity: 1;
 }
-
 
 /*** Button ***/
 .btn {
@@ -63,7 +61,6 @@
     font-weight: normal;
     border-radius: 50px;
 }
-
 
 /*** Layout ***/
 .sidebar {
@@ -120,7 +117,6 @@
     }
 }
 
-
 /*** Navbar ***/
 .content .navbar .navbar-nav>div {
     margin-left: 10px;
@@ -131,7 +127,6 @@
     padding: 8px 16px;
 }
 
-/* Remove dropdown arrow from notification bell */
 .content .navbar .nav-item.dropdown .dropdown-toggle::after {
     display: none;
 }
@@ -230,62 +225,47 @@
     }
 }
 
-
-/*** Date Picker ***/
-.bootstrap-datetimepicker-widget.bottom {
-    top: auto !important;
+/*** Perbarui Transaksi ***/
+.badge-jenis-servis {
+    background: #e3f2fd;
+    color: #1565c0;
 }
 
-.bootstrap-datetimepicker-widget .table * {
-    border-bottom-width: 0px;
+.badge-jenis-pembelian {
+    background: #fce4ec;
+    color: #880e4f;
 }
 
-.bootstrap-datetimepicker-widget .table th {
-    font-weight: 500;
+.dropdown-hasil-inline {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 40px;
+    z-index: 1055;
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .1);
 }
 
-.bootstrap-datetimepicker-widget.dropdown-menu {
-    padding: 10px;
-    border-radius: 2px;
+.hasil-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: .875rem;
+    border-bottom: 1px solid #f0f0f0;
 }
 
-.bootstrap-datetimepicker-widget table td.active,
-.bootstrap-datetimepicker-widget table td.active:hover {
-    background: var(--primary);
+.hasil-item:last-child {
+    border-bottom: none;
 }
 
-.bootstrap-datetimepicker-widget table td.today::before {
-    border-bottom-color: var(--primary);
+.hasil-item:hover {
+    background: var(--light);
 }
 
-
-/*** Testimonial ***/
-.progress .progress-bar {
-    width: 0px;
-    transition: 2s;
-}
-
-
-/*** Testimonial ***/
-.testimonial-carousel .owl-dots {
-    margin-top: 24px;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-}
-
-.testimonial-carousel .owl-dot {
-    position: relative;
-    display: inline-block;
-    margin: 0 5px;
-    width: 15px;
-    height: 15px;
-    border: 5px solid var(--primary);
-    border-radius: 15px;
-    transition: .5s;
-}
-
-.testimonial-carousel .owl-dot.active {
-    background: var(--dark);
-    border-color: var(--primary);
+.hasil-item.disabled-item {
+    opacity: .5;
+    cursor: not-allowed;
 }

@@ -21,6 +21,26 @@ const Transaksi = {
     return rows[0];
   },
 
+  // ── BARU: filter by kasir (IDUSER) ──────────────────────
+  getByKasir: async (idUser, jenis = null) => {
+    let query = `
+      SELECT t.*, u.NAMA as NAMA_KASIR
+      FROM TRANSAKSI t
+      LEFT JOIN USER u ON t.IDUSER = u.IDUSER
+      WHERE t.IDUSER = ?
+    `;
+    const params = [idUser];
+
+    if (jenis) {
+      query += ' AND t.JENISTRANSAKSI = ?';
+      params.push(jenis);
+    }
+
+    query += ' ORDER BY t.TANGGAL DESC';
+    const [rows] = await db.query(query, params);
+    return rows;
+  },
+
   getByJenis: async (jenis) => {
     const [rows] = await db.query(`
       SELECT t.*, u.NAMA as NAMA_KASIR
@@ -32,7 +52,6 @@ const Transaksi = {
     return rows;
   },
 
-  // Filter by rentang tanggal
   getByDateRange: async (startDate, endDate, jenis = null) => {
     let query = `
       SELECT t.*, u.NAMA as NAMA_KASIR
@@ -52,7 +71,6 @@ const Transaksi = {
     return rows;
   },
 
-  // Filter by bulan dan tahun
   getByBulan: async (bulan, tahun, jenis = null) => {
     let query = `
       SELECT t.*, u.NAMA as NAMA_KASIR
