@@ -171,7 +171,7 @@ function bukaModalProgress(idServis) {
     .then(function (res) {
       var s = res.data;
 
-      // ── Info Servis + Daftar Layanan yang sudah ada ──
+      // ── Info Servis + Daftar Layanan + Sparepart yang sudah ada ──
       var layananRows = "";
       if (s.LAYANAN && s.LAYANAN.length > 0) {
         layananRows = s.LAYANAN.map(function (l) {
@@ -191,6 +191,33 @@ function bukaModalProgress(idServis) {
           '<tr><td colspan="2" class="text-muted fst-italic">Belum ada layanan</td></tr>';
       }
 
+      var sparepartRows = "";
+      if (s.SPAREPART && s.SPAREPART.length > 0) {
+        sparepartRows = s.SPAREPART.map(function (sp) {
+          return (
+            "<tr>" +
+            "<td>" +
+            escapeHtml(sp.NAMA_SPAREPART || sp.NAMA || "-") +
+            "</td>" +
+            '<td class="text-center">' +
+            (sp.QTY || 0) +
+            "</td>" +
+            '<td class="text-end">' +
+            formatRupiah(
+              sp.HARGASATUAN || (sp.QTY ? sp.SUBTOTAL / sp.QTY : 0),
+            ) +
+            "</td>" +
+            '<td class="text-end">' +
+            formatRupiah(sp.SUBTOTAL) +
+            "</td>" +
+            "</tr>"
+          );
+        }).join("");
+      } else {
+        sparepartRows =
+          '<tr><td colspan="4" class="text-muted fst-italic">Belum ada sparepart</td></tr>';
+      }
+
       document.getElementById("infoServis").innerHTML =
         '<div class="row g-2 mb-3">' +
         '<div class="col-sm-4"><span class="text-muted small">Kode Antrian</span>' +
@@ -206,9 +233,9 @@ function bukaModalProgress(idServis) {
         badgeStatus(s.STATUS) +
         "</div></div>" +
         "</div>" +
-        // Tabel layanan yang sudah terdaftar
-        '<div class="mt-2">' +
-        '<p class="mb-1 small fw-semibold text-muted">Layanan Servis Terdaftar:</p>' +
+        // Tabel layanan terdaftar
+        '<div class="mt-2 mb-3">' +
+        '<p class="mb-1 small fw-semibold text-muted"><i class=\"fa-solid fa-tag me-1 text-warning\"></i>Layanan Servis Terdaftar:</p>' +
         '<table class="table table-sm table-bordered mb-0">' +
         '<thead class="table-light"><tr>' +
         "<th>Nama Layanan</th>" +
@@ -216,6 +243,21 @@ function bukaModalProgress(idServis) {
         "</tr></thead>" +
         "<tbody>" +
         layananRows +
+        "</tbody>" +
+        "</table>" +
+        "</div>" +
+        // Tabel sparepart terdaftar
+        '<div class="mt-2">' +
+        '<p class="mb-1 small fw-semibold text-muted"><i class=\"fa fa-gear me-1 text-secondary\"></i>Sparepart Terdaftar:</p>' +
+        '<table class="table table-sm table-bordered mb-0">' +
+        '<thead class="table-light"><tr>' +
+        "<th>Nama Sparepart</th>" +
+        '<th class="text-center">Qty</th>' +
+        '<th class="text-end">Harga Satuan</th>' +
+        '<th class="text-end">Subtotal</th>' +
+        "</tr></thead>" +
+        "<tbody>" +
+        sparepartRows +
         "</tbody>" +
         "</table>" +
         "</div>";
