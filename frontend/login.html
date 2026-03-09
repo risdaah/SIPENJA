@@ -3,22 +3,13 @@
 
 <head>
     <meta charset="utf-8">
-    <title>SIPENJA - Sistem Informasi Pencatatan Transaksi Bengkel Any Jaya</title>
+    <title>SIPENJA - Login</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
-    <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap"
-        rel="stylesheet">
-
-    <!-- Icon Font -->
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-
-    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <link href="css/login.css" rel="stylesheet">
 </head>
 
@@ -30,59 +21,59 @@
     </div>
 
     <div class="login-wrapper">
+        <div class="login-card">
 
-        <!-- Left: Image Panel -->
-        <div class="login-image-panel">
-            <div class="image-overlay"></div>
-            <div class="brand-block">
-                <div class="brand-logo">
-                    <i class="fas fa-tools"></i>
-                </div>
-                <h1 class="brand-name">SIPENJA</h1>
-                <p class="brand-tagline">Sistem Informasi Pencatatan Transaksi<br>Bengkel Any Jaya</p>
+            <!-- Logo -->
+            <div class="card-logo">
+                <i class="fas fa-tools"></i>
             </div>
-            <div class="image-deco deco-1"></div>
-            <div class="image-deco deco-2"></div>
-        </div>
 
-        <!-- Right: Form Panel -->
-        <div class="login-form-panel">
-            <div class="form-container">
-                <div class="form-header">
-                    <h2 class="form-greeting">Halo!</h2>
-                    <p class="form-subtitle">Masukkan akun Anda untuk melanjutkan</p>
+            <!-- Header -->
+            <div class="card-header">
+                <p class="card-sub">Masukkan akun Anda untuk melanjutkan</p>
+                <h2 class="card-title">Selamat Datang</h2>
+            </div>
+
+            <!-- Alert error -->
+            <div id="alert-error" class="alert-error" style="display:none"></div>
+
+            <!-- Form -->
+            <div class="form-body">
+                <div class="input-group-custom" id="wrap-username">
+                    <span class="input-icon"><i class="fas fa-user"></i></span>
+                    <input type="text" id="inputUsername" placeholder="Username" autocomplete="username"
+                        maxlength="100">
                 </div>
 
-                <!-- Alert error -->
-                <div id="alert-error" class="alert-error" style="display:none"></div>
-
-                <div class="form-body">
-                    <div class="input-group-custom" id="wrap-username">
-                        <span class="input-icon"><i class="fas fa-user"></i></span>
-                        <input type="text" id="inputUsername" placeholder="Username" autocomplete="username"
-                            maxlength="100">
-                    </div>
-
-                    <div class="input-group-custom" id="wrap-password">
-                        <span class="input-icon"><i class="fas fa-lock"></i></span>
-                        <input type="password" id="inputPassword" placeholder="Kata Sandi"
-                            autocomplete="current-password" maxlength="100">
-                        <button class="toggle-password" type="button" id="togglePass" aria-label="Show password">
-                            <i class="fas fa-eye" id="pwIcon"></i>
-                        </button>
-                    </div>
-
-                    <button type="button" class="btn-login" id="btnLogin">
-                        <span id="btnText">Masuk</span>
-                        <span id="btnSpinner" style="display:none">
-                            <span class="spinner-ring-sm"></span>
-                        </span>
-                        <i class="fas fa-arrow-right" id="btnArrow"></i>
+                <div class="input-group-custom" id="wrap-password">
+                    <span class="input-icon"><i class="fas fa-lock"></i></span>
+                    <input type="password" id="inputPassword" placeholder="Kata Sandi" autocomplete="current-password"
+                        maxlength="100">
+                    <button class="toggle-password" type="button" id="togglePass" aria-label="Show password">
+                        <i class="fas fa-eye" id="pwIcon"></i>
                     </button>
                 </div>
-            </div>
-        </div>
 
+                <!-- Remember Me -->
+                <div class="remember-row">
+                    <label class="remember-label">
+                        <input type="checkbox" id="chkRemember">
+                        <span class="checkmark"></span>
+                        Ingat username saya
+                    </label>
+                </div>
+
+                <button type="button" class="btn-login" id="btnLogin">
+                    <span id="btnText">Masuk</span>
+                    <span id="btnSpinner" style="display:none">
+                        <span class="spinner-ring-sm"></span>
+                    </span>
+                    <i class="fas fa-arrow-right" id="btnArrow"></i>
+                </button>
+            </div>
+
+            <p class="card-footer-text">SIPENJA &mdash; Bengkel Any Jaya</p>
+        </div>
     </div>
 
     <script src="js/login.js"></script>

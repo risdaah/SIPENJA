@@ -1,28 +1,25 @@
 (function () {
   "use strict";
 
-  const API = "http://localhost:3000/api"; // ← sesuaikan URL backend
+  const API = "http://localhost:3000/api";
 
   // ══════════════════════════════════════════════════════
-  //  SESSION MANAGER — tersedia global sebagai window.Session
-  //  Include login.js di setiap halaman agar Session bisa dipakai
+  //  SESSION MANAGER
   // ══════════════════════════════════════════════════════
   window.Session = {
     TOKEN_KEY: "sipenja_token",
     USER_KEY: "sipenja_user",
+    REMEMBER_KEY: "sipenja_remember", // username yang disimpan
 
-    // Simpan token & data user setelah login berhasil
     save: function (token, user) {
       localStorage.setItem(this.TOKEN_KEY, token);
       localStorage.setItem(this.USER_KEY, JSON.stringify(user));
     },
 
-    // Ambil JWT token
     getToken: function () {
       return localStorage.getItem(this.TOKEN_KEY) || null;
     },
 
-    // Ambil data user { IDUSER, NAMA, USERNAME, ROLE, STATUS }
     getUser: function () {
       try {
         return JSON.parse(localStorage.getItem(this.USER_KEY)) || null;
@@ -31,12 +28,10 @@
       }
     },
 
-    // Cek apakah sudah login (ada token)
     isLoggedIn: function () {
       return !!this.getToken();
     },
 
-    // Cek apakah token sudah expired (client-side via JWT payload)
     isExpired: function () {
       var token = this.getToken();
       if (!token) return true;
@@ -48,32 +43,33 @@
       }
     },
 
-    // Hapus seluruh data sesi dari localStorage
     clear: function () {
       localStorage.removeItem(this.TOKEN_KEY);
       localStorage.removeItem(this.USER_KEY);
+      // remember TIDAK dihapus saat logout
     },
 
-    // ── GUARD ─────────────────────────────────────────
-    // Panggil di awal $(document).ready setiap halaman yang butuh login.
-    // Jika tidak login / expired → redirect ke login otomatis.
-    // Jika roles diisi → cek role user, jika tidak cocok → redirect dashboard.
-    //
-    // Contoh:
-    //   Session.guard();                        // semua role boleh
-    //   Session.guard(['admin']);               // hanya admin
-    //   Session.guard(['admin', 'kasir']);      // admin atau kasir
+    // ── Simpan / hapus username remember ──
+    saveRemember: function (username) {
+      localStorage.setItem(this.REMEMBER_KEY, username);
+    },
+    clearRemember: function () {
+      localStorage.removeItem(this.REMEMBER_KEY);
+    },
+    getRemember: function () {
+      return localStorage.getItem(this.REMEMBER_KEY) || "";
+    },
+
+    // ── GUARD ──────────────────────────────────────────
     guard: function (roles) {
       if (!this.isLoggedIn() || this.isExpired()) {
         this.clear();
-        // Dari subfolder (page-admin/page-kasir/page-mekanik) perlu naik satu level
         window.location.href = "login.html";
         return false;
       }
       if (roles && roles.length) {
         var user = this.getUser();
         if (!user || !roles.includes(user.ROLE)) {
-          // Redirect ke dashboard sesuai role, dari dalam subfolder
           window.location.href = getDashboard(user ? user.ROLE : null);
           return false;
         }
@@ -81,12 +77,10 @@
       return true;
     },
 
-    // Logout: beritahu server + hapus sesi + redirect login
     logout: function () {
       var token = this.getToken();
       var self = this;
       if (token) {
-        // Fire and forget — tidak perlu tunggu response
         fetch(API + "/auth/logout", {
           method: "POST",
           headers: { Authorization: "Bearer " + token },
@@ -96,20 +90,11 @@
       window.location.href = "login.html";
     },
 
-    // Setup header Authorization otomatis untuk semua fetch / XMLHttpRequest.
-    // Panggil sekali di $(document).ready halaman yang butuh auth.
-    // Juga handle 401 expired → redirect login otomatis.
     setupAjax: function () {
       var token = this.getToken();
       if (!token) return;
-
-      // Jika pakai jQuery $.ajax
       if (typeof $ !== "undefined" && $.ajaxSetup) {
-        $.ajaxSetup({
-          headers: { Authorization: "Bearer " + token },
-        });
-
-        // Handle 401 global (token expired di tengah sesi)
+        $.ajaxSetup({ headers: { Authorization: "Bearer " + token } });
         $(document)
           .off("ajaxError.session")
           .on("ajaxError.session", function (event, xhr) {
@@ -133,7 +118,7 @@
     },
   };
 
-  // Dari login.html (root frontend)
+  // ── Dashboard redirect berdasarkan role ──
   function getDashboard(role) {
     switch (role) {
       case "admin":
@@ -147,52 +132,44 @@
     }
   }
 
-  // Dari dalam subfolder (page-admin / page-kasir / page-mekanik)
-  // Perlu naik satu level (..) sebelum masuk ke folder tujuan
-  function getDashboardFromSub(role) {
-    switch (role) {
-      case "admin":
-        return "dashboard-admin.html";
-      case "kasir":
-        return "transaksi-kasir.html";
-      case "mekanik":
-        return "update-progress.html";
-      default:
-        return "login.html";
-    }
-  }
-
   // ══════════════════════════════════════════════════════
-  //  INIT — hanya dijalankan di halaman login.html
+  //  INIT — hanya berjalan di login.html
   // ══════════════════════════════════════════════════════
-
-  // Spinner hide setelah halaman load
   window.addEventListener("load", function () {
     var spinner = document.getElementById("spinner");
     if (spinner) spinner.classList.add("hide");
   });
 
-  // Auto-redirect: hanya jalan di halaman login.html
-  // Kalau sudah login dan buka login.html lagi → langsung ke dashboard
-  var currentPath = window.location.pathname || window.location.href;
-  var fileName = currentPath.split("/").pop();
-  if (!fileName || !fileName.includes(".html")) {
-    fileName = currentPath.split("\\").pop();
-  }
-  var isLoginPage = fileName === "login.html";
+  // Auto-redirect kalau sudah login dan buka login.html lagi
+  var fileName = (window.location.pathname || window.location.href)
+    .split("/")
+    .pop();
+  var isLoginPage = !fileName || fileName === "" || fileName === "login.html";
 
   if (isLoginPage && Session.isLoggedIn() && !Session.isExpired()) {
     var _user = Session.getUser();
     window.location.href = getDashboard(_user ? _user.ROLE : null);
   }
 
+  // ── Isi username dari remember ──
+  var savedUsername = Session.getRemember();
+  var inputUsername = document.getElementById("inputUsername");
+  var inputPassword = document.getElementById("inputPassword");
+  var chkRemember = document.getElementById("chkRemember");
+
+  if (inputUsername && savedUsername) {
+    inputUsername.value = savedUsername;
+    if (chkRemember) chkRemember.checked = true;
+    // Langsung fokus ke password supaya tinggal isi password
+    if (inputPassword) inputPassword.focus();
+  }
+
   // Toggle show/hide password
   var toggleBtn = document.getElementById("togglePass");
-  var passInput = document.getElementById("inputPassword");
-  if (toggleBtn && passInput) {
+  if (toggleBtn && inputPassword) {
     toggleBtn.addEventListener("click", function () {
-      var isPassword = passInput.type === "password";
-      passInput.type = isPassword ? "text" : "password";
+      var isPassword = inputPassword.type === "password";
+      inputPassword.type = isPassword ? "text" : "password";
       var icon = document.getElementById("pwIcon");
       if (icon) {
         icon.classList.toggle("fa-eye", !isPassword);
@@ -208,14 +185,10 @@
 
   // Klik tombol Masuk
   var btnLogin = document.getElementById("btnLogin");
-  if (btnLogin) {
-    btnLogin.addEventListener("click", doLogin);
-  }
+  if (btnLogin) btnLogin.addEventListener("click", doLogin);
 
   // ══════════════════════════════════════════════════════
   //  DO LOGIN
-  //  POST /api/auth/login { USERNAME, PASSWORD }
-  //  Response: { success, token, user: { IDUSER, NAMA, USERNAME, ROLE, STATUS } }
   // ══════════════════════════════════════════════════════
   function doLogin() {
     hideAlert();
@@ -225,8 +198,8 @@
       document.getElementById("inputUsername").value || ""
     ).trim();
     var password = document.getElementById("inputPassword").value || "";
+    var remember = chkRemember ? chkRemember.checked : false;
 
-    // Validasi client-side
     if (!username) {
       showAlert(
         '<i class="fas fa-exclamation-circle"></i> Username tidak boleh kosong.',
@@ -246,7 +219,6 @@
 
     setLoading(true);
 
-    // Kirim ke backend
     fetch(API + "/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -259,16 +231,18 @@
         setLoading(false);
 
         if (res.success) {
-          // Simpan token + data user ke localStorage
-          // res.user = { IDUSER, NAMA, USERNAME, ROLE, STATUS }
-          Session.save(res.token, res.user);
+          // Simpan atau hapus remember me
+          if (remember) {
+            Session.saveRemember(username);
+          } else {
+            Session.clearRemember();
+          }
 
-          // Tampilkan sukses sebentar lalu redirect
+          Session.save(res.token, res.user);
           showSuccessThen(function () {
             window.location.href = getDashboard(res.user.ROLE);
           });
         } else {
-          // Pesan dari backend (misal: "Username atau password salah")
           showAlert(
             '<i class="fas fa-exclamation-circle"></i> ' +
               (res.message || "Login gagal."),
@@ -288,13 +262,11 @@
   // ══════════════════════════════════════════════════════
   //  UI HELPERS
   // ══════════════════════════════════════════════════════
-
   function setLoading(state) {
     var btn = document.getElementById("btnLogin");
     var btnText = document.getElementById("btnText");
     var btnSpin = document.getElementById("btnSpinner");
     var btnArr = document.getElementById("btnArrow");
-
     if (!btn) return;
     btn.disabled = state;
     if (btnText) btnText.textContent = state ? "Memproses..." : "Masuk";
@@ -320,8 +292,7 @@
   }
 
   function clearInputError() {
-    var wraps = document.querySelectorAll(".input-group-custom");
-    wraps.forEach(function (w) {
+    document.querySelectorAll(".input-group-custom").forEach(function (w) {
       w.classList.remove("input-error");
     });
   }
