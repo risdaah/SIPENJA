@@ -281,13 +281,13 @@
         "</td>" +
         "<td>" +
         '<div class="action-btns">' +
-        '<button class="btn-icon view" title="Lihat Detail" onclick="viewDetail(' +
+        '<button class="btn-icon view" title="Lihat Detail" onclick="window.location.href=\'detail-transaksi.html?id=' +
         d.IDTRANSAKSI +
-        ')">' +
+        "'\">" +
         '<i class="fa-solid fa-eye"></i></button>' +
-        '<button class="btn-icon edit" title="Edit Transaksi" onclick="openEditModal(' +
+        '<button class="btn-icon edit" title="Edit Transaksi" onclick="window.location.href=\'edit-transaksi.html?id=' +
         d.IDTRANSAKSI +
-        ')">' +
+        "'\">" +
         '<i class="fa-solid fa-pen"></i></button>' +
         '<button class="btn-icon del" title="Hapus" onclick="confirmDelete(' +
         d.IDTRANSAKSI +
@@ -1343,13 +1343,23 @@
       success: function (res) {
         if (!res.success) return;
         var newTotal = res.data.TOTAL;
+        // Update di allData & filteredData saja, TANPA re-render tabel
         allData.forEach(function (d) {
           if (d.IDTRANSAKSI == idTransaksi) d.TOTAL = newTotal;
         });
         filteredData.forEach(function (d) {
           if (d.IDTRANSAKSI == idTransaksi) d.TOTAL = newTotal;
         });
-        renderTable();
+        // Update hanya cell total yang relevan di DOM, bukan re-render semua
+        $("#table-body tr").each(function () {
+          var btn = $(this).find("button.btn-icon.edit");
+          if (
+            btn.attr("onclick") &&
+            btn.attr("onclick").includes("(" + idTransaksi + ")")
+          ) {
+            $(this).find(".total-val").text(rupiah(newTotal));
+          }
+        });
       },
     });
   }
@@ -1422,10 +1432,18 @@
 
   function bindModalClose() {
     $(document).on("click", ".modal-overlay", function (e) {
-      if ($(e.target).hasClass("modal-overlay")) $(this).removeClass("show");
+      // Hanya tutup jika klik langsung di overlay, bukan dari Swal
+      if (
+        $(e.target).hasClass("modal-overlay") &&
+        $(".swal2-container").length === 0 // pastikan tidak ada Swal aktif
+      ) {
+        $(this).removeClass("show");
+      }
     });
     $(document).on("keydown", function (e) {
-      if (e.key === "Escape") $(".modal-overlay.show").removeClass("show");
+      if (e.key === "Escape" && $(".swal2-container").length === 0) {
+        $(".modal-overlay.show").removeClass("show");
+      }
     });
   }
 

@@ -1,23 +1,27 @@
-const db = require('../config/db');
+const db = require("../config/db");
 
 const Transaksi = {
   getAll: async () => {
     const [rows] = await db.query(`
-      SELECT t.*, u.NAMA as NAMA_KASIR
-      FROM TRANSAKSI t
-      LEFT JOIN USER u ON t.IDUSER = u.IDUSER
-      ORDER BY t.TANGGAL DESC
-    `);
+    SELECT t.*, u.NAMA as NAMA_KASIR, s.IDSERVIS
+    FROM TRANSAKSI t
+    LEFT JOIN USER u ON t.IDUSER = u.IDUSER
+    LEFT JOIN SERVIS s ON s.IDTRANSAKSI = t.IDTRANSAKSI
+    ORDER BY t.TANGGAL DESC
+  `);
     return rows;
   },
 
   getById: async (id) => {
-    const [rows] = await db.query(`
+    const [rows] = await db.query(
+      `
       SELECT t.*, u.NAMA as NAMA_KASIR
       FROM TRANSAKSI t
       LEFT JOIN USER u ON t.IDUSER = u.IDUSER
       WHERE t.IDTRANSAKSI = ?
-    `, [id]);
+    `,
+      [id],
+    );
     return rows[0];
   },
 
@@ -32,23 +36,26 @@ const Transaksi = {
     const params = [idUser];
 
     if (jenis) {
-      query += ' AND t.JENISTRANSAKSI = ?';
+      query += " AND t.JENISTRANSAKSI = ?";
       params.push(jenis);
     }
 
-    query += ' ORDER BY t.TANGGAL DESC';
+    query += " ORDER BY t.TANGGAL DESC";
     const [rows] = await db.query(query, params);
     return rows;
   },
 
   getByJenis: async (jenis) => {
-    const [rows] = await db.query(`
+    const [rows] = await db.query(
+      `
       SELECT t.*, u.NAMA as NAMA_KASIR
       FROM TRANSAKSI t
       LEFT JOIN USER u ON t.IDUSER = u.IDUSER
       WHERE t.JENISTRANSAKSI = ?
       ORDER BY t.TANGGAL DESC
-    `, [jenis]);
+    `,
+      [jenis],
+    );
     return rows;
   },
 
@@ -62,11 +69,11 @@ const Transaksi = {
     const params = [startDate, endDate];
 
     if (jenis) {
-      query += ' AND t.JENISTRANSAKSI = ?';
+      query += " AND t.JENISTRANSAKSI = ?";
       params.push(jenis);
     }
 
-    query += ' ORDER BY t.TANGGAL DESC';
+    query += " ORDER BY t.TANGGAL DESC";
     const [rows] = await db.query(query, params);
     return rows;
   },
@@ -81,44 +88,62 @@ const Transaksi = {
     const params = [bulan, tahun];
 
     if (jenis) {
-      query += ' AND t.JENISTRANSAKSI = ?';
+      query += " AND t.JENISTRANSAKSI = ?";
       params.push(jenis);
     }
 
-    query += ' ORDER BY t.TANGGAL DESC';
+    query += " ORDER BY t.TANGGAL DESC";
     const [rows] = await db.query(query, params);
     return rows;
   },
 
   generateNoTransaksi: async (JENISTRANSAKSI) => {
-    const prefix = JENISTRANSAKSI === 'SERVIS' ? 'TRX-SRV' : 'TRX-PBL';
-    const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+    const prefix = JENISTRANSAKSI === "SERVIS" ? "TRX-SRV" : "TRX-PBL";
+    const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, "");
     const [lastRow] = await db.query(
       `SELECT COUNT(*) as total FROM TRANSAKSI 
        WHERE JENISTRANSAKSI = ? AND DATE(TANGGAL) = CURDATE()`,
-      [JENISTRANSAKSI]
+      [JENISTRANSAKSI],
     );
     const count = (lastRow[0].total || 0) + 1;
-    const sequence = String(count).padStart(3, '0');
+    const sequence = String(count).padStart(3, "0");
     return `${prefix}-${dateStr}-${sequence}`;
   },
 
   create: async (data) => {
     const { IDUSER, JENISTRANSAKSI, TOTAL, CATATAN } = data;
-    const [lastRow] = await db.query('SELECT MAX(IDTRANSAKSI) as lastId FROM TRANSAKSI');
+    const [lastRow] = await db.query(
+      "SELECT MAX(IDTRANSAKSI) as lastId FROM TRANSAKSI",
+    );
     const newId = (lastRow[0].lastId || 0) + 1;
     const NOTRANSAKSI = await Transaksi.generateNoTransaksi(JENISTRANSAKSI);
     const now = new Date();
     await db.query(
       `INSERT INTO TRANSAKSI (IDTRANSAKSI, IDUSER, NOTRANSAKSI, TANGGAL, JENISTRANSAKSI, TOTAL, CATATAN)
        VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [newId, IDUSER, NOTRANSAKSI, now, JENISTRANSAKSI, TOTAL || 0, CATATAN || null]
+      [
+        newId,
+        IDUSER,
+        NOTRANSAKSI,
+        now,
+        JENISTRANSAKSI,
+        TOTAL || 0,
+        CATATAN || null,
+      ],
     );
-    return { IDTRANSAKSI: newId, IDUSER, NOTRANSAKSI, TANGGAL: now, JENISTRANSAKSI, TOTAL: TOTAL || 0, CATATAN };
+    return {
+      IDTRANSAKSI: newId,
+      IDUSER,
+      NOTRANSAKSI,
+      TANGGAL: now,
+      JENISTRANSAKSI,
+      TOTAL: TOTAL || 0,
+      CATATAN,
+    };
   },
 
   delete: async (id) => {
-    await db.query('DELETE FROM TRANSAKSI WHERE IDTRANSAKSI = ?', [id]);
+    await db.query("DELETE FROM TRANSAKSI WHERE IDTRANSAKSI = ?", [id]);
   },
 };
 
