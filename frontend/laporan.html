@@ -3,57 +3,34 @@
 
 <head>
     <meta charset="utf-8">
-    <title>SIPENJA - Bengkel Ani Jaya</title>
+    <title>SIPENJA - Bengkel Any Jaya</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
-
-    <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
-
-    <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- Icon Font Stylesheet -->
     <script src="https://kit.fontawesome.com/e943a573af.js" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- Libraries Stylesheet -->
-    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
-
-    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <!-- Customized Bootstrap Stylesheet -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Template Stylesheet -->
     <link href="css/laporan.css" rel="stylesheet">
 </head>
 
 <body>
     <div class="container-xxl position-relative bg-white d-flex p-0">
-        <!-- Spinner Start -->
+
         <div id="spinner"
             class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
+            <div class="spinner-border text-primary" style="width:3rem;height:3rem;" role="status"><span
+                    class="sr-only">Loading...</span></div>
         </div>
-        <!-- Spinner End -->
 
-
-        <!-- Sidebar Start -->
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-light navbar-light">
                 <a href="dashboard-admin.html" class="navbar-brand mx-4 mb-3">
                     <h3 class="text-primary">SIPENJA</h3>
                 </a>
                 <div class="navbar-nav w-100">
-                    <a href="dashboard-admin.html" class="nav-item nav-link "><i
+                    <a href="dashboard-admin.html" class="nav-item nav-link"><i
                             class="fa-solid fa-square-poll-vertical me-2"></i>Dashboard</a>
                     <a href="kategori-sparepart.html" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Kategori
                         Sparepart</a>
@@ -72,43 +49,14 @@
                 </div>
             </nav>
         </div>
-        <!-- Sidebar End -->
 
-
-        <!-- Content Start -->
         <div class="content">
-            <!-- Navbar Start -->
             <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
                 <a href="dashboard-admin.html" class="navbar-brand d-flex d-lg-none me-4">
                     <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
                 </a>
-                <a href="#" class="sidebar-toggler flex-shrink-0">
-                    <i class="fa fa-bars"></i>
-                </a>
+                <a href="#" class="sidebar-toggler flex-shrink-0"><i class="fa fa-bars"></i></a>
                 <div class="navbar-nav align-items-center ms-auto">
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <i class="fa fa-bell me-lg-2"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                            <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">Profile updated</h6>
-                                <small>15 minutes ago</small>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">New user added</h6>
-                                <small>15 minutes ago</small>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">Password changed</h6>
-                                <small>15 minutes ago</small>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item text-center">See all notifications</a>
-                        </div>
-                    </div>
                     <div class="nav-item me-3 d-none d-sm-flex align-items-center gap-2">
                         <i class="fa-solid fa-circle-user text-primary" style="font-size:1.3rem"></i>
                         <div style="line-height:1.2">
@@ -117,57 +65,200 @@
                             </div>
                         </div>
                     </div>
-                    <div>
-                        <button class="btn btn-danger btn-sm" onclick="confirmLogout()">
-                            <i class="fa-solid fa-right-from-bracket me-1"></i>LOGOUT
-                        </button>
-                    </div>
-
+                    <button class="btn btn-danger btn-sm" onclick="confirmLogout()">
+                        <i class="fa-solid fa-right-from-bracket me-1"></i>LOGOUT
+                    </button>
                 </div>
             </nav>
-            <!-- Navbar End -->
 
-
-
-
-            <!-- Footer Start -->
-            <div class="container-fluid pt-4 px-4">
-                <div class="bg-light rounded-top p-4">
-                    <div class="row">
-                        <div class="col-12 col-sm-6 text-center text-sm-start">
-                            &copy; <a href="#">SIPENJA - Bengkel Any Jaya</a>, All Right Reserved.
+            <!-- VIEW: MENU -->
+            <div id="view-menu" class="container-fluid pt-4 px-4">
+                <h4 class="mb-4 fw-bold">Laporan Bengkel Any Jaya</h4>
+                <div class="row g-4">
+                    <div class="col-12 col-md-6 col-xl-4">
+                        <div class="laporan-card" onclick="showView('sparepart')">
+                            <div class="card-icon"><i class="fa-solid fa-database"></i></div>
+                            <div class="card-label">Laporan Penjualan<br>Sparepart</div>
                         </div>
-                        <div class="col-12 col-sm-6 text-center text-sm-end">
-                            <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-                            Designed By <a href="https://htmlcodex.com">HTML Codex</a>
-                            </br>
-                            Distributed By <a class="border-bottom" href="https://themewagon.com"
-                                target="_blank">ThemeWagon</a>
+                    </div>
+                    <div class="col-12 col-md-6 col-xl-4">
+                        <div class="laporan-card" onclick="showView('servis')">
+                            <div class="card-icon"><i class="fa-solid fa-headset"></i></div>
+                            <div class="card-label">Laporan Pelayanan<br>Servis</div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- Footer End -->
+
+            <!-- VIEW: LAPORAN SPAREPART -->
+            <div id="view-sparepart" class="container-fluid pt-4 px-4" style="display:none">
+                <button class="btn-back" onclick="showView('menu')"><i class="fa-solid fa-arrow-left"></i>
+                    Kembali</button>
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+                    <h4 class="fw-bold mb-0">Laporan Penjualan Sparepart Bengkel Any Jaya</h4>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-success btn-cetak" onclick="exportExcel('sparepart')">
+                            <i class="fa-solid fa-file-excel me-1"></i>Export Excel
+                        </button>
+                        <button class="btn btn-secondary btn-cetak" onclick="cetakLaporan('sparepart')">
+                            <i class="fa-solid fa-print me-1"></i>Cetak / PDF
+                        </button>
+                    </div>
+                </div>
+                <div class="period-bar mb-4">
+                    <label>Input Periode</label>
+                    <input type="date" id="sp-tgl-awal">
+                    <span class="dash">——</span>
+                    <input type="date" id="sp-tgl-akhir">
+                    <button class="btn btn-primary btn-sm ms-2" onclick="loadLaporanSparepart()">
+                        <i class="fa-solid fa-search me-1"></i>Tampilkan
+                    </button>
+                </div>
+                <div class="preview-wrapper">
+                    <div class="preview-paper" id="preview-sparepart">
+                        <!-- Header Bengkel -->
+                        <div class="text-center mb-3">
+                            <img class="logo-bengkel" src="" style="height:64px;margin-bottom:6px;object-fit:contain;">
+                            <h4 style="margin-bottom:2px;font-size:1.2rem;">Bengkel Any Jaya</h4>
+                            <div style="font-size:.8rem;color:#444;">
+                                Kalitengah, Kec. Tanggulangin, Kabupaten Sidoarjo, Jawa Timur 61272
+                            </div>
+                            <div style="font-size:.8rem;color:#444;">Telp: +62 897-9980-073</div>
+                            <hr style="border-top:2px solid #111;margin:8px 0 3px;">
+                            <hr style="border-top:1px solid #111;margin:0 0 10px;">
+                        </div>
+                        <div class="period-line" id="sp-period-line">Laporan Penjualan Sparepart — pilih periode lalu
+                            klik Tampilkan</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Tanggal</th>
+                                    <th>Sparepart</th>
+                                    <th>Kategori</th>
+                                    <th>Harga Satuan (Rp)</th>
+                                    <th>Jumlah Terjual</th>
+                                    <th>Sub Total (Rp)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sp-tbody">
+                                <tr>
+                                    <td colspan="7" class="center" style="color:#888;padding:16px">Pilih periode dan
+                                        klik Tampilkan</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr class="total-row">
+                                    <td colspan="6" class="center"><strong>Total</strong></td>
+                                    <td class="num" id="sp-total">—</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <div class="print-date" id="sp-print-date"></div>
+                        <div class="signature">
+                            <div>Mengetahui, Pemilik</div>
+                            <div>Bengkel Any Jaya</div>
+                            <div class="sig-name">Pamuji Slamet</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: LAPORAN SERVIS -->
+            <div id="view-servis" class="container-fluid pt-4 px-4" style="display:none">
+                <button class="btn-back" onclick="showView('menu')"><i class="fa-solid fa-arrow-left"></i>
+                    Kembali</button>
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+                    <h4 class="fw-bold mb-0">Laporan Pelayanan Servis Bengkel Any Jaya</h4>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-success btn-cetak" onclick="exportExcel('servis')">
+                            <i class="fa-solid fa-file-excel me-1"></i>Export Excel
+                        </button>
+                        <button class="btn btn-secondary btn-cetak" onclick="cetakLaporan('servis')">
+                            <i class="fa-solid fa-print me-1"></i>Cetak / PDF
+                        </button>
+                    </div>
+                </div>
+                <div class="period-bar mb-4">
+                    <label>Input Periode</label>
+                    <input type="date" id="sv-tgl-awal">
+                    <span class="dash">——</span>
+                    <input type="date" id="sv-tgl-akhir">
+                    <button class="btn btn-primary btn-sm ms-2" onclick="loadLaporanServis()">
+                        <i class="fa-solid fa-search me-1"></i>Tampilkan
+                    </button>
+                </div>
+                <div class="preview-wrapper">
+                    <div class="preview-paper" id="preview-servis">
+                        <!-- Header Bengkel -->
+                        <div class="text-center mb-3">
+                            <img class="logo-bengkel" src="" style="height:64px;margin-bottom:6px;object-fit:contain;">
+                            <h4 style="margin-bottom:2px;font-size:1.2rem;">Bengkel Any Jaya</h4>
+                            <div style="font-size:.8rem;color:#444;">
+                                Kalitengah, Kec. Tanggulangin, Kabupaten Sidoarjo, Jawa Timur 61272
+                            </div>
+                            <div style="font-size:.8rem;color:#444;">Telp: +62 897-9980-073</div>
+                            <hr style="border-top:2px solid #111;margin:8px 0 3px;">
+                            <hr style="border-top:1px solid #111;margin:0 0 10px;">
+                        </div>
+                        <div class="period-line" id="sv-period-line">Laporan Layanan Servis — pilih periode lalu klik
+                            Tampilkan</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Tanggal</th>
+                                    <th>Kode Layanan</th>
+                                    <th>Jenis Layanan</th>
+                                    <th>Biaya (Rp)</th>
+                                    <th>Jumlah</th>
+                                    <th>SubTotal (Rp)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sv-tbody">
+                                <tr>
+                                    <td colspan="7" class="center" style="color:#888;padding:16px">Pilih periode dan
+                                        klik Tampilkan</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr class="total-row">
+                                    <td colspan="6" class="center"><strong>Total</strong></td>
+                                    <td class="num" id="sv-total">—</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <div class="print-date" id="sv-print-date"></div>
+                        <div class="signature" style="margin-top:32px;">
+                            <div>Mengetahui, Pemilik</div>
+                            <div>Bengkel Any Jaya</div>
+                            <div class="sig-name">Pamuji Slamet</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container-fluid pt-4 px-4 mt-4">
+                <div class="bg-light rounded-top p-4">
+                    <div class="row">
+                        <div class="col-12 col-sm-6 text-center text-sm-start">&copy; <a href="#">SIPENJA - Bengkel Any
+                                Jaya</a>, All Right Reserved.</div>
+                        <div class="col-12 col-sm-6 text-center text-sm-end">Designed By <a
+                                href="https://htmlcodex.com">HTML Codex</a></div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <!-- Content End -->
 
-
-        <!-- Back to Top -->
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
 
-    <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/chart/chart.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/waypoints/waypoints.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="lib/tempusdominus/js/moment.min.js"></script>
-    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
 
-    <!-- Template Javascript -->
     <script src="js/login.js"></script>
     <script src="js/laporan.js"></script>
 </body>

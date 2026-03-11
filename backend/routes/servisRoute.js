@@ -1,42 +1,44 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 const {
-  getAllServis, getServisById, getServisByStatus, getServisByMekanik,
-  trackServis, getServisByDateRange,
-  addSparepart, addLayanan,
-  updateServis, updateLayanan, updateSparepart, updateProgress,
-  deleteLayanan, deleteSparepart, deleteServis,
-} = require('../controllers/servisController');
+  getAllServis,
+  getServisById,
+  getServisByStatus,
+  getServisByMekanik,
+  trackServis,
+  getServisByDateRange,
+  addSparepart,
+  addLayanan,
+  updateServis,
+  updateLayanan,
+  updateSparepart,
+  updateProgress,
+  deleteLayanan,
+  deleteSparepart,
+  deleteServis,
+} = require("../controllers/servisController");
 
-// ==========================================
-// PUBLIC (tidak perlu login) - untuk pelanggan
-// ==========================================
-// Pelanggan tracking status servis via kode antrian
-// GET /servis/track/SRV-20260228-001
-router.get('/track/:kodeAntrian', trackServis);
+// ── GET ──────────────────────────────────────────────────
+router.get("/get-all", getAllServis);
+router.get("/get/:id", getServisById);
+router.get("/get-by-status/:status", getServisByStatus);
+router.get("/get-by-mekanik/:idMekanik", getServisByMekanik);
+router.get("/track/:kodeAntrian", trackServis); // publik — cek status via kode antrian
+router.get("/filter", getServisByDateRange); // ?startDate=&endDate=
 
-// ==========================================
-// PRIVATE (perlu login/auth middleware)
-// ==========================================
-router.get('/get-all', getAllServis);
-router.get('/get/:id', getServisById);
-router.get('/get-by-status/:status', getServisByStatus);
-router.get('/get-by-mekanik/:idMekanik', getServisByMekanik);
+// ── POST ─────────────────────────────────────────────────
+router.post("/add-layanan/:id", addLayanan); // body: { ITEMS: [{IDLAYANANSERVIS}] }
+router.post("/add-sparepart/:id", addSparepart); // body: { ITEMS: [{IDSPAREPART, QTY}] }
 
-// Filter by tanggal: GET /servis/filter?startDate=2026-01-01&endDate=2026-01-31
-router.get('/filter', getServisByDateRange);
+// ── PUT ──────────────────────────────────────────────────
+router.put("/update/:id", updateServis); // edit NAMAPELANGGAN, KELUHAN, CATATAN (kasir/admin)
+router.put("/update-progress/:id", updateProgress); // mekanik update STATUS + tambah layanan/sparepart
+router.put("/update-layanan/:id", updateLayanan); // edit BIAYA / KETERANGAN satu layanan (by IDDETAILTRANSAKSISERVIS)
+router.put("/update-sparepart/:id", updateSparepart); // edit QTY satu sparepart (by IDSERVISSPAREPART)
 
-// Mekanik
-router.post('/add-sparepart/:id', addSparepart);
-router.post('/add-layanan/:id', addLayanan);
-router.put('/update-progress/:id', updateProgress);
-router.put('/update-layanan/:id', updateLayanan);
-router.put('/update-sparepart/:id', updateSparepart);
-router.delete('/delete-layanan/:id', deleteLayanan);
-router.delete('/delete-sparepart/:id', deleteSparepart);
-
-// Kasir
-router.put('/update/:id', updateServis);
-router.delete('/delete/:id', deleteServis);
+// ── DELETE ───────────────────────────────────────────────
+router.delete("/delete-layanan/:id", deleteLayanan); // hapus satu layanan (by IDDETAILTRANSAKSISERVIS)
+router.delete("/delete-sparepart/:id", deleteSparepart); // hapus satu sparepart (by IDSERVISSPAREPART)
+router.delete("/delete/:id", deleteServis); // hapus seluruh servis + transaksi + kembalikan stok
 
 module.exports = router;

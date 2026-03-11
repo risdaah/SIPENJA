@@ -28,6 +28,7 @@ app.use(
 );
 app.use("/api/servis", require("./routes/servisRoute"));
 app.use("/api/transaksi", require("./routes/transaksiRoute"));
+app.use("/api/laporan", require("./routes/laporanRoute"));
 
 // ══════════════════════════════════════════════════════════
 //  SERVER

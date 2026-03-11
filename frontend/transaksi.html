@@ -14,6 +14,50 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="css/transaksi.css" rel="stylesheet">
+    <style>
+        /* ── Edit Modal Additions ── */
+        .edit-info-row { display:flex; gap:24px; padding:14px 24px 0; flex-wrap:wrap; }
+        .edit-info-item { display:flex; flex-direction:column; gap:2px; }
+        .edit-info-label { font-size:.74rem; color:#8e9bb0; text-transform:uppercase; letter-spacing:.04em; }
+        .edit-info-val { font-size:.92rem; font-weight:600; color:#191C24; }
+        .edit-info-val.mono { font-family:monospace; }
+
+        .edit-section { padding:16px 24px 10px; }
+        .edit-section + .edit-section { border-top:1px solid #f0f2f5; }
+        .edit-section-title { font-size:.78rem; font-weight:700; color:#6b7a8d;
+            text-transform:uppercase; letter-spacing:.05em; margin-bottom:10px; }
+
+        .inline-input { width:100%; max-width:130px; padding:5px 8px;
+            border:1.5px solid #d1d5db; border-radius:6px; font-size:.87rem;
+            font-family:'Heebo',sans-serif; color:#191C24; transition:border-color .2s; }
+        .inline-input:focus { outline:none; border-color:#009CFF; box-shadow:0 0 0 3px rgba(0,156,255,.12); }
+        .inline-input.qty-inline { max-width:72px; text-align:center; }
+        .inline-input:disabled { background:#f5f6f8; color:#aaa; cursor:not-allowed; }
+
+        .btn-inline-del { background:none; border:none; cursor:pointer; color:#ccc;
+            font-size:.85rem; padding:4px 6px; border-radius:5px; transition:color .15s,background .15s; }
+        .btn-inline-del:hover { color:#ff4757; background:#fff0f2; }
+
+        .add-item-row { display:flex; align-items:center; gap:8px; margin-top:10px; flex-wrap:wrap; }
+        .form-inp-sm { padding:7px 10px; border:1.5px solid #d1d5db; border-radius:8px;
+            font-size:.875rem; font-family:'Heebo',sans-serif; color:#191C24; background:#fff; transition:border-color .2s; }
+        .form-inp-sm:focus { outline:none; border-color:#009CFF; box-shadow:0 0 0 3px rgba(0,156,255,.12); }
+        select.form-inp-sm { min-width:200px; flex:1; max-width:320px; }
+        .qty-input { max-width:72px; text-align:center; }
+
+        .btn-add-item { display:inline-flex; align-items:center; gap:5px; padding:7px 14px;
+            background:#009CFF; color:#fff; border:none; border-radius:8px; font-size:.85rem;
+            font-weight:600; cursor:pointer; white-space:nowrap; transition:background .2s,transform .1s; }
+        .btn-add-item:hover { background:#0077cc; transform:translateY(-1px); }
+
+        .pending-row td { background:#f0faff !important; }
+        .pending-row { border-left:3px solid #009CFF; }
+
+        .edit-total-row { display:flex; align-items:center; justify-content:space-between;
+            padding:14px 24px; background:#f7f9fc; border-top:2px solid #eef0f4; }
+        .edit-total-row .dt-label { font-size:.9rem; font-weight:600; color:#555; }
+        .edit-total-row .dt-value { font-size:1.1rem; font-weight:700; color:#009CFF; font-family:monospace; }
+    </style>
 </head>
 
 <body>
@@ -68,8 +112,7 @@
                         <i class="fa-solid fa-circle-user text-primary" style="font-size:1.3rem"></i>
                         <div style="line-height:1.2">
                             <div style="font-size:.82rem;font-weight:600;color:#191C24" id="navbar-nama">—</div>
-                            <div style="font-size:.72rem;color:#8e9bb0;text-transform:capitalize" id="navbar-role">—
-                            </div>
+                            <div style="font-size:.72rem;color:#8e9bb0;text-transform:capitalize" id="navbar-role">—</div>
                         </div>
                     </div>
                     <button class="btn btn-danger btn-sm" onclick="confirmLogout()">
@@ -211,31 +254,130 @@
         </div>
     </div>
 
-    <!-- ══ MODAL EDIT CATATAN ══ -->
+    <!-- ══ MODAL EDIT DETAIL TRANSAKSI ══ -->
     <div id="modal-edit" class="modal-overlay">
-        <div class="modal-box modal-sm">
+        <div class="modal-box modal-lg">
             <div class="modal-hdr">
-                <span class="modal-title"><i class="fa-solid fa-pen me-2"></i>Edit Catatan Transaksi</span>
+                <div class="modal-hdr-left">
+                    <span class="modal-title"><i class="fa-solid fa-pen-to-square me-2"></i>Edit Transaksi</span>
+                    <span id="edit-jenis-badge" class="jenis-badge"></span>
+                </div>
                 <button class="modal-close" onclick="closeModal('modal-edit')">&times;</button>
             </div>
-            <div class="modal-body-pad">
+            <div class="modal-content-scroll">
                 <input type="hidden" id="edit-id">
                 <input type="hidden" id="edit-jenis">
                 <input type="hidden" id="edit-idservis">
-                <div class="form-group mb-3">
-                    <label class="form-label-sm">No. Transaksi</label>
-                    <input type="text" id="edit-no" class="form-inp" readonly>
+
+                <!-- Header info -->
+                <div class="edit-info-row">
+                    <div class="edit-info-item">
+                        <span class="edit-info-label">No. Transaksi</span>
+                        <span id="edit-no-display" class="edit-info-val mono"></span>
+                    </div>
                 </div>
-                <div class="form-group mb-4">
-                    <label class="form-label-sm">Catatan <small class="text-muted fw-normal">(opsional)</small></label>
-                    <textarea id="edit-catatan" class="form-inp" rows="4"
-                        placeholder="Isi catatan transaksi…"></textarea>
+
+                <!-- Catatan -->
+                <div class="edit-section">
+                    <div class="edit-section-title"><i class="fa-solid fa-note-sticky me-1"></i> Catatan Transaksi</div>
+                    <textarea id="edit-catatan" class="form-inp" rows="2"
+                        placeholder="Catatan transaksi (opsional)…"></textarea>
                 </div>
-                <div class="modal-footer-btns">
-                    <button class="btn-modal cancel" onclick="closeModal('modal-edit')">Batal</button>
-                    <button class="btn-modal save" onclick="submitEdit()">
-                        <i class="fa-solid fa-floppy-disk me-1"></i>Simpan</button>
+
+                <!-- ── SERVIS: edit layanan & sparepart ── -->
+                <div id="edit-servis-section" style="display:none">
+                    <!-- Layanan -->
+                    <div class="edit-section">
+                        <div class="edit-section-title"><i class="fa-solid fa-screwdriver-wrench me-1"></i> Layanan Servis</div>
+                        <table class="detail-items-table" id="edit-layanan-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Nama Layanan</th>
+                                    <th style="text-align:right;width:160px">Biaya</th>
+                                    <th style="width:48px"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="edit-layanan-body">
+                                <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:16px">Memuat…</td></tr>
+                            </tbody>
+                        </table>
+                        <!-- Tambah layanan -->
+                        <div class="add-item-row" id="add-layanan-row">
+                            <select id="add-layanan-select" class="form-inp-sm">
+                                <option value="">— Pilih layanan —</option>
+                            </select>
+                            <button class="btn-add-item" onclick="addLayanan()">
+                                <i class="fa-solid fa-plus me-1"></i>Tambah
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Sparepart -->
+                    <div class="edit-section">
+                        <div class="edit-section-title"><i class="fa-solid fa-gear me-1"></i> Sparepart Digunakan</div>
+                        <table class="detail-items-table" id="edit-sparepart-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Nama Sparepart</th>
+                                    <th style="text-align:center;width:100px">Qty</th>
+                                    <th style="text-align:right;width:140px">Harga Satuan</th>
+                                    <th style="text-align:right;width:140px">Subtotal</th>
+                                    <th style="width:48px"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="edit-sparepart-body">
+                                <tr><td colspan="6" style="text-align:center;color:var(--muted);padding:16px">Memuat…</td></tr>
+                            </tbody>
+                        </table>
+                        <!-- Tambah sparepart -->
+                        <div class="add-item-row" id="add-sparepart-row">
+                            <select id="add-sparepart-select" class="form-inp-sm">
+                                <option value="">— Pilih sparepart —</option>
+                            </select>
+                            <input type="number" id="add-sparepart-qty" class="form-inp-sm qty-input"
+                                min="1" placeholder="Qty" value="1">
+                            <button class="btn-add-item" onclick="addSparepart()">
+                                <i class="fa-solid fa-plus me-1"></i>Tambah
+                            </button>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- ── PEMBELIAN: edit jumlah item ── -->
+                <div id="edit-pembelian-section" style="display:none">
+                    <div class="edit-section">
+                        <div class="edit-section-title"><i class="fa-solid fa-bag-shopping me-1"></i> Items Pembelian</div>
+                        <table class="detail-items-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Sparepart</th>
+                                    <th style="text-align:center;width:110px">Jumlah</th>
+                                    <th style="text-align:right;width:140px">Harga Satuan</th>
+                                    <th style="text-align:right;width:140px">Sub Total</th>
+                                    <th style="width:48px"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="edit-items-body">
+                                <tr><td colspan="6" style="text-align:center;color:var(--muted);padding:16px">Memuat…</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Total -->
+                <div class="edit-total-row">
+                    <span class="dt-label"><i class="fa-solid fa-coins me-1"></i> Total Transaksi</span>
+                    <span class="dt-value" id="edit-total-display">Rp 0</span>
+                </div>
+            </div>
+
+            <div class="modal-footer-btns" style="padding:16px 24px;border-top:1px solid #eef0f4">
+                <button class="btn-modal cancel" onclick="closeModal('modal-edit')">Tutup</button>
+                <button class="btn-modal save" id="btn-submit-edit" onclick="submitEdit()">
+                    <i class="fa-solid fa-floppy-disk me-1"></i>Simpan Perubahan</button>
             </div>
         </div>
     </div>
