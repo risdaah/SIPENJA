@@ -11,12 +11,10 @@ function getAuthHeaders() {
 (function ($) {
   "use strict";
 
-  // Spinner
   setTimeout(function () {
     if ($("#spinner").length > 0) $("#spinner").removeClass("show");
   }, 1);
 
-  // Back to top
   $(window).scroll(function () {
     $(this).scrollTop() > 300
       ? $(".back-to-top").fadeIn("slow")
@@ -27,7 +25,6 @@ function getAuthHeaders() {
     return false;
   });
 
-  // Sidebar Toggler
   $(".sidebar-toggler").click(function () {
     $(".sidebar, .content").toggleClass("open");
     return false;
@@ -43,7 +40,7 @@ const itemsPerPage = 10;
 /* ===== FORMAT RUPIAH ===== */
 function formatRupiah(angka) {
   return (
-    "Rp " + Number(angka).toLocaleString("id-ID", { minimumFractionDigits: 2 })
+    "Rp " + Number(angka).toLocaleString("id-ID", { minimumFractionDigits: 0 })
   );
 }
 
@@ -83,25 +80,31 @@ function renderTable(data) {
   const pageData = data.slice(start, end);
 
   tbody.innerHTML = pageData
-    .map(
-      (item, index) => `
-    <tr>
-      <td class="text-center">${start + index + 1}</td>
-      <td class="text-center">${escapeHtml(item.KODESPAREPART)}</td>
-      <td>${escapeHtml(item.NAMA)}</td>
-      <td class="text-end">${formatRupiah(item.HARGAJUAL)}</td>
-      <td class="text-center ${item.STOK <= item.STOKMINIMUM ? "text-danger fw-bold" : ""}">${item.STOK}</td>
-      <td class="text-center">${item.STOKMINIMUM}</td>
-      <td class="text-center">${escapeHtml(item.NAMA_SUPPLIER ?? "-")}</td>
-      <td class="text-center">
-        <button class="btn btn-warning btn-sm btn-square" title="Edit Stok"
-          onclick="bukaModalEdit(${item.IDSPAREPART})">
-          <i class="fa fa-pen-to-square"></i>
-        </button>
-      </td>
-    </tr>
-  `,
-    )
+    .map((item, index) => {
+      const stokRendah = item.STOK <= item.STOKMINIMUM;
+      return `
+      <tr>
+        <td class="text-center">${start + index + 1}</td>
+        <td class="text-center">${escapeHtml(item.KODESPAREPART)}</td>
+        <td>${escapeHtml(item.NAMA)}</td>
+        <td class="text-end">${formatRupiah(item.HARGAJUAL)}</td>
+        <td class="text-center">
+          <span class="${stokRendah ? "badge bg-danger" : ""}">
+            ${item.STOK}
+          </span>
+          ${stokRendah ? `<i class="fa-solid fa-triangle-exclamation text-danger ms-1" title="Stok di bawah minimum!"></i>` : ""}
+        </td>
+        <td class="text-center">${item.STOKMINIMUM}</td>
+        <td class="text-center">${escapeHtml(item.NAMA_SUPPLIER ?? "-")}</td>
+        <td class="text-center">
+          <button class="btn btn-primary btn-sm btn-square" title="Tambah Stok"
+            onclick="bukaModalTambahStok(${item.IDSPAREPART})">
+            <i class="fa-solid fa-boxes-stacked"></i>
+          </button>
+        </td>
+      </tr>
+    `;
+    })
     .join("");
 
   renderPagination(totalItems);
@@ -184,6 +187,118 @@ function searchData() {
   renderTable(filteredData);
 }
 
+/* ===== MODAL TAMBAH STOK ===== */
+function bukaModalTambahStok(id) {
+  const item = allData.find((d) => d.IDSPAREPART == id);
+  if (!item) return;
+
+  // Reset form
+  document.getElementById("stokId").value = item.IDSPAREPART;
+  document.getElementById("stokQty").value = "";
+  document.getElementById("stokHargaBeli").value = "";
+  document.getElementById("stokKeterangan").value = "";
+  document.getElementById("stok-total-preview").textContent = "Rp 0";
+
+  // Isi info sparepart
+  document.getElementById("stok-nama").textContent = item.NAMA;
+  document.getElementById("stok-supplier").textContent =
+    item.NAMA_SUPPLIER ?? "-";
+  document.getElementById("stok-saat-ini").textContent = item.STOK;
+  document.getElementById("stok-harga-jual").textContent = formatRupiah(
+    item.HARGAJUAL,
+  );
+
+  new bootstrap.Modal(document.getElementById("modalTambahStok")).show();
+}
+
+// Hitung total preview saat qty atau harga berubah
+function hitungTotal() {
+  const qty = Number(document.getElementById("stokQty").value) || 0;
+  const harga = Number(document.getElementById("stokHargaBeli").value) || 0;
+  document.getElementById("stok-total-preview").textContent = formatRupiah(
+    qty * harga,
+  );
+}
+
+// Tambahkan event listener untuk qty juga
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("stokQty")?.addEventListener("input", hitungTotal);
+});
+
+async function simpanTambahStok() {
+  const id = document.getElementById("stokId").value;
+  const qty = Number(document.getElementById("stokQty").value);
+  const harga = Number(document.getElementById("stokHargaBeli").value);
+  const ket = document.getElementById("stokKeterangan").value.trim();
+
+  if (!qty || qty <= 0)
+    return Swal.fire(
+      "Peringatan",
+      "Jumlah stok harus lebih dari 0.",
+      "warning",
+    );
+  if (!harga || harga <= 0)
+    return Swal.fire("Peringatan", "Harga beli harus lebih dari 0.", "warning");
+
+  const total = qty * harga;
+
+  const confirm = await Swal.fire({
+    title: "Konfirmasi Tambah Stok",
+    html: `
+      <div style="text-align:left;font-size:.9rem">
+        <div class="d-flex justify-content-between mb-1">
+          <span>Jumlah Stok</span><strong>+${qty}</strong>
+        </div>
+        <div class="d-flex justify-content-between mb-1">
+          <span>Harga Beli</span><strong>${formatRupiah(harga)}</strong>
+        </div>
+        <hr style="margin:8px 0">
+        <div class="d-flex justify-content-between">
+          <span>Total Pengeluaran</span><strong style="color:#009CFF">${formatRupiah(total)}</strong>
+        </div>
+      </div>`,
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonColor: "#009CFF",
+    cancelButtonColor: "#6c757d",
+    confirmButtonText: "Ya, Simpan",
+    cancelButtonText: "Batal",
+  });
+
+  if (!confirm.isConfirmed) return;
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/pengeluaran/tambah-stok`, {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({
+        IDSPAREPART: Number(id),
+        QTY: qty,
+        HARGA_BELI: harga,
+        KETERANGAN: ket || null,
+      }),
+    });
+    const json = await res.json();
+    if (!res.ok || !json.success)
+      throw new Error(json.message || "Gagal menyimpan");
+
+    bootstrap.Modal.getInstance(
+      document.getElementById("modalTambahStok"),
+    ).hide();
+    await loadSparepart();
+
+    Swal.fire({
+      icon: "success",
+      title: "Berhasil!",
+      text: `Stok ditambah ${qty}. Pengeluaran ${formatRupiah(total)} tercatat.`,
+      timer: 2500,
+      showConfirmButton: false,
+    });
+  } catch (err) {
+    Swal.fire({ icon: "error", title: "Gagal!", text: err.message });
+  }
+}
+
 /* ===== INIT ===== */
 document.addEventListener("DOMContentLoaded", () => {
   if (!Session.guard(["kasir"])) return;
@@ -214,54 +329,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadSparepart();
 });
-
-/* ===== MODAL EDIT ===== */
-function bukaModalEdit(id) {
-  const item = allData.find((d) => d.IDSPAREPART == id);
-  if (!item) return;
-
-  // Isi ID dan stok ke form
-  document.getElementById("editId").value = item.IDSPAREPART;
-  document.getElementById("editStok").value = item.STOK ?? "";
-
-  new bootstrap.Modal(document.getElementById("modalEdit")).show();
-}
-
-async function updateSparepart() {
-  const id = document.getElementById("editId").value;
-  const stok = document.getElementById("editStok").value;
-
-  if (!id) return Swal.fire("Gagal", "ID sparepart tidak ditemukan.", "error");
-  if (stok === "" || stok < 0)
-    return Swal.fire(
-      "Peringatan",
-      "Stok tidak boleh kosong atau negatif.",
-      "warning",
-    );
-
-  try {
-    const res = await fetch(`${API_BASE_URL}/sparepart/update-stok/${id}`, {
-      method: "PUT",
-      headers: getAuthHeaders(),
-      body: JSON.stringify({ STOK: Number(stok) }),
-    });
-    const json = await res.json();
-    if (!res.ok || !json.success)
-      throw new Error(json.message || "Gagal mengupdate stok");
-
-    bootstrap.Modal.getInstance(document.getElementById("modalEdit")).hide();
-    await loadSparepart();
-    Swal.fire({
-      icon: "success",
-      title: "Berhasil!",
-      text: "Stok berhasil diupdate.",
-      timer: 1800,
-      showConfirmButton: false,
-    });
-  } catch (err) {
-    Swal.fire({ icon: "error", title: "Gagal!", text: err.message });
-  }
-}
 
 /* ===== UTIL ===== */
 function escapeHtml(str) {

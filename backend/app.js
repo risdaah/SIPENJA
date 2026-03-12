@@ -29,10 +29,12 @@ app.use(
 app.use("/api/servis", require("./routes/servisRoute"));
 app.use("/api/transaksi", require("./routes/transaksiRoute"));
 app.use("/api/laporan", require("./routes/laporanRoute"));
+app.use("/api/dashboard", require("./routes/dashboardRoute"));
+app.use("/api/pengeluaran", require("./routes/pengeluaranRoute"));
 
 // ══════════════════════════════════════════════════════════
 //  SERVER
-// ══════════════════════════════════════════════════════════
+// ══════════════════════════════════════════
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server SIPENJA berjalan di port ${PORT}`);
