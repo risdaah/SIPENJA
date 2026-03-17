@@ -16,47 +16,184 @@
     <link href="css/transaksi.css" rel="stylesheet">
     <style>
         /* ── Edit Modal Additions ── */
-        .edit-info-row { display:flex; gap:24px; padding:14px 24px 0; flex-wrap:wrap; }
-        .edit-info-item { display:flex; flex-direction:column; gap:2px; }
-        .edit-info-label { font-size:.74rem; color:#8e9bb0; text-transform:uppercase; letter-spacing:.04em; }
-        .edit-info-val { font-size:.92rem; font-weight:600; color:#191C24; }
-        .edit-info-val.mono { font-family:monospace; }
+        .edit-info-row {
+            display: flex;
+            gap: 24px;
+            padding: 14px 24px 0;
+            flex-wrap: wrap;
+        }
 
-        .edit-section { padding:16px 24px 10px; }
-        .edit-section + .edit-section { border-top:1px solid #f0f2f5; }
-        .edit-section-title { font-size:.78rem; font-weight:700; color:#6b7a8d;
-            text-transform:uppercase; letter-spacing:.05em; margin-bottom:10px; }
+        .edit-info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
 
-        .inline-input { width:100%; max-width:130px; padding:5px 8px;
-            border:1.5px solid #d1d5db; border-radius:6px; font-size:.87rem;
-            font-family:'Heebo',sans-serif; color:#191C24; transition:border-color .2s; }
-        .inline-input:focus { outline:none; border-color:#009CFF; box-shadow:0 0 0 3px rgba(0,156,255,.12); }
-        .inline-input.qty-inline { max-width:72px; text-align:center; }
-        .inline-input:disabled { background:#f5f6f8; color:#aaa; cursor:not-allowed; }
+        .edit-info-label {
+            font-size: .74rem;
+            color: #8e9bb0;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
 
-        .btn-inline-del { background:none; border:none; cursor:pointer; color:#ccc;
-            font-size:.85rem; padding:4px 6px; border-radius:5px; transition:color .15s,background .15s; }
-        .btn-inline-del:hover { color:#ff4757; background:#fff0f2; }
+        .edit-info-val {
+            font-size: .92rem;
+            font-weight: 600;
+            color: #191C24;
+        }
 
-        .add-item-row { display:flex; align-items:center; gap:8px; margin-top:10px; flex-wrap:wrap; }
-        .form-inp-sm { padding:7px 10px; border:1.5px solid #d1d5db; border-radius:8px;
-            font-size:.875rem; font-family:'Heebo',sans-serif; color:#191C24; background:#fff; transition:border-color .2s; }
-        .form-inp-sm:focus { outline:none; border-color:#009CFF; box-shadow:0 0 0 3px rgba(0,156,255,.12); }
-        select.form-inp-sm { min-width:200px; flex:1; max-width:320px; }
-        .qty-input { max-width:72px; text-align:center; }
+        .edit-info-val.mono {
+            font-family: monospace;
+        }
 
-        .btn-add-item { display:inline-flex; align-items:center; gap:5px; padding:7px 14px;
-            background:#009CFF; color:#fff; border:none; border-radius:8px; font-size:.85rem;
-            font-weight:600; cursor:pointer; white-space:nowrap; transition:background .2s,transform .1s; }
-        .btn-add-item:hover { background:#0077cc; transform:translateY(-1px); }
+        .edit-section {
+            padding: 16px 24px 10px;
+        }
 
-        .pending-row td { background:#f0faff !important; }
-        .pending-row { border-left:3px solid #009CFF; }
+        .edit-section+.edit-section {
+            border-top: 1px solid #f0f2f5;
+        }
 
-        .edit-total-row { display:flex; align-items:center; justify-content:space-between;
-            padding:14px 24px; background:#f7f9fc; border-top:2px solid #eef0f4; }
-        .edit-total-row .dt-label { font-size:.9rem; font-weight:600; color:#555; }
-        .edit-total-row .dt-value { font-size:1.1rem; font-weight:700; color:#009CFF; font-family:monospace; }
+        .edit-section-title {
+            font-size: .78rem;
+            font-weight: 700;
+            color: #6b7a8d;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            margin-bottom: 10px;
+        }
+
+        .inline-input {
+            width: 100%;
+            max-width: 130px;
+            padding: 5px 8px;
+            border: 1.5px solid #d1d5db;
+            border-radius: 6px;
+            font-size: .87rem;
+            font-family: 'Heebo', sans-serif;
+            color: #191C24;
+            transition: border-color .2s;
+        }
+
+        .inline-input:focus {
+            outline: none;
+            border-color: #009CFF;
+            box-shadow: 0 0 0 3px rgba(0, 156, 255, .12);
+        }
+
+        .inline-input.qty-inline {
+            max-width: 72px;
+            text-align: center;
+        }
+
+        .inline-input:disabled {
+            background: #f5f6f8;
+            color: #aaa;
+            cursor: not-allowed;
+        }
+
+        .btn-inline-del {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #ccc;
+            font-size: .85rem;
+            padding: 4px 6px;
+            border-radius: 5px;
+            transition: color .15s, background .15s;
+        }
+
+        .btn-inline-del:hover {
+            color: #ff4757;
+            background: #fff0f2;
+        }
+
+        .add-item-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .form-inp-sm {
+            padding: 7px 10px;
+            border: 1.5px solid #d1d5db;
+            border-radius: 8px;
+            font-size: .875rem;
+            font-family: 'Heebo', sans-serif;
+            color: #191C24;
+            background: #fff;
+            transition: border-color .2s;
+        }
+
+        .form-inp-sm:focus {
+            outline: none;
+            border-color: #009CFF;
+            box-shadow: 0 0 0 3px rgba(0, 156, 255, .12);
+        }
+
+        select.form-inp-sm {
+            min-width: 200px;
+            flex: 1;
+            max-width: 320px;
+        }
+
+        .qty-input {
+            max-width: 72px;
+            text-align: center;
+        }
+
+        .btn-add-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 7px 14px;
+            background: #009CFF;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: .85rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background .2s, transform .1s;
+        }
+
+        .btn-add-item:hover {
+            background: #0077cc;
+            transform: translateY(-1px);
+        }
+
+        .pending-row td {
+            background: #f0faff !important;
+        }
+
+        .pending-row {
+            border-left: 3px solid #009CFF;
+        }
+
+        .edit-total-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 24px;
+            background: #f7f9fc;
+            border-top: 2px solid #eef0f4;
+        }
+
+        .edit-total-row .dt-label {
+            font-size: .9rem;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .edit-total-row .dt-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #009CFF;
+            font-family: monospace;
+        }
     </style>
 </head>
 
@@ -108,13 +245,16 @@
                 </a>
                 <a href="#" class="sidebar-toggler flex-shrink-0"><i class="fa fa-bars"></i></a>
                 <div class="navbar-nav align-items-center ms-auto">
-                    <div class="nav-item me-3 d-none d-sm-flex align-items-center gap-2">
+                    <a href="edit-profil.html"
+                        class="nav-item me-3 d-none d-sm-flex align-items-center gap-2 text-decoration-none"
+                        style="cursor:pointer">
                         <i class="fa-solid fa-circle-user text-primary" style="font-size:1.3rem"></i>
                         <div style="line-height:1.2">
                             <div style="font-size:.82rem;font-weight:600;color:#191C24" id="navbar-nama">—</div>
-                            <div style="font-size:.72rem;color:#8e9bb0;text-transform:capitalize" id="navbar-role">—</div>
+                            <div style="font-size:.72rem;color:#8e9bb0;text-transform:capitalize" id="navbar-role">—
+                            </div>
                         </div>
-                    </div>
+                    </a>
                     <button class="btn btn-danger btn-sm" onclick="confirmLogout()">
                         <i class="fa-solid fa-right-from-bracket me-1"></i>LOGOUT
                     </button>
@@ -288,7 +428,8 @@
                 <div id="edit-servis-section" style="display:none">
                     <!-- Layanan -->
                     <div class="edit-section">
-                        <div class="edit-section-title"><i class="fa-solid fa-screwdriver-wrench me-1"></i> Layanan Servis</div>
+                        <div class="edit-section-title"><i class="fa-solid fa-screwdriver-wrench me-1"></i> Layanan
+                            Servis</div>
                         <table class="detail-items-table" id="edit-layanan-table">
                             <thead>
                                 <tr>
@@ -299,7 +440,10 @@
                                 </tr>
                             </thead>
                             <tbody id="edit-layanan-body">
-                                <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:16px">Memuat…</td></tr>
+                                <tr>
+                                    <td colspan="4" style="text-align:center;color:var(--muted);padding:16px">Memuat…
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                         <!-- Tambah layanan -->
@@ -328,7 +472,10 @@
                                 </tr>
                             </thead>
                             <tbody id="edit-sparepart-body">
-                                <tr><td colspan="6" style="text-align:center;color:var(--muted);padding:16px">Memuat…</td></tr>
+                                <tr>
+                                    <td colspan="6" style="text-align:center;color:var(--muted);padding:16px">Memuat…
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                         <!-- Tambah sparepart -->
@@ -336,8 +483,8 @@
                             <select id="add-sparepart-select" class="form-inp-sm">
                                 <option value="">— Pilih sparepart —</option>
                             </select>
-                            <input type="number" id="add-sparepart-qty" class="form-inp-sm qty-input"
-                                min="1" placeholder="Qty" value="1">
+                            <input type="number" id="add-sparepart-qty" class="form-inp-sm qty-input" min="1"
+                                placeholder="Qty" value="1">
                             <button class="btn-add-item" onclick="addSparepart()">
                                 <i class="fa-solid fa-plus me-1"></i>Tambah
                             </button>
@@ -348,7 +495,8 @@
                 <!-- ── PEMBELIAN: edit jumlah item ── -->
                 <div id="edit-pembelian-section" style="display:none">
                     <div class="edit-section">
-                        <div class="edit-section-title"><i class="fa-solid fa-bag-shopping me-1"></i> Items Pembelian</div>
+                        <div class="edit-section-title"><i class="fa-solid fa-bag-shopping me-1"></i> Items Pembelian
+                        </div>
                         <table class="detail-items-table">
                             <thead>
                                 <tr>
@@ -361,7 +509,10 @@
                                 </tr>
                             </thead>
                             <tbody id="edit-items-body">
-                                <tr><td colspan="6" style="text-align:center;color:var(--muted);padding:16px">Memuat…</td></tr>
+                                <tr>
+                                    <td colspan="6" style="text-align:center;color:var(--muted);padding:16px">Memuat…
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

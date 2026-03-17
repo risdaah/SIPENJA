@@ -5,41 +5,173 @@
     <meta charset="utf-8">
     <title>SIPENJA - Bengkel Ani Jaya</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
-    <!-- Favicon -->
     <link href="img/favicon.ico" rel="icon">
-
-    <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- Icon Font Stylesheet -->
     <script src="https://kit.fontawesome.com/e943a573af.js" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <!-- Customized Bootstrap Stylesheet -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Template Stylesheet -->
     <link href="css/transaksi-kasir.css" rel="stylesheet">
+
+    <style>
+        /* ── Struk modal styles ── */
+        #struk-print-area {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #111;
+        }
+
+        #struk-print-area .struk-header {
+            text-align: center;
+            border-bottom: 2px dashed #ccc;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+        }
+
+        #struk-print-area .struk-header h5 {
+            font-size: 15px;
+            font-weight: 700;
+            margin: 4px 0;
+        }
+
+        #struk-print-area .struk-header p {
+            margin: 2px 0;
+            font-size: 11px;
+            color: #555;
+        }
+
+        #struk-print-area .struk-meta {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 3px 10px;
+            margin-bottom: 12px;
+            font-size: 12px;
+        }
+
+        #struk-print-area .struk-meta .lbl {
+            color: #666;
+            white-space: nowrap;
+        }
+
+        #struk-print-area .struk-meta .val {
+            font-weight: 600;
+        }
+
+        #struk-print-area .section-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+            color: #666;
+            margin: 10px 0 5px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 3px;
+        }
+
+        #struk-print-area table {
+            width: 100%;
+            font-size: 12px;
+            border-collapse: collapse;
+        }
+
+        #struk-print-area table td,
+        #struk-print-area table th {
+            padding: 4px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        #struk-print-area table th {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: #888;
+            font-weight: 600;
+        }
+
+        #struk-print-area .text-right {
+            text-align: right;
+        }
+
+        #struk-print-area .struk-total {
+            border-top: 2px dashed #ccc;
+            margin-top: 10px;
+            padding-top: 10px;
+        }
+
+        #struk-print-area .struk-total .grand-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 15px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        #struk-print-area .struk-total .catatan-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #555;
+        }
+
+        #struk-print-area .struk-footer {
+            text-align: center;
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 2px dashed #ccc;
+            font-size: 11px;
+            color: #666;
+        }
+
+        @media print {
+            body>* {
+                display: none !important;
+            }
+
+            #modalStruk {
+                display: block !important;
+                position: static !important;
+            }
+
+            .modal-dialog {
+                margin: 0 !important;
+                max-width: 100% !important;
+                box-shadow: none !important;
+            }
+
+            .modal-header,
+            .modal-footer {
+                display: none !important;
+            }
+
+            .modal-body {
+                padding: 0 !important;
+            }
+
+            .modal-content {
+                border: none !important;
+                box-shadow: none !important;
+            }
+
+            #struk-nohp-box {
+                display: none !important;
+            }
+        }
+    </style>
 </head>
 
 <body>
     <div class="container-xxl position-relative d-flex p-0" style="background:var(--light)">
-        <!-- Spinner Start -->
+
+        <!-- Spinner -->
         <div id="spinner"
             class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
             <div class="spinner-border text-primary" style="width:3rem;height:3rem;" role="status">
                 <span class="sr-only">Loading...</span>
             </div>
         </div>
-        <!-- Spinner End -->
 
-        <!-- Sidebar Start -->
+        <!-- Sidebar -->
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-light navbar-light">
                 <a href="transaksi-kasir.html" class="navbar-brand mx-4 mb-3">
@@ -59,38 +191,38 @@
                 </div>
             </nav>
         </div>
-        <!-- Sidebar End -->
 
-        <!-- Content Start -->
+        <!-- Content -->
         <div class="content">
-            <!-- Navbar Start -->
+
+            <!-- Navbar -->
             <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
                 <a href="transaksi-kasir.html" class="navbar-brand d-flex d-lg-none me-4">
                     <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
                 </a>
                 <a href="#" class="sidebar-toggler flex-shrink-0"><i class="fa fa-bars"></i></a>
                 <div class="navbar-nav align-items-center ms-auto">
-                    <div class="nav-item me-3 d-none d-sm-flex align-items-center gap-2">
+                    <a href="edit-profil.html"
+                        class="nav-item me-3 d-none d-sm-flex align-items-center gap-2 text-decoration-none"
+                        style="cursor:pointer">
                         <i class="fa-solid fa-circle-user text-primary" style="font-size:1.3rem"></i>
                         <div style="line-height:1.2">
                             <div style="font-size:.82rem;font-weight:600;color:#191C24" id="navbar-nama">—</div>
                             <div style="font-size:.72rem;color:#8e9bb0;text-transform:capitalize" id="navbar-role">—
                             </div>
                         </div>
-                    </div>
+                    </a>
                     <button class="btn btn-danger btn-sm" onclick="confirmLogout()">
                         <i class="fa-solid fa-right-from-bracket me-1"></i>LOGOUT
                     </button>
                 </div>
             </nav>
-            <!-- Navbar End -->
 
-            <!-- Main Content Start -->
+            <!-- Main Content -->
             <div class="container-fluid pt-4 px-4">
                 <div class="card border-0 shadow-sm rounded-3">
                     <div class="card-body p-4">
 
-                        <!-- Card Header -->
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h5 class="fw-bold mb-0">Tambahkan Transaksi Baru</h5>
                             <button class="btn btn-sm btn-outline-secondary rounded-circle" id="btnBantuan"
@@ -99,7 +231,7 @@
                             </button>
                         </div>
 
-                        <!-- Tanggal & Jenis Transaksi -->
+                        <!-- Tanggal, Jenis, NOHP -->
                         <div class="row g-3 mb-3">
                             <div class="col-md-4">
                                 <label class="form-label fw-semibold">Tanggal</label>
@@ -114,12 +246,28 @@
                                     <option value="sparepart">Pembelian Sparepart</option>
                                 </select>
                             </div>
+                            <div class="col-md-4" id="wrapNohp" style="display:none">
+                                <label class="form-label fw-semibold">
+                                    No. HP Pelanggan
+                                    <span class="text-muted fw-normal" style="font-size:.78rem">(opsional)</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white">
+                                        <i class="fab fa-whatsapp text-success"></i>
+                                    </span>
+                                    <input type="tel" class="form-control" id="inputNohp"
+                                        placeholder="Contoh: 08123456789" maxlength="15"
+                                        oninput="this.value=this.value.replace(/[^0-9+]/g,'')">
+                                </div>
+                                <div class="form-text text-muted" style="font-size:.74rem">
+                                    Untuk kirim struk via WhatsApp setelah transaksi selesai.
+                                </div>
+                            </div>
                         </div>
 
-                        <!-- ===== SECTION: SERVIS KENDARAAN ===== -->
+                        <!-- SERVIS -->
                         <div id="sectionServis" class="d-none">
                             <hr class="my-3">
-
                             <div class="row g-3 mb-3">
                                 <div class="col-md-4">
                                     <label class="form-label fw-semibold">Nama Pelanggan</label>
@@ -133,8 +281,6 @@
                                     </select>
                                 </div>
                             </div>
-
-                            <!-- Cari Layanan Servis -->
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">Cari Jenis Layanan Servis</label>
                                 <div class="input-group" style="max-width:420px">
@@ -142,11 +288,8 @@
                                         placeholder="Input Layanan Servis">
                                     <button class="btn btn-secondary" id="btnCariLayanan" type="button">Cari</button>
                                 </div>
-                                <!-- Dropdown hasil pencarian layanan -->
                                 <div id="hasilCariLayanan" class="dropdown-hasil d-none"></div>
                             </div>
-
-                            <!-- Tabel Layanan Terpilih -->
                             <div class="table-responsive mb-3">
                                 <table class="table table-bordered table-sm align-middle">
                                     <thead class="table-light">
@@ -158,34 +301,27 @@
                                         </tr>
                                     </thead>
                                     <tbody id="tbodyLayanan">
-                                        <tr id="emptyLayanan">
+                                        <tr>
                                             <td colspan="4" class="text-center text-muted">Belum ada layanan dipilih
                                             </td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
-
-                            <!-- Catatan Keluhan -->
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">Catatan Keluhan</label>
                                 <textarea class="form-control" id="inputKeluhanServis" rows="3"
                                     placeholder="Keluhan"></textarea>
                             </div>
-
-                            <!-- Total Servis -->
                             <div class="d-flex justify-content-end align-items-center mb-2">
                                 <span class="fw-bold me-3">Total Biaya:</span>
                                 <span class="fs-5 fw-bold text-primary" id="totalServis">Rp0</span>
                             </div>
                         </div>
-                        <!-- ===== END SECTION SERVIS ===== -->
 
-                        <!-- ===== SECTION: PEMBELIAN SPAREPART ===== -->
+                        <!-- SPAREPART -->
                         <div id="sectionSparepart" class="d-none">
                             <hr class="my-3">
-
-                            <!-- Cari Sparepart -->
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">Cari Sparepart</label>
                                 <div class="input-group" style="max-width:420px">
@@ -195,8 +331,6 @@
                                 </div>
                                 <div id="hasilCariSparepart" class="dropdown-hasil d-none"></div>
                             </div>
-
-                            <!-- Tabel Sparepart Terpilih -->
                             <div class="table-responsive mb-3">
                                 <table class="table table-bordered table-sm align-middle">
                                     <thead class="table-light">
@@ -210,30 +344,25 @@
                                         </tr>
                                     </thead>
                                     <tbody id="tbodySparepart">
-                                        <tr id="emptySparepart">
+                                        <tr>
                                             <td colspan="6" class="text-center text-muted">Belum ada sparepart dipilih
                                             </td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
-
-                            <!-- Catatan -->
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">Catatan</label>
                                 <textarea class="form-control" id="inputCatatanSparepart" rows="3"
                                     placeholder="Catatan"></textarea>
                             </div>
-
-                            <!-- Total Sparepart -->
                             <div class="d-flex justify-content-end align-items-center mb-2">
                                 <span class="fw-bold me-3">Total Harga:</span>
                                 <span class="fs-5 fw-bold text-primary" id="totalSparepart">Rp0</span>
                             </div>
                         </div>
-                        <!-- ===== END SECTION SPAREPART ===== -->
 
-                        <!-- Tombol Tambahkan Transaksi -->
+                        <!-- Tombol Tambah -->
                         <div class="d-flex justify-content-end mt-3">
                             <button class="btn btn-primary px-5 py-2 fw-semibold" id="btnTambahTransaksi"
                                 onclick="tambahTransaksi()" style="display:none!important">
@@ -244,15 +373,13 @@
                     </div>
                 </div>
             </div>
-            <!-- Main Content End -->
 
-            <!-- Footer Start -->
+            <!-- Footer -->
             <div class="container-fluid pt-4 px-4">
                 <div class="bg-light rounded-top p-4">
                     <div class="row">
-                        <div class="col-12 col-sm-6 text-center text-sm-start">
-                            &copy; <a href="#">SIPENJA - Bengkel Any Jaya</a>, All Right Reserved.
-                        </div>
+                        <div class="col-12 col-sm-6 text-center text-sm-start">&copy; <a href="#">SIPENJA - Bengkel Any
+                                Jaya</a>, All Right Reserved.</div>
                         <div class="col-12 col-sm-6 text-center text-sm-end">
                             Designed By <a href="https://htmlcodex.com">HTML Codex</a><br>
                             Distributed By <a class="border-bottom" href="https://themewagon.com"
@@ -261,14 +388,9 @@
                     </div>
                 </div>
             </div>
-            <!-- Footer End -->
         </div>
-        <!-- Content End -->
 
-        <!-- Sidebar Overlay (mobile) -->
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-        <!-- Back to Top -->
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
 
@@ -280,20 +402,68 @@
                     <h5 class="modal-title fw-bold">Panduan Tambah Transaksi</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body" id="modalBantuanBody">
-                    <!-- diisi JS sesuai jenis transaksi -->
+                <div class="modal-body" id="modalBantuanBody"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         Modal Struk Transaksi
+    ══════════════════════════════════════ -->
+    <div class="modal fade" id="modalStruk" tabindex="-1" aria-labelledby="modalStrukLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable" style="max-width:460px">
+            <div class="modal-content">
+                <div class="modal-header py-2">
+                    <h6 class="modal-title fw-bold" id="modalStrukLabel">
+                        <i class="fa fa-receipt me-2 text-primary"></i>Struk Transaksi
+                    </h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-3">
+                    <!-- No HP inline form -->
+                    <div id="struk-nohp-box" class="bg-light border rounded px-3 py-2 mb-3">
+                        <label class="small fw-semibold mb-1 d-block">
+                            <i class="fab fa-whatsapp text-success me-1"></i>No. HP Pelanggan
+                            <span id="struk-nohp-saved" class="text-muted fw-normal ms-1" style="display:none"></span>
+                        </label>
+                        <div class="d-flex gap-2">
+                            <input type="tel" id="struk-nohp-input" class="form-control form-control-sm"
+                                placeholder="Contoh: 08123456789" maxlength="15" oninput="onNohpInput()">
+                            <button class="btn btn-primary btn-sm px-3" id="btn-simpan-nohp"
+                                onclick="simpanNohpStruk()">
+                                Simpan
+                            </button>
+                        </div>
+                        <div id="struk-nohp-feedback" class="small mt-1 text-danger" style="display:none"></div>
+                    </div>
+                    <!-- Area cetak -->
+                    <div id="struk-print-area">
+                        <div class="text-center py-4">
+                            <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer py-2 flex-wrap gap-1">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-success btn-sm" id="btn-kirim-wa" onclick="kirimWAStruk()"
+                        disabled>
+                        <i class="fab fa-whatsapp me-1"></i>Kirim WA (Gambar)
+                    </button>
+                    <button type="button" class="btn btn-warning btn-sm text-dark" id="btn-download-img"
+                        onclick="downloadStrukGambar()">
+                        <i class="fa fa-image me-1"></i>Download Gambar
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="cetakStruk()">
+                        <i class="fa fa-print me-1"></i>Cetak / PDF
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/waypoints/waypoints.min.js"></script>
-
-    <!-- Template Javascript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="js/login.js"></script>
     <script src="js/transaksi-kasir.js"></script>
 </body>

@@ -31,6 +31,7 @@ app.use("/api/transaksi", require("./routes/transaksiRoute"));
 app.use("/api/laporan", require("./routes/laporanRoute"));
 app.use("/api/dashboard", require("./routes/dashboardRoute"));
 app.use("/api/pengeluaran", require("./routes/pengeluaranRoute"));
+app.use("/api/publik", require("./routes/publikRoute")); // Route publik — tanpa authMiddleware
 
 // ══════════════════════════════════════════════════════════
 //  SERVER

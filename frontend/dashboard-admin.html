@@ -15,6 +15,202 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="css/style.css" rel="stylesheet">
     <link href="css/dashboard-admin.css" rel="stylesheet">
+
+    <style>
+        /* ── Bell & Panel ── */
+        .notif-wrap {
+            position: relative;
+            margin-right: 8px;
+        }
+
+        .notif-btn {
+            background: none;
+            border: none;
+            padding: 6px 8px;
+            cursor: pointer;
+            position: relative;
+            color: #444;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            transition: background .15s;
+        }
+
+        .notif-btn:hover {
+            background: #f0f2f5;
+        }
+
+        .notif-badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: #e02424;
+            color: #fff;
+            font-size: .6rem;
+            font-weight: 700;
+            min-width: 16px;
+            height: 16px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 3px;
+            line-height: 1;
+        }
+
+        .notif-badge.hidden {
+            display: none;
+        }
+
+        .notif-panel {
+            display: none;
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            width: 340px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, .13);
+            z-index: 9999;
+            overflow: hidden;
+        }
+
+        .notif-panel.show {
+            display: block;
+            animation: notifFadeIn .2s ease;
+        }
+
+        @keyframes notifFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .notif-panel__head {
+            padding: 14px 18px 12px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .notif-panel__title {
+            font-weight: 700;
+            font-size: .95rem;
+            color: #111;
+        }
+
+        .notif-panel__close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #888;
+            font-size: 1rem;
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
+
+        .notif-panel__close:hover {
+            background: #f3f4f6;
+            color: #333;
+        }
+
+        .notif-panel__body {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 8px 0;
+        }
+
+        .notif-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 18px;
+            transition: background .12s;
+            cursor: default;
+        }
+
+        .notif-item:hover {
+            background: #fafafa;
+        }
+
+        .notif-item__icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: #fff3f3;
+            color: #e02424;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .9rem;
+            flex-shrink: 0;
+        }
+
+        .notif-item__nama {
+            font-size: .88rem;
+            font-weight: 600;
+            color: #111;
+            line-height: 1.3;
+        }
+
+        .notif-item__stok {
+            font-size: .78rem;
+            color: #e02424;
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        .notif-item__min {
+            font-size: .75rem;
+            color: #9ca3af;
+            margin-top: 1px;
+        }
+
+        .notif-empty {
+            text-align: center;
+            padding: 32px 16px;
+            color: #9ca3af;
+            font-size: .88rem;
+        }
+
+        .notif-empty i {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 8px;
+            opacity: .4;
+        }
+
+        .notif-loading {
+            text-align: center;
+            padding: 24px;
+            color: #9ca3af;
+            font-size: .85rem;
+        }
+
+        .notif-panel__footer {
+            border-top: 1px solid #f0f0f0;
+            padding: 10px 18px;
+            text-align: center;
+        }
+
+        .notif-panel__footer a {
+            font-size: .82rem;
+            color: #1d6ff3;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .notif-panel__footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 
 <body>
@@ -65,14 +261,45 @@
                 </a>
                 <a href="#" class="sidebar-toggler flex-shrink-0"><i class="fa fa-bars"></i></a>
                 <div class="navbar-nav align-items-center ms-auto">
-                    <div class="nav-item me-3 d-none d-sm-flex align-items-center gap-2">
+
+                    <!-- ── NOTIFIKASI ── -->
+                    <div class="notif-wrap" id="notifWrap">
+                        <button class="notif-btn" id="notifBtn" onclick="toggleNotifPanel()"
+                            title="Notifikasi Stok Menipis">
+                            <i class="fa-solid fa-bell"></i>
+                            <span class="notif-badge hidden" id="notifBadge">0</span>
+                        </button>
+                        <div class="notif-panel" id="notifPanel">
+                            <div class="notif-panel__head">
+                                <span class="notif-panel__title">
+                                    <i class="fa-solid fa-triangle-exclamation me-1 text-warning"></i>
+                                    Pemberitahuan Stok Bengkel
+                                </span>
+                                <button class="notif-panel__close" onclick="tutupNotifPanel()">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="notif-panel__body" id="notifBody">
+                                <div class="notif-loading">
+                                    <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+                                    Memuat...
+                                </div>
+                            </div>
+                            <div class="notif-panel__footer">
+                                <a href="sparepart.html">Lihat semua sparepart &rarr;</a>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="edit-profil.html"
+                        class="nav-item me-3 d-none d-sm-flex align-items-center gap-2 text-decoration-none"
+                        style="cursor:pointer">
                         <i class="fa-solid fa-circle-user text-primary" style="font-size:1.3rem"></i>
                         <div style="line-height:1.2">
                             <div style="font-size:.82rem;font-weight:600;color:#191C24" id="navbar-nama">—</div>
                             <div style="font-size:.72rem;color:#8e9bb0;text-transform:capitalize" id="navbar-role">—
                             </div>
                         </div>
-                    </div>
+                    </a>
                     <button class="btn btn-danger btn-sm" onclick="confirmLogout()">
                         <i class="fa-solid fa-right-from-bracket me-1"></i>LOGOUT
                     </button>
@@ -82,7 +309,6 @@
             <!-- ══ MAIN ══ -->
             <div class="container-fluid pt-4 px-4">
 
-                <!-- Page Header -->
                 <div class="d-flex align-items-center justify-content-between mb-4">
                     <div>
                         <h4 class="page-title mb-0">Dashboard Admin</h4>
@@ -90,7 +316,6 @@
                     </div>
                 </div>
 
-                <!-- ── Stat Cards ── -->
                 <div class="stat-grid">
                     <div class="stat-card">
                         <div class="stat-icon blue"><i class="fa-solid fa-gear"></i></div>
@@ -111,23 +336,18 @@
                     </div>
                 </div>
 
-                <!-- ── Keuangan Cards ── -->
                 <div class="keuangan-grid">
                     <div class="keuangan-card">
                         <div class="keu-header">
                             <span class="keu-title"><i
                                     class="fa-solid fa-arrow-trend-up me-2 text-success"></i>Pendapatan</span>
                             <div class="periode-wrap">
-                                <button class="btn-periode" onclick="togglePeriode('pp-pendapatan')">
-                                    <i class="fa-solid fa-calendar-days"></i> Periode
-                                </button>
+                                <button class="btn-periode" onclick="togglePeriode('pp-pendapatan')"><i
+                                        class="fa-solid fa-calendar-days"></i> Periode</button>
                                 <div class="periode-popup" id="pp-pendapatan">
                                     <div class="pp-title">Filter Periode</div>
-                                    <div class="pp-row">
-                                        <input type="date" id="pend-tgl-awal" placeholder="Dari">
-                                        <span class="pp-sep">—</span>
-                                        <input type="date" id="pend-tgl-akhir" placeholder="Sampai">
-                                    </div>
+                                    <div class="pp-row"><input type="date" id="pend-tgl-awal"><span
+                                            class="pp-sep">—</span><input type="date" id="pend-tgl-akhir"></div>
                                     <div class="pp-or">— atau pilih bulan —</div>
                                     <div class="pp-row">
                                         <select id="pend-bulan">
@@ -155,22 +375,17 @@
                                 style="width:180px;height:32px"></span></div>
                         <div class="keu-sub" id="keu-pendapatan-periode">—</div>
                     </div>
-
                     <div class="keuangan-card">
                         <div class="keu-header">
                             <span class="keu-title"><i
                                     class="fa-solid fa-arrow-trend-down me-2 text-danger"></i>Pengeluaran</span>
                             <div class="periode-wrap">
-                                <button class="btn-periode" onclick="togglePeriode('pp-pengeluaran')">
-                                    <i class="fa-solid fa-calendar-days"></i> Periode
-                                </button>
+                                <button class="btn-periode" onclick="togglePeriode('pp-pengeluaran')"><i
+                                        class="fa-solid fa-calendar-days"></i> Periode</button>
                                 <div class="periode-popup" id="pp-pengeluaran">
                                     <div class="pp-title">Filter Periode</div>
-                                    <div class="pp-row">
-                                        <input type="date" id="keluar-tgl-awal" placeholder="Dari">
-                                        <span class="pp-sep">—</span>
-                                        <input type="date" id="keluar-tgl-akhir" placeholder="Sampai">
-                                    </div>
+                                    <div class="pp-row"><input type="date" id="keluar-tgl-awal"><span
+                                            class="pp-sep">—</span><input type="date" id="keluar-tgl-akhir"></div>
                                     <div class="pp-or">— atau pilih bulan —</div>
                                     <div class="pp-row">
                                         <select id="keluar-bulan">
@@ -200,25 +415,18 @@
                     </div>
                 </div>
 
-                <!-- ── Bottom Grid ── -->
                 <div class="bottom-grid">
-
-                    <!-- Top Sparepart -->
                     <div class="dash-card">
                         <div class="dash-card-header">
                             <span class="dash-card-title"><i class="fa-solid fa-medal me-2"
                                     style="color:#f5a623"></i>Top 10 Sparepart</span>
                             <div class="periode-wrap">
-                                <button class="btn-periode" onclick="togglePeriode('pp-sparepart')">
-                                    <i class="fa-solid fa-calendar-days"></i> Periode
-                                </button>
+                                <button class="btn-periode" onclick="togglePeriode('pp-sparepart')"><i
+                                        class="fa-solid fa-calendar-days"></i> Periode</button>
                                 <div class="periode-popup" id="pp-sparepart">
                                     <div class="pp-title">Filter Periode</div>
-                                    <div class="pp-row">
-                                        <input type="date" id="sp-tgl-awal">
-                                        <span class="pp-sep">—</span>
-                                        <input type="date" id="sp-tgl-akhir">
-                                    </div>
+                                    <div class="pp-row"><input type="date" id="sp-tgl-awal"><span
+                                            class="pp-sep">—</span><input type="date" id="sp-tgl-akhir"></div>
                                     <div class="pp-or">— atau pilih bulan —</div>
                                     <div class="pp-row">
                                         <select id="sp-bulan">
@@ -261,25 +469,18 @@
                         </div>
                     </div>
 
-                    <!-- Kanan: Grafik + Top Layanan -->
                     <div class="bottom-right-col">
-
-                        <!-- Grafik -->
                         <div class="dash-card">
                             <div class="dash-card-header">
                                 <span class="dash-card-title"><i class="fa-solid fa-chart-column me-2"
                                         style="color:#009CFF"></i>Progress Penjualan</span>
                                 <div class="periode-wrap">
-                                    <button class="btn-periode" onclick="togglePeriode('pp-grafik')">
-                                        <i class="fa-solid fa-calendar-days"></i> Periode
-                                    </button>
+                                    <button class="btn-periode" onclick="togglePeriode('pp-grafik')"><i
+                                            class="fa-solid fa-calendar-days"></i> Periode</button>
                                     <div class="periode-popup" id="pp-grafik">
                                         <div class="pp-title">Filter Periode</div>
-                                        <div class="pp-row">
-                                            <input type="date" id="grafik-tgl-awal">
-                                            <span class="pp-sep">—</span>
-                                            <input type="date" id="grafik-tgl-akhir">
-                                        </div>
+                                        <div class="pp-row"><input type="date" id="grafik-tgl-awal"><span
+                                                class="pp-sep">—</span><input type="date" id="grafik-tgl-akhir"></div>
                                         <div class="pp-or">— atau pilih bulan —</div>
                                         <div class="pp-row">
                                             <select id="grafik-bulan">
@@ -303,27 +504,20 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="chart-wrap">
-                                <canvas id="chart-penjualan"></canvas>
-                            </div>
+                            <div class="chart-wrap"><canvas id="chart-penjualan"></canvas></div>
                         </div>
 
-                        <!-- Top Layanan -->
                         <div class="dash-card">
                             <div class="dash-card-header">
                                 <span class="dash-card-title"><i class="fa-solid fa-star me-2"
                                         style="color:#f5a623"></i>Top 5 Layanan Servis</span>
                                 <div class="periode-wrap">
-                                    <button class="btn-periode" onclick="togglePeriode('pp-layanan')">
-                                        <i class="fa-solid fa-calendar-days"></i> Periode
-                                    </button>
+                                    <button class="btn-periode" onclick="togglePeriode('pp-layanan')"><i
+                                            class="fa-solid fa-calendar-days"></i> Periode</button>
                                     <div class="periode-popup" id="pp-layanan">
                                         <div class="pp-title">Filter Periode</div>
-                                        <div class="pp-row">
-                                            <input type="date" id="lay-tgl-awal">
-                                            <span class="pp-sep">—</span>
-                                            <input type="date" id="lay-tgl-akhir">
-                                        </div>
+                                        <div class="pp-row"><input type="date" id="lay-tgl-awal"><span
+                                                class="pp-sep">—</span><input type="date" id="lay-tgl-akhir"></div>
                                         <div class="pp-or">— atau pilih bulan —</div>
                                         <div class="pp-row">
                                             <select id="lay-bulan">
@@ -366,27 +560,23 @@
                                 </table>
                             </div>
                         </div>
-
                     </div>
                 </div>
 
-            </div><!-- /container-fluid -->
+            </div>
 
-            <!-- Footer -->
             <div class="container-fluid px-4 mt-2">
                 <div class="bg-light rounded-top p-4">
                     <div class="row">
-                        <div class="col-12 col-sm-6 text-center text-sm-start">
-                            &copy; <a href="#">SIPENJA - Bengkel Any Jaya</a>, All Right Reserved.
-                        </div>
-                        <div class="col-12 col-sm-6 text-center text-sm-end">
-                            Designed By <a href="https://htmlcodex.com">HTML Codex</a>
-                        </div>
+                        <div class="col-12 col-sm-6 text-center text-sm-start">&copy; <a href="#">SIPENJA - Bengkel Any
+                                Jaya</a>, All Right Reserved.</div>
+                        <div class="col-12 col-sm-6 text-center text-sm-end">Designed By <a
+                                href="https://htmlcodex.com">HTML Codex</a></div>
                     </div>
                 </div>
             </div>
 
-        </div><!-- /content -->
+        </div>
 
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>

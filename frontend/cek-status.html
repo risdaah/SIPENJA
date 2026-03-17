@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cek Status Servis - Bengkel Any Jaya</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"
+        rel="stylesheet">
+    <script src="https://kit.fontawesome.com/e943a573af.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/cek-status.css">
+</head>
+
+<body>
+
+    <header class="navbar-top">
+        <div class="navbar-inner">
+            <div class="brand">
+                <i class="fa-solid fa-wrench brand-icon"></i>
+                <span>Bengkel Any Jaya</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-wrap">
+        <div class="card-search">
+
+            <div class="card-search__header">
+                <div class="search-icon-wrap">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <h1 class="card-search__title">Cari Perkembangan<br>Servis Kendaraan</h1>
+                <p class="card-search__sub">Masukkan kode antrian servis kendaraan Anda</p>
+            </div>
+
+            <div class="search-bar">
+                <input type="text" id="inputKode" class="search-bar__input" placeholder="Contoh: SRV-20260303-001"
+                    autocomplete="off" spellcheck="false" onkeyup="if(event.key==='Enter') cariStatus()">
+                <button class="search-bar__btn" id="btnCari" onclick="cariStatus()">
+                    <i class="fa-solid fa-search"></i> Cari
+                </button>
+            </div>
+
+            <div id="hasil-area"></div>
+
+        </div>
+    </main>
+
+    <footer class="footer-bottom">
+        <div class="footer-inner">
+            <span>&copy; Copyright Bengkel Any Jaya, All Rights Reserved.</span>
+            <div class="brand brand--sm">
+                <i class="fa-solid fa-wrench brand-icon"></i>
+                <span>Bengkel Any Jaya</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/cek-status.js"></script>
+</body>
+
+</html>

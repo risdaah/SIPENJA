@@ -1,0 +1,544 @@
+/* ===== RESET & BASE ===== */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --primary: #1d6ff3;
+    --primary-dark: #1558c8;
+    --primary-light: #e8f0fe;
+    --bg: #f4f6f8;
+    --card-bg: #ffffff;
+    --text: #111827;
+    --text-muted: #6b7280;
+    --border: #e5e7eb;
+    --radius: 16px;
+    --shadow: 0 4px 24px rgba(0, 0, 0, .08);
+
+    --status-belum-bg: #f3f4f6;
+    --status-belum-text: #374151;
+    --status-proses-bg: #fef3c7;
+    --status-proses-text: #92400e;
+    --status-selesai-bg: #d1fae5;
+    --status-selesai-text: #065f46;
+}
+
+html,
+body {
+    height: 100%;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* ===== NAVBAR ===== */
+.navbar-top {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.navbar-inner {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--text);
+    text-decoration: none;
+}
+
+.brand-icon {
+    color: var(--primary);
+    font-size: 1.1rem;
+}
+
+.brand--sm {
+    font-size: .9rem;
+}
+
+/* ===== MAIN ===== */
+.main-wrap {
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 48px 16px 64px;
+}
+
+/* ===== CARD SEARCH ===== */
+.card-search {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    width: 100%;
+    max-width: 860px;
+    padding: 48px 48px 56px;
+}
+
+.card-search__header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.search-icon-wrap {
+    width: 56px;
+    height: 56px;
+    background: var(--primary-light);
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: var(--primary);
+    margin-bottom: 20px;
+}
+
+.card-search__title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    line-height: 1.25;
+    margin-bottom: 10px;
+}
+
+.card-search__sub {
+    color: var(--text-muted);
+    font-size: .95rem;
+}
+
+/* ===== SEARCH BAR ===== */
+.search-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 32px;
+}
+
+.search-bar__input {
+    flex: 1;
+    padding: 16px 22px;
+    font-size: 1.15rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    border: 2px solid var(--primary);
+    border-radius: 50px;
+    outline: none;
+    background: #fff;
+    color: var(--text);
+    transition: box-shadow .2s;
+    letter-spacing: .04em;
+}
+
+.search-bar__input::placeholder {
+    font-weight: 400;
+    color: #adb5bd;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    letter-spacing: 0;
+}
+
+.search-bar__input:focus {
+    box-shadow: 0 0 0 4px rgba(29, 111, 243, .15);
+}
+
+.search-bar__btn {
+    padding: 16px 32px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 700;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    cursor: pointer;
+    transition: background .2s, transform .1s;
+    white-space: nowrap;
+}
+
+.search-bar__btn:hover {
+    background: var(--primary-dark);
+}
+
+.search-bar__btn:active {
+    transform: scale(.97);
+}
+
+.search-bar__btn:disabled {
+    opacity: .65;
+    cursor: not-allowed;
+}
+
+/* ===== HASIL AREA ===== */
+#hasil-area {
+    min-height: 160px;
+}
+
+/* Kosong / tidak ditemukan */
+.hasil-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 0 20px;
+    gap: 14px;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.hasil-empty i {
+    font-size: 2.8rem;
+    opacity: .35;
+}
+
+.hasil-empty p {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #9ca3af;
+}
+
+.hasil-empty span {
+    font-size: .9rem;
+}
+
+/* Loading */
+.hasil-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 0;
+    gap: 12px;
+    color: var(--text-muted);
+    font-size: .95rem;
+}
+
+.spinner {
+    width: 22px;
+    height: 22px;
+    border: 3px solid var(--border);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ===== KARTU HASIL ===== */
+.hasil-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    animation: fadeUp .3s ease;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Header kartu */
+.hasil-card__head {
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+    background: #fafafa;
+}
+
+.hasil-card__kode {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--primary);
+    letter-spacing: .04em;
+}
+
+.hasil-card__nama {
+    font-size: .9rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+/* Badge status */
+.badge-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 16px;
+    border-radius: 50px;
+    font-size: .82rem;
+    font-weight: 700;
+    letter-spacing: .03em;
+}
+
+.badge-status .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.badge-status.belum {
+    background: var(--status-belum-bg);
+    color: var(--status-belum-text);
+}
+
+.badge-status.belum .dot {
+    background: #9ca3af;
+}
+
+.badge-status.proses {
+    background: var(--status-proses-bg);
+    color: var(--status-proses-text);
+    animation: pulse-dot 1.5s infinite;
+}
+
+.badge-status.proses .dot {
+    background: #f59e0b;
+}
+
+.badge-status.selesai {
+    background: var(--status-selesai-bg);
+    color: var(--status-selesai-text);
+}
+
+.badge-status.selesai .dot {
+    background: #10b981;
+}
+
+@keyframes pulse-dot {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: .4;
+    }
+}
+
+/* Body kartu */
+.hasil-card__body {
+    padding: 24px;
+}
+
+/* Info grid */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.info-item__label {
+    font-size: .75rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.info-item__value {
+    font-size: .95rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+/* Layanan chips */
+.layanan-list {
+    margin-bottom: 24px;
+}
+
+.layanan-list__label {
+    font-size: .75rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.layanan-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.layanan-chip {
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    padding: 5px 14px;
+    border-radius: 50px;
+    font-size: .83rem;
+    font-weight: 600;
+}
+
+/* Timeline progress */
+.timeline {
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+}
+
+.timeline__label {
+    font-size: .75rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.timeline__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding-left: 10px;
+}
+
+.timeline__item {
+    display: flex;
+    gap: 16px;
+    position: relative;
+    padding-bottom: 20px;
+}
+
+.timeline__item:last-child {
+    padding-bottom: 0;
+}
+
+.timeline__item:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 18px;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+}
+
+.timeline__dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 3px;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 2px var(--border);
+}
+
+.timeline__dot.belum {
+    background: #9ca3af;
+}
+
+.timeline__dot.proses {
+    background: #f59e0b;
+}
+
+.timeline__dot.selesai {
+    background: #10b981;
+}
+
+.timeline__dot.latest {
+    box-shadow: 0 0 0 3px var(--primary);
+    background: var(--primary);
+}
+
+.timeline__content {}
+
+.timeline__status {
+    font-size: .83rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.timeline__waktu {
+    font-size: .78rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.timeline__keterangan {
+    font-size: .88rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+/* ===== FOOTER ===== */
+.footer-bottom {
+    border-top: 1px solid var(--border);
+    padding: 20px 32px;
+    background: #fff;
+    flex-shrink: 0;
+}
+
+.footer-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: .83rem;
+    color: var(--text-muted);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+    .card-search {
+        padding: 28px 18px 36px;
+    }
+
+    .card-search__title {
+        font-size: 1.4rem;
+    }
+
+    .search-bar {
+        flex-direction: column;
+    }
+
+    .search-bar__input,
+    .search-bar__btn {
+        border-radius: 12px;
+        width: 100%;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}

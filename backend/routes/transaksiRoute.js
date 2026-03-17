@@ -1,25 +1,42 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 const {
-  getAllTransaksi, getTransaksiById, getTransaksiByJenis,
+  getAllTransaksi,
+  getTransaksiById,
+  getTransaksiByJenis,
   getTransaksiByKasir,
-  getTransaksiByDateRange, getTransaksiByBulan,
+  getTransaksiByDateRange,
+  getTransaksiByBulan,
   createTransaksi,
-} = require('../controllers/transaksiController');
+  getStrukTransaksi,
+  updateNohpTransaksi,
+} = require("../controllers/transaksiController");
 
-router.get('/get-all', getAllTransaksi);
-router.get('/get/:id', getTransaksiById);
-router.get('/get-by-jenis/:jenis', getTransaksiByJenis);
+// GET semua transaksi
+router.get("/get-all", getAllTransaksi);
 
-// Filter by kasir: GET /transaksi/get-by-kasir/:idKasir?jenis=SERVIS (jenis opsional)
-router.get('/get-by-kasir/:idKasir', getTransaksiByKasir);
+// GET detail transaksi by ID (dengan sub-data SERVIS / PEMBELIAN)
+router.get("/get/:id", getTransaksiById);
 
-// Filter by tanggal: GET /transaksi/filter?startDate=2026-01-01&endDate=2026-01-31&jenis=SERVIS
-router.get('/filter', getTransaksiByDateRange);
+// GET struk lengkap untuk cetak PDF / kirim WA
+router.get("/struk/:id", getStrukTransaksi);
 
-// Filter by bulan: GET /transaksi/filter-bulan?bulan=1&tahun=2026&jenis=PEMBELIAN
-router.get('/filter-bulan', getTransaksiByBulan);
+// GET filter by jenis: SERVIS | PEMBELIAN
+router.get("/get-by-jenis/:jenis", getTransaksiByJenis);
 
-router.post('/create', createTransaksi);
+// GET filter by kasir: GET /transaksi/get-by-kasir/:idKasir?jenis=SERVIS (jenis opsional)
+router.get("/get-by-kasir/:idKasir", getTransaksiByKasir);
+
+// GET filter by tanggal: GET /transaksi/filter?startDate=2026-01-01&endDate=2026-01-31&jenis=SERVIS
+router.get("/filter", getTransaksiByDateRange);
+
+// GET filter by bulan: GET /transaksi/filter-bulan?bulan=1&tahun=2026&jenis=PEMBELIAN
+router.get("/filter-bulan", getTransaksiByBulan);
+
+// POST buat transaksi baru
+router.post("/create", createTransaksi);
+
+// PATCH update nomor HP pelanggan (opsional, bisa diubah dari halaman struk)
+router.patch("/nohp/:id", updateNohpTransaksi);
 
 module.exports = router;

@@ -18,11 +18,15 @@
     initYearSelects();
     setDefaultPeriode();
     loadAll();
+    loadNotifBadge(); // cek badge stok saat halaman load
 
-    // Tutup popup saat klik di luar
+    // Tutup panel notif & periode saat klik di luar
     $(document).on("click", function (e) {
       if (!$(e.target).closest(".periode-wrap").length) {
         $(".periode-popup").removeClass("show");
+      }
+      if (!$(e.target).closest("#notifWrap").length) {
+        $("#notifPanel").removeClass("show");
       }
     });
 
@@ -65,18 +69,14 @@
     );
   }
 
-  // ─── Default periode = bulan ini ──────────────────────
   function setDefaultPeriode() {
     var now = new Date();
     var m = now.getMonth() + 1;
-    var y = now.getFullYear();
-    // Set bulan select ke bulan ini
     $("#pend-bulan, #keluar-bulan, #sp-bulan, #lay-bulan, #grafik-bulan").val(
       m,
     );
   }
 
-  // ─── Load semua data ───────────────────────────────────
   function loadAll() {
     loadStats();
     loadPendapatan();
@@ -100,8 +100,8 @@
   function animateCount(id, target) {
     var el = $("#" + id);
     el.html("0");
-    var start = 0;
-    var duration = 800;
+    var start = 0,
+      duration = 800;
     var step = Math.ceil(target / (duration / 16));
     var timer = setInterval(function () {
       start = Math.min(start + step, target);
@@ -124,10 +124,8 @@
       );
     });
   }
-
   window.applyPendapatan = function () {
-    var params = buildParams("pend");
-    loadPendapatan(params);
+    loadPendapatan(buildParams("pend"));
     $("#pp-pendapatan").removeClass("show");
   };
 
@@ -145,10 +143,8 @@
       );
     });
   }
-
   window.applyPengeluaran = function () {
-    var params = buildParams("keluar");
-    loadPengeluaran(params);
+    loadPengeluaran(buildParams("keluar"));
     $("#pp-pengeluaran").removeClass("show");
   };
 
@@ -172,8 +168,7 @@
                   ? "rank-3"
                   : "rank-num";
           html +=
-            "<tr>" +
-            "<td class='center " +
+            "<tr><td class='center " +
             rankCls +
             "'>" +
             (i + 1) +
@@ -186,17 +181,14 @@
             "</td>" +
             "<td class='center' style='font-weight:700;color:#009CFF'>" +
             (d.terjual || 0) +
-            "</td>" +
-            "</tr>";
+            "</td></tr>";
         });
       }
       $("#tbody-sparepart").html(html);
     });
   }
-
   window.applyTopSparepart = function () {
-    var params = buildParams("sp");
-    loadTopSparepart(params);
+    loadTopSparepart(buildParams("sp"));
     $("#pp-sparepart").removeClass("show");
   };
 
@@ -220,8 +212,7 @@
                   ? "rank-3"
                   : "rank-num";
           html +=
-            "<tr>" +
-            "<td class='center " +
+            "<tr><td class='center " +
             rankCls +
             "'>" +
             (i + 1) +
@@ -234,17 +225,14 @@
             "</td>" +
             "<td class='center' style='font-weight:700;color:#28a745'>" +
             (d.terselesaikan || 0) +
-            "</td>" +
-            "</tr>";
+            "</td></tr>";
         });
       }
       $("#tbody-layanan").html(html);
     });
   }
-
   window.applyTopLayanan = function () {
-    var params = buildParams("lay");
-    loadTopLayanan(params);
+    loadTopLayanan(buildParams("lay"));
     $("#pp-layanan").removeClass("show");
   };
 
@@ -256,15 +244,12 @@
       renderChart(res.data.pendapatan, res.data.pengeluaran);
     });
   }
-
   window.applyGrafik = function () {
-    var params = buildParams("grafik");
-    loadGrafik(params);
+    loadGrafik(buildParams("grafik"));
     $("#pp-grafik").removeClass("show");
   };
 
   function renderChart(pendapatan, pengeluaran) {
-    // Kumpulkan semua label bulan
     var labelsSet = {};
     pendapatan.forEach(function (r) {
       labelsSet[r.bulan] = true;
@@ -274,12 +259,11 @@
     });
     var labels = Object.keys(labelsSet).sort();
 
-    // Map ke array
-    var pendMap = {};
+    var pendMap = {},
+      keluarMap = {};
     pendapatan.forEach(function (r) {
       pendMap[r.bulan] = Number(r.total);
     });
-    var keluarMap = {};
     pengeluaran.forEach(function (r) {
       keluarMap[r.bulan] = Number(r.total);
     });
@@ -291,7 +275,6 @@
       return keluarMap[l] || 0;
     });
 
-    // Format label bulan jadi "Mar 2026"
     var labelsFmt = labels.map(function (l) {
       var parts = l.split("-");
       var d = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, 1);
@@ -364,7 +347,7 @@
     });
   }
 
-  // ─── Toggle Popup ──────────────────────────────────────
+  // ─── Toggle Popup periode ──────────────────────────────
   window.togglePeriode = function (id) {
     var target = $("#" + id);
     var isOpen = target.hasClass("show");
@@ -378,7 +361,6 @@
     var tglAkhir = $("#" + prefix + "-tgl-akhir").val();
     var bulan = $("#" + prefix + "-bulan").val();
     var tahun = $("#" + prefix + "-tahun").val();
-
     var p = new URLSearchParams();
     if (tglAwal && tglAkhir) {
       p.set("tgl_awal", tglAwal);
@@ -390,6 +372,107 @@
     return p.toString();
   }
 
+  // ══════════════════════════════════════════════════════════
+  // NOTIFIKASI STOK MENIPIS
+  // ══════════════════════════════════════════════════════════
+
+  // Load badge count saat halaman pertama dibuka
+  function loadNotifBadge() {
+    $.ajax({
+      url: API + "/sparepart/low-stock",
+      headers: { Authorization: "Bearer " + Session.getToken() },
+      success: function (res) {
+        if (!res.success) return;
+        var count = (res.data || []).length;
+        var badge = $("#notifBadge");
+        if (count > 0) {
+          badge.text(count > 99 ? "99+" : count).removeClass("hidden");
+        } else {
+          badge.addClass("hidden");
+        }
+      },
+    });
+  }
+
+  // Toggle buka/tutup panel
+  window.toggleNotifPanel = function () {
+    var panel = $("#notifPanel");
+    var isOpen = panel.hasClass("show");
+    if (isOpen) {
+      panel.removeClass("show");
+    } else {
+      panel.addClass("show");
+      loadNotifPanel();
+    }
+  };
+
+  window.tutupNotifPanel = function () {
+    $("#notifPanel").removeClass("show");
+  };
+
+  // Load isi panel saat dibuka
+  function loadNotifPanel() {
+    $("#notifBody").html(
+      '<div class="notif-loading">' +
+        '<div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>' +
+        "Memuat...</div>",
+    );
+
+    $.ajax({
+      url: API + "/sparepart/low-stock",
+      headers: { Authorization: "Bearer " + Session.getToken() },
+      success: function (res) {
+        if (!res.success) {
+          $("#notifBody").html(
+            '<div class="notif-empty"><i class="fa fa-circle-exclamation"></i>Gagal memuat data.</div>',
+          );
+          return;
+        }
+
+        var data = res.data || [];
+
+        if (!data.length) {
+          $("#notifBody").html(
+            '<div class="notif-empty">' +
+              '<i class="fa-solid fa-circle-check" style="color:#10b981"></i>' +
+              '<p style="color:#374151;font-weight:600">Semua stok aman!</p>' +
+              "<span>Tidak ada sparepart dengan stok menipis.</span>" +
+              "</div>",
+          );
+          $("#notifBadge").addClass("hidden");
+          return;
+        }
+
+        var html = "";
+        $.each(data, function (i, sp) {
+          html +=
+            '<div class="notif-item">' +
+            '<div class="notif-item__icon"><i class="fa-solid fa-triangle-exclamation"></i></div>' +
+            '<div class="notif-item__text">' +
+            '<div class="notif-item__nama">' +
+            xh(sp.NAMA) +
+            "</div>" +
+            '<div class="notif-item__stok">Stok saat ini: <strong>' +
+            sp.STOK +
+            "</strong></div>" +
+            '<div class="notif-item__min">Minimum: ' +
+            sp.STOKMINIMUM +
+            " &nbsp;|&nbsp; Kurang: " +
+            Math.abs(sp.SELISIH_STOK) +
+            "</div>" +
+            "</div></div>";
+        });
+
+        $("#notifBody").html(html);
+      },
+      error: function () {
+        $("#notifBody").html(
+          '<div class="notif-empty"><i class="fa fa-circle-exclamation"></i>Gagal memuat data.</div>',
+        );
+      },
+    });
+  }
+
   // ─── Utils ─────────────────────────────────────────────
   function rupiah(val) {
     return (
@@ -397,7 +480,6 @@
       (Number(val) || 0).toLocaleString("id-ID", { minimumFractionDigits: 0 })
     );
   }
-
   function fmtTgl(str) {
     if (!str) return "—";
     var d = new Date(str + "T00:00:00");
@@ -407,7 +489,6 @@
       year: "numeric",
     });
   }
-
   function xh(s) {
     return String(s || "")
       .replace(/&/g, "&amp;")
