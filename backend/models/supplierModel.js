@@ -1,16 +1,27 @@
+/**
+ * models/supplierModel.js — Model data supplier/pemasok
+ *
+ * Berinteraksi dengan tabel SUPPLIER.
+ * Supplier adalah vendor/pemasok yang menyediakan sparepart ke bengkel.
+ * Setiap sparepart memiliki satu IDSUPPLIER sebagai referensi asal barang.
+ */
+
 const db = require('../config/db');
 
 const Supplier = {
+  // Ambil semua supplier
   getAll: async () => {
     const [rows] = await db.query('SELECT * FROM SUPPLIER');
     return rows;
   },
 
+  // Ambil satu supplier by ID
   getById: async (id) => {
     const [rows] = await db.query('SELECT * FROM SUPPLIER WHERE IDSUPPLIER = ?', [id]);
     return rows[0];
   },
 
+  // Tambah supplier baru
   create: async (data) => {
     const { NAMA, NOHP, ALAMAT } = data;
     const [lastRow] = await db.query('SELECT MAX(IDSUPPLIER) as lastId FROM SUPPLIER');
@@ -22,6 +33,7 @@ const Supplier = {
     return { IDSUPPLIER: newId, ...data };
   },
 
+  // Update data supplier (dinamis — field yang dikirim saja)
   update: async (id, data) => {
     const fields = Object.keys(data).map(key => `${key} = ?`).join(', ');
     const values = [...Object.values(data), id];
@@ -29,6 +41,7 @@ const Supplier = {
     return { IDSUPPLIER: id, ...data };
   },
 
+  // Hapus supplier permanen
   delete: async (id) => {
     await db.query('DELETE FROM SUPPLIER WHERE IDSUPPLIER = ?', [id]);
   },

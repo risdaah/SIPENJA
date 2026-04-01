@@ -133,15 +133,15 @@ function renderTable(data) {
 /* ===== MODAL STRUK ===================================================== */
 
 async function bukaStruk(idTransaksi) {
-  // Reset state
   strukData = null;
-  document.getElementById("struk-print-area").innerHTML =
-    `<div class="text-center py-4"><div class="spinner-border spinner-border-sm text-primary" role="status"></div></div>`;
-  updateStrukNohpUI(null);
-  document.getElementById("btn-kirim-wa").disabled = true;
 
-  // Tampilkan modal
-  const modal = new bootstrap.Modal(document.getElementById("modalStruk"));
+  // Tampilkan modal aksi dengan loading
+  var modal = new bootstrap.Modal(document.getElementById("modalStruk"));
+  document.getElementById("modalStrukLabel").textContent = "Struk Transaksi";
+  document.getElementById("struk-action-btns").style.display = "none";
+  document.getElementById("struk-loading").style.display = "block";
+  document.getElementById("struk-error").style.display = "none";
+  updateStrukNohpUI(null);
   modal.show();
 
   // Fetch data
@@ -152,119 +152,142 @@ async function bukaStruk(idTransaksi) {
     const json = await res.json();
     if (!json.success) throw new Error(json.message || "Gagal memuat struk");
     strukData = json.data;
-    renderStrukContent(strukData);
     updateStrukNohpUI(strukData.NOHP);
+    document.getElementById("modalStrukLabel").textContent =
+      "Struk — " + strukData.NOTRANSAKSI;
+    document.getElementById("struk-loading").style.display = "none";
+    document.getElementById("struk-action-btns").style.display = "flex";
   } catch (err) {
-    document.getElementById("struk-print-area").innerHTML =
-      `<div class="text-center py-4 text-danger"><i class="fa fa-circle-exclamation me-2"></i>${err.message}</div>`;
+    document.getElementById("struk-loading").style.display = "none";
+    document.getElementById("struk-error").textContent = err.message;
+    document.getElementById("struk-error").style.display = "block";
   }
+}
+
+function tutupStrukPopup() {
+  // kept for backward compat
 }
 
 function renderStrukContent(t) {
   const isServis = t.JENISTRANSAKSI === "SERVIS";
 
+  // ── Build items list (thermal style: nomor. Nama, qty x harga → subtotal) ──
   let itemsHtml = "";
+  let totalQty = 0;
+  let itemNo = 0;
 
-  if (isServis) {
-    const layanan = t.LAYANAN || [];
-    const sparepart = t.SPAREPART || [];
-
-    if (layanan.length) {
-      itemsHtml += `<div class="section-title">Layanan Servis</div>
-        <table><thead><tr>
-          <th>Layanan</th><th>Ket.</th><th class="text-right">Biaya</th>
-        </tr></thead><tbody>`;
-      layanan.forEach((l) => {
-        itemsHtml += `<tr>
-          <td>${esc(l.NAMA_LAYANAN)}</td>
-          <td>${esc(l.KETERANGAN || "-")}</td>
-          <td class="text-right">${rupiah(l.BIAYA)}</td>
-        </tr>`;
-      });
-      itemsHtml += `</tbody></table>`;
-    }
-
-    if (sparepart.length) {
-      itemsHtml += `<div class="section-title">Sparepart</div>
-        <table><thead><tr>
-          <th>Nama</th><th class="text-right">Qty</th>
-          <th class="text-right">Harga</th><th class="text-right">Sub</th>
-        </tr></thead><tbody>`;
-      sparepart.forEach((s) => {
-        itemsHtml += `<tr>
-          <td>${esc(s.NAMA_SPAREPART)}</td>
-          <td class="text-right">${s.QTY}</td>
-          <td class="text-right">${rupiah(s.HARGASATUAN)}</td>
-          <td class="text-right">${rupiah(s.SUBTOTAL)}</td>
-        </tr>`;
-      });
-      itemsHtml += `</tbody></table>`;
-    }
-  } else {
-    const items = t.ITEMS || [];
-    if (items.length) {
-      itemsHtml += `<div class="section-title">Item Pembelian</div>
-        <table><thead><tr>
-          <th>Sparepart</th><th class="text-right">Qty</th>
-          <th class="text-right">Harga</th><th class="text-right">Sub</th>
-        </tr></thead><tbody>`;
-      items.forEach((i) => {
-        itemsHtml += `<tr>
-          <td>${esc(i.NAMA_SPAREPART)}</td>
-          <td class="text-right">${i.JUMLAH}</td>
-          <td class="text-right">${rupiah(i.HARGA_SATUAN)}</td>
-          <td class="text-right">${rupiah(i.SUB_TOTAL)}</td>
-        </tr>`;
-      });
-      itemsHtml += `</tbody></table>`;
-    }
-  }
-
-  let servisInfoHtml = "";
-  if (isServis && t.SERVIS) {
-    const s = t.SERVIS;
-    servisInfoHtml = `
-      <div class="section-title">Info Kendaraan</div>
-      <div class="struk-meta">
-        <span class="lbl">Pelanggan</span><span class="val">${esc(s.NAMAPELANGGAN)}</span>
-        <span class="lbl">Keluhan</span><span class="val">${esc(s.KELUHAN || "-")}</span>
-        <span class="lbl">No. Antrian</span><span class="val">${esc(s.KODEANTRIAN || "-")}</span>
-        <span class="lbl">Mekanik</span><span class="val">${esc(s.NAMA_MEKANIK || "-")}</span>
+  function addItem(nama, qty, satuan, hargaSatuan, subtotal) {
+    itemNo++;
+    totalQty += Number(qty) || 0;
+    const qtyLabel = satuan
+      ? `${qty} ${satuan} x ${formatRibu(hargaSatuan)}`
+      : `${qty} x ${formatRibu(hargaSatuan)}`;
+    itemsHtml += `
+      <div class="struk-item">
+        <div class="struk-item-name">${itemNo}. ${esc(nama)}</div>
+        <div class="struk-item-detail">
+          <span>${qtyLabel}</span>
+          <span>Rp ${formatRibu(subtotal)}</span>
+        </div>
       </div>`;
   }
 
+  if (isServis) {
+    (t.LAYANAN || []).forEach((l) =>
+      addItem(l.NAMA_LAYANAN, 1, "servis", l.BIAYA, l.BIAYA),
+    );
+    (t.SPAREPART || []).forEach((s) =>
+      addItem(s.NAMA_SPAREPART, s.QTY, "pcs", s.HARGASATUAN, s.SUBTOTAL),
+    );
+  } else {
+    (t.ITEMS || []).forEach((i) =>
+      addItem(i.NAMA_SPAREPART, i.JUMLAH, "", i.HARGA_SATUAN, i.SUB_TOTAL),
+    );
+  }
+
+  // ── Tanggal & jam ──
+  const tgl = t.TANGGAL ? new Date(t.TANGGAL) : new Date();
+  const tglStr = tgl.toLocaleDateString("id-ID", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  const jamStr = tgl.toLocaleTimeString("id-ID", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+
+  // ── Info servis (pelanggan, mekanik) ──
+  let metaRightHtml = `
+    <span class="val">${esc(t.NAMA_KASIR || "-")}</span>`;
+  if (isServis && t.SERVIS) {
+    metaRightHtml = `
+      <span class="val">${esc(t.NAMA_KASIR || "-")}</span>
+      <span class="val">${esc(t.SERVIS.NAMAPELANGGAN || "-")}</span>`;
+    if (t.SERVIS.KELUHAN) {
+      metaRightHtml += `<span class="val" style="font-size:11px">${esc(t.SERVIS.KELUHAN)}</span>`;
+    }
+  }
+
   document.getElementById("struk-print-area").innerHTML = `
+    <div class="struk-logo">🏪</div>
+
     <div class="struk-header">
-      <i class="fa fa-wrench" style="font-size:20px;color:#333;margin-bottom:6px"></i>
       <h5>${BENGKEL.nama}</h5>
       <p>${BENGKEL.alamat}</p>
-      <p>Telp: ${BENGKEL.telp}</p>
+      <p>No. Telp ${BENGKEL.telp}</p>
     </div>
 
-    <div class="struk-meta">
-      <span class="lbl">No. Transaksi</span><span class="val">${esc(t.NOTRANSAKSI)}</span>
-      <span class="lbl">Tanggal</span><span class="val">${formatTanggalLong(t.TANGGAL)}</span>
-      <span class="lbl">Kasir</span><span class="val">${esc(t.NAMA_KASIR || "-")}</span>
-      <span class="lbl">Jenis</span><span class="val">${isServis ? "Servis Kendaraan" : "Pembelian Sparepart"}</span>
+    <hr class="struk-divider">
+
+    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:2px">
+      <span>${tglStr}<br>${jamStr}</span>
+      <span style="text-align:right">kasir<br>${esc(t.NAMA_KASIR || "-")}${isServis && t.SERVIS ? "<br>" + esc(t.SERVIS.NAMAPELANGGAN || "") : ""}</span>
     </div>
 
-    ${servisInfoHtml}
-    ${itemsHtml}
+    <div class="struk-no">No.${esc(t.NOTRANSAKSI)}</div>
 
-    <div class="struk-total">
-      ${t.CATATAN ? `<div class="catatan-row"><span>Catatan</span><span>${esc(t.CATATAN)}</span></div>` : ""}
-      <div class="grand-row"><span>TOTAL</span><span>${rupiah(t.TOTAL)}</span></div>
+    <hr class="struk-divider">
+
+    <div class="struk-items">
+      ${itemsHtml || '<div style="color:#999;font-size:12px">Tidak ada item</div>'}
     </div>
+
+    <hr class="struk-divider">
+
+    <div class="struk-total-section">
+      <div class="struk-total-row">
+        <span>Total QTY : ${totalQty}</span>
+      </div>
+      <br>
+      <div class="struk-total-row">
+        <span>Sub Total</span>
+        <span>Rp ${formatRibu(t.TOTAL)}</span>
+      </div>
+      <div class="struk-total-row grand">
+        <span>Total</span>
+        <span>Rp ${formatRibu(t.TOTAL)}</span>
+      </div>
+      ${t.CATATAN ? `<div class="struk-total-row" style="font-size:12px;color:#555"><span>Catatan</span><span>${esc(t.CATATAN)}</span></div>` : ""}
+    </div>
+
+    <hr class="struk-divider">
 
     <div class="struk-footer">
-      <p style="font-weight:700;font-size:13px">Terima kasih!</p>
-      <p>Simpan struk ini sebagai bukti pembayaran.</p>
-      <p>Pertanyaan? Hubungi kami di ${BENGKEL.telp}</p>
+      <p style="font-weight:700">Terimakasih Telah Berbelanja</p>
+      <p>${BENGKEL.nama}</p>
+      <p style="margin-top:4px;font-size:11px">${BENGKEL.telp}</p>
     </div>
   `;
 
   document.getElementById("modalStrukLabel").textContent =
     "Struk — " + t.NOTRANSAKSI;
+}
+
+/* ── Format angka tanpa "Rp" prefix (untuk inline di struk) ── */
+function formatRibu(n) {
+  return Number(n || 0).toLocaleString("id-ID");
 }
 
 /* ── No HP ── */
@@ -288,7 +311,8 @@ function updateStrukNohpUI(nohp) {
     if (btnWA) btnWA.disabled = false;
   } else {
     if (saved) saved.style.display = "none";
-    if (btnWA) btnWA.disabled = true;
+    // Tombol WA tetap aktif — user bisa isi input manual sebelum klik
+    if (btnWA) btnWA.disabled = false;
   }
 }
 
@@ -352,90 +376,356 @@ async function simpanNohpStruk() {
   }
 }
 
-/* ── Konversi area struk ke canvas (dipakai download & kirim WA) ── */
-async function strukToCanvas() {
-  const el = document.getElementById("struk-print-area");
-  // Sembunyikan sementara elemen non-struk di modal body
-  const nohpBox = el.previousElementSibling;
-  if (nohpBox) nohpBox.style.visibility = "hidden";
+/* ── Konversi area struk ke canvas ── */
+/* ── Struk: cetak & download (tanpa html2canvas) ─────────────────
+   Pendekatan: bangun struk sebagai SVG murni menggunakan canvas 2D API.
+   Tidak butuh library eksternal, tidak ada iframe, tidak ada file:// issue.
+──────────────────────────────────────────────────────────── */
 
-  const canvas = await html2canvas(el, {
-    backgroundColor: "#ffffff",
-    scale: 2, // resolusi 2x supaya tajam
-    useCORS: true,
-    logging: false,
+/**
+ * Render isi struk ke HTMLCanvasElement menggunakan Canvas 2D API.
+ * Tidak bergantung pada html2canvas — 100% client-side, aman di file://.
+ */
+function renderStrukKeCanvas() {
+  if (!strukData) throw new Error("Data struk tidak tersedia.");
+
+  const t = strukData;
+  const isServis = t.JENISTRANSAKSI === "SERVIS";
+
+  /* ── Kumpulkan semua baris teks ─────────────────────────────── */
+  var lines = [];
+  function add(left, right, bold) {
+    lines.push({ left: left || "", right: right || "", bold: !!bold });
+  }
+  function separator() {
+    lines.push({ sep: true });
+  }
+  function center(text, bold) {
+    lines.push({ center: text, bold: !!bold });
+  }
+
+  // Header
+  center(BENGKEL.nama, true);
+  center(BENGKEL.alamat);
+  center("No. Telp " + BENGKEL.telp);
+  separator();
+
+  // Tanggal & kasir
+  var tgl = t.TANGGAL ? new Date(t.TANGGAL) : new Date();
+  var tglStr = tgl.toLocaleDateString("id-ID", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  var jamStr = tgl.toLocaleTimeString("id-ID", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+  add(tglStr, "kasir");
+  add(jamStr, esc(t.NAMA_KASIR || "-"));
+  if (isServis && t.SERVIS) add("", esc(t.SERVIS.NAMAPELANGGAN || ""));
+  add("No." + esc(t.NOTRANSAKSI), "");
+  separator();
+
+  // Items
+  var itemNo = 0;
+  var totalQty = 0;
+
+  function addItem(nama, qty, satuan, harga, subtotal) {
+    itemNo++;
+    totalQty += Number(qty) || 0;
+    var qtyLabel = satuan
+      ? qty + " " + satuan + " x " + formatRibu(harga)
+      : qty + " x " + formatRibu(harga);
+    lines.push({ itemName: itemNo + ". " + esc(nama) });
+    add("  " + qtyLabel, "Rp " + formatRibu(subtotal));
+  }
+
+  if (isServis) {
+    (t.LAYANAN || []).forEach(function (l) {
+      addItem(l.NAMA_LAYANAN, 1, "servis", l.BIAYA, l.BIAYA);
+    });
+    (t.SPAREPART || []).forEach(function (s) {
+      addItem(s.NAMA_SPAREPART, s.QTY, "pcs", s.HARGASATUAN, s.SUBTOTAL);
+    });
+  } else {
+    (t.ITEMS || []).forEach(function (i) {
+      addItem(i.NAMA_SPAREPART, i.JUMLAH, "", i.HARGA_SATUAN, i.SUB_TOTAL);
+    });
+  }
+
+  separator();
+  add("Total QTY : " + totalQty, "");
+  add("", "");
+  add("Sub Total", "Rp " + formatRibu(t.TOTAL));
+  add("Total", "Rp " + formatRibu(t.TOTAL), true);
+  if (t.CATATAN) add("Catatan", esc(t.CATATAN));
+  separator();
+  center("Terimakasih Telah Berbelanja", true);
+  center(BENGKEL.nama);
+  center(BENGKEL.telp);
+
+  /* ── Render ke canvas ───────────────────────────────────────── */
+  var W = 560; // lebar canvas — lebih lebar = lebih besar saat cetak
+  var SCALE = 2; // retina 2x
+  var FONT_SZ = 15;
+  var LINE_H = 23;
+  var PAD_X = 20;
+  var PAD_Y = 24;
+
+  // First pass: hitung tinggi
+  var totalH = PAD_Y * 2;
+  lines.forEach(function (l) {
+    if (l.sep) {
+      totalH += 12;
+    } else if (l.itemName) {
+      totalH += LINE_H;
+    } else {
+      totalH += LINE_H;
+    }
   });
 
-  if (nohpBox) nohpBox.style.visibility = "";
+  var canvas = document.createElement("canvas");
+  canvas.width = W * SCALE;
+  canvas.height = totalH * SCALE;
+  var ctx = canvas.getContext("2d");
+  ctx.scale(SCALE, SCALE);
+
+  // Background
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, W, totalH);
+
+  ctx.font = FONT_SZ + "px 'Courier New', monospace";
+  ctx.fillStyle = "#111111";
+  ctx.textBaseline = "top";
+
+  var y = PAD_Y;
+
+  lines.forEach(function (l) {
+    if (l.sep) {
+      // Dashed line
+      ctx.setLineDash([4, 3]);
+      ctx.strokeStyle = "#888";
+      ctx.lineWidth = 0.8;
+      ctx.beginPath();
+      ctx.moveTo(PAD_X, y + 5);
+      ctx.lineTo(W - PAD_X, y + 5);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      y += 12;
+    } else if (l.center !== undefined) {
+      ctx.font =
+        (l.bold ? "bold " : "") + FONT_SZ + "px 'Courier New', monospace";
+      ctx.fillStyle = "#111";
+      var tw = ctx.measureText(l.center).width;
+      ctx.fillText(l.center, Math.max(PAD_X, (W - tw) / 2), y);
+      y += LINE_H;
+    } else if (l.itemName !== undefined) {
+      ctx.font = "bold " + FONT_SZ + "px 'Courier New', monospace";
+      ctx.fillStyle = "#111";
+      ctx.fillText(l.itemName, PAD_X, y);
+      y += LINE_H;
+    } else {
+      ctx.font =
+        (l.bold ? "bold " : "") + FONT_SZ + "px 'Courier New', monospace";
+      ctx.fillStyle = "#111";
+      // Left text
+      if (l.left) ctx.fillText(l.left, PAD_X, y);
+      // Right text
+      if (l.right) {
+        var rw = ctx.measureText(l.right).width;
+        ctx.fillText(l.right, W - PAD_X - rw, y);
+      }
+      y += LINE_H;
+    }
+  });
+
   return canvas;
 }
 
-/* ── Download struk sebagai gambar ── */
-async function downloadStrukGambar() {
+/* ── Download gambar PNG ─────────────────────────────────────── */
+function downloadStrukGambar() {
   if (!strukData) return;
-  const btn = document.getElementById("btn-download-img");
+  var btn = document.getElementById("btn-download-img");
+  var orig = btn.innerHTML;
   btn.disabled = true;
-  btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span>Proses...`;
+  btn.innerHTML = '<span class="spinner-sm"></span> Proses...';
 
   try {
-    const canvas = await strukToCanvas();
-    const dataUrl = canvas.toDataURL("image/png");
-    const a = document.createElement("a");
-    a.href = dataUrl;
-    a.download = `struk-${strukData.NOTRANSAKSI}.png`;
-    a.click();
+    var canvas = renderStrukKeCanvas();
+    canvas.toBlob(function (blob) {
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url;
+      a.download = "struk-" + strukData.NOTRANSAKSI + ".png";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function () {
+        URL.revokeObjectURL(url);
+      }, 5000);
+      btn.disabled = false;
+      btn.innerHTML = orig;
+    }, "image/png");
   } catch (err) {
-    alert("Gagal membuat gambar: " + err.message);
-  } finally {
+    Swal.fire({
+      icon: "error",
+      title: "Gagal Download",
+      text: err.message,
+      confirmButtonColor: "#0070F3",
+    });
     btn.disabled = false;
-    btn.innerHTML = `<i class="fa fa-image me-1"></i>Download Gambar`;
+    btn.innerHTML = orig;
   }
 }
 
-/* ── Kirim WA — download gambar dulu, lalu buka WA ── */
-async function kirimWAStruk() {
-  if (!strukData?.NOHP) return;
+/* ── Kirim WA ────────────────────────────────────────────────── */
+function kirimWAStruk() {
+  if (!strukData) return;
 
-  const btn = document.getElementById("btn-kirim-wa");
+  // Ambil nomor dari strukData ATAU dari input field (jika user isi tapi belum simpan)
+  var nohp = (strukData.NOHP || "").trim();
+  var inputEl = document.getElementById("struk-nohp-input");
+  if (!nohp && inputEl) nohp = inputEl.value.trim();
+
+  if (!nohp) {
+    Swal.fire({
+      icon: "warning",
+      title: "No. HP Kosong",
+      text: "Masukkan dan simpan No. HP pelanggan terlebih dahulu.",
+      confirmButtonColor: "#0070F3",
+    });
+    return;
+  }
+
+  var btn = document.getElementById("btn-kirim-wa");
+  var orig = btn.innerHTML;
   btn.disabled = true;
-  btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span>Proses...`;
+  btn.innerHTML = '<span class="spinner-sm"></span> Proses...';
 
   try {
-    // 1. Generate & download gambar struk
-    const canvas = await strukToCanvas();
-    const dataUrl = canvas.toDataURL("image/png");
-    const a = document.createElement("a");
-    a.href = dataUrl;
-    a.download = `struk-${strukData.NOTRANSAKSI}.png`;
-    a.click();
+    var canvas = renderStrukKeCanvas();
+    canvas.toBlob(function (blob) {
+      // Download gambar struk
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url;
+      a.download = "struk-" + strukData.NOTRANSAKSI + ".png";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function () {
+        URL.revokeObjectURL(url);
+      }, 5000);
 
-    // 2. Buka WA dengan pesan singkat + instruksi kirim gambar
-    await new Promise((r) => setTimeout(r, 800)); // beri jeda download
+      // Format nomor WA
+      var nomor = nohp.replace(/[^0-9]/g, "");
+      if (nomor.charAt(0) === "0") nomor = "62" + nomor.slice(1);
 
-    const t = strukData;
-    let nomor = t.NOHP.replace(/\D/g, "");
-    if (nomor.startsWith("0")) nomor = "62" + nomor.slice(1);
+      var tgl = formatTanggalLong(strukData.TANGGAL);
+      var teks =
+        "Terima kasih telah melakukan transaksi di *" +
+        BENGKEL.nama +
+        "*, ini adalah struk Anda pada " +
+        tgl +
+        ".";
 
-    const tgl = formatTanggalLong(t.TANGGAL);
-    const teks =
-      `Terima kasih telah melakukan transaksi di *${BENGKEL.nama}*, ` +
-      `ini adalah struk Anda pada ${tgl}.`;
+      setTimeout(function () {
+        window.open(
+          "https://wa.me/" + nomor + "?text=" + encodeURIComponent(teks),
+          "_blank",
+        );
+      }, 600);
 
-    window.open(
-      `https://wa.me/${nomor}?text=${encodeURIComponent(teks)}`,
-      "_blank",
-    );
+      btn.disabled = false;
+      btn.innerHTML = orig;
+    }, "image/png");
   } catch (err) {
-    alert("Gagal: " + err.message);
-  } finally {
+    Swal.fire({
+      icon: "error",
+      title: "Gagal",
+      text: err.message,
+      confirmButtonColor: "#0070F3",
+    });
     btn.disabled = false;
-    btn.innerHTML = `<i class="fab fa-whatsapp me-1"></i>Kirim WA (Gambar)`;
+    btn.innerHTML = orig;
   }
 }
 
-/* ── Cetak ── */
+/* ── Cetak / PDF ─────────────────────────────────────────────── */
+function downloadStrukPdf() {
+  if (!strukData) return;
+  var btn = document.getElementById("btn-download-pdf");
+  var orig = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-sm"></span> Proses...';
+
+  try {
+    var canvas = renderStrukKeCanvas();
+    var imgData = canvas.toDataURL("image/png");
+    var noTrx = strukData.NOTRANSAKSI;
+
+    var html =
+      "<!DOCTYPE html><html><head>" +
+      '<meta charset="utf-8"><title>Struk ' +
+      noTrx +
+      "</title>" +
+      "<style>" +
+      "* { margin:0; padding:0; box-sizing:border-box; }" +
+      "body { background:#fff; display:flex; justify-content:center; padding:16px; }" +
+      "img { width:80mm; max-width:100%; display:block; }" +
+      "@media print { body { padding:0; margin:0; } @page { margin:4mm; size: 80mm auto; } }" +
+      "</style></head><body>" +
+      '<img src="' +
+      imgData +
+      '" onload="window.print();">' +
+      "</body></html>";
+
+    var blob = new Blob([html], { type: "text/html" });
+    var blobUrl = URL.createObjectURL(blob);
+    var win = window.open(blobUrl, "_blank");
+    if (win) {
+      setTimeout(function () {
+        URL.revokeObjectURL(blobUrl);
+      }, 30000);
+    } else {
+      // Popup diblokir — download file html langsung
+      var a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = "struk-" + noTrx + ".html";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function () {
+        URL.revokeObjectURL(blobUrl);
+      }, 5000);
+      Swal.fire({
+        icon: "info",
+        title: "File Diunduh",
+        html:
+          "File <b>struk-" +
+          noTrx +
+          ".html</b> sudah diunduh.<br>Buka lalu cetak (Ctrl+P).",
+        confirmButtonColor: "#0070F3",
+      });
+    }
+  } catch (err) {
+    Swal.fire({
+      icon: "error",
+      title: "Gagal Cetak",
+      text: err.message,
+      confirmButtonColor: "#0070F3",
+    });
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = orig;
+  }
+}
+
+/* ── Cetak langsung ── */
 function cetakStruk() {
-  window.print();
+  downloadStrukPdf();
 }
 
 /* ===== MODAL DETAIL ===================================================== */
@@ -527,14 +817,7 @@ async function lihatDetail(id) {
           </table></div>`;
       }
       if (s.PROGRESS?.length) {
-        html += `<h6 class="fw-bold mb-2 mt-3"><i class="fa-solid fa-timeline me-2 text-info"></i>Progress</h6>
-          <ul class="list-group list-group-flush mb-2">${s.PROGRESS.map(
-            (p) => `
-            <li class="list-group-item px-0 py-2 d-flex gap-3 align-items-start">
-              <div>${badgeStatus(p.STATUS)}</div>
-              <div><div class="small text-muted">${formatTanggal(p.WAKTU)}</div><div>${escapeHtml(p.KETERANGAN ?? "-")}</div></div>
-            </li>`,
-          ).join("")}</ul>`;
+        html += buildProgressTimeline(s.PROGRESS, formatTanggal);
       }
     } else if (!isServis && d.ITEMS?.length) {
       html += `<h6 class="fw-bold mb-2"><i class="fa fa-gear me-2 text-success"></i>Detail Pembelian</h6>
@@ -565,6 +848,63 @@ async function lihatDetail(id) {
     document.getElementById("modalDetailBody").innerHTML =
       `<div class="text-center py-4 text-danger"><i class="fa fa-circle-exclamation me-2"></i>${err.message}</div>`;
   }
+}
+
+function buildProgressTimeline(progressArr, formatWaktiFn) {
+  if (!progressArr || !progressArr.length) return "";
+
+  var statusKey = {
+    Belum: "belum",
+    "Dalam Proses": "proses",
+    Selesai: "selesai",
+  };
+
+  var items = progressArr.map(function (p, i) {
+    var isLast = i === progressArr.length - 1;
+    var dotCls = statusKey[p.STATUS] || "belum";
+    var waktu = formatWaktiFn ? formatWaktiFn(p.WAKTU) : p.WAKTU || "-";
+    var ket =
+      typeof escapeHtml === "function"
+        ? escapeHtml(p.KETERANGAN || "-")
+        : p.KETERANGAN || "-";
+    var label =
+      typeof escapeHtml === "function"
+        ? escapeHtml(p.STATUS || "-")
+        : p.STATUS || "-";
+
+    return (
+      '<div class="timeline-item">' +
+      '<div class="timeline-item-left">' +
+      '<div class="timeline-dot ' +
+      dotCls +
+      '"></div>' +
+      (isLast ? "" : '<div class="timeline-line"></div>') +
+      "</div>" +
+      '<div class="timeline-content">' +
+      '<div class="timeline-status">' +
+      label +
+      "</div>" +
+      '<div class="timeline-time">' +
+      waktu +
+      "</div>" +
+      '<div class="timeline-keterangan">' +
+      ket +
+      "</div>" +
+      "</div>" +
+      "</div>"
+    );
+  });
+
+  return (
+    '<div style="margin-bottom:8px">' +
+    '<div class="timeline-heading">' +
+    '<i class="fa-solid fa-timeline"></i> RIWAYAT PROGRESS' +
+    "</div>" +
+    '<div class="timeline">' +
+    items.join("") +
+    "</div>" +
+    "</div>"
+  );
 }
 
 function badgeStatus(status) {

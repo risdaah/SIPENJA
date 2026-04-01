@@ -156,6 +156,7 @@
     $.ajax({
       url: API + "/transaksi/get-all",
       method: "GET",
+      headers: getAuthHeaders(),
       success: function (res) {
         if (res.success) {
           allData = res.data || [];
@@ -256,52 +257,22 @@
           "</span>"
         : '<span style="color:var(--muted);font-size:.79rem">—</span>';
 
-      html +=
-        "<tr>" +
-        '<td style="color:var(--muted);font-size:.8rem">' +
-        no +
-        "</td>" +
-        '<td><span class="no-transaksi">' +
-        xh(d.NOTRANSAKSI || "—") +
-        "</span></td>" +
-        "<td>" +
-        badge +
-        "</td>" +
-        '<td><span class="kasir-name">' +
-        xh(d.NAMA_KASIR || "—") +
-        "</span></td>" +
-        '<td style="text-align:right"><span class="total-val">' +
-        rupiah(d.TOTAL) +
-        "</span></td>" +
-        '<td><span class="tanggal-val">' +
-        tglFmt(d.TANGGAL) +
-        "</span></td>" +
-        "<td>" +
-        catHtml +
-        "</td>" +
-        "<td>" +
-        '<div class="action-btns">' +
-        '<button class="btn-icon view" title="Lihat Detail" onclick="window.location.href=\'detail-transaksi.html?id=' +
-        d.IDTRANSAKSI +
-        "'\">" +
-        '<i class="fa-solid fa-eye"></i></button>' +
-        '<button class="btn-icon edit" title="Edit Transaksi" onclick="window.location.href=\'edit-transaksi.html?id=' +
-        d.IDTRANSAKSI +
-        "'\">" +
-        '<i class="fa-solid fa-pen"></i></button>' +
-        '<button class="btn-icon del" title="Hapus" onclick="confirmDelete(' +
-        d.IDTRANSAKSI +
-        ",'" +
-        xa(d.NOTRANSAKSI) +
-        "','" +
-        d.JENISTRANSAKSI +
-        "','" +
-        xa(d.IDSERVIS || "") +
-        "')\">" +
-        '<i class="fa-solid fa-trash"></i></button>' +
-        "</div>" +
-        "</td>" +
-        "</tr>";
+      html += `<tr>
+        <td style="color:var(--muted);font-size:.8rem">${no}</td>
+        <td><span class="no-transaksi">${xh(d.NOTRANSAKSI || "—")}</span></td>
+        <td>${badge}</td>
+        <td><span class="kasir-name">${xh(d.NAMA_KASIR || "—")}</span></td>
+        <td style="text-align:right"><span class="total-val">${rupiah(d.TOTAL)}</span></td>
+        <td><span class="tanggal-val">${tglFmt(d.TANGGAL)}</span></td>
+        <td>${catHtml}</td>
+        <td>
+          <div class="action-btns">
+            <a href="detail-transaksi.html?id=${d.IDTRANSAKSI}" class="btn-action view" title="Lihat Detail"><i class="fa-solid fa-eye"></i></a>
+            <a href="edit-transaksi.html?id=${d.IDTRANSAKSI}" class="btn-action edit" title="Edit Transaksi"><i class="fa-solid fa-pen"></i></a>
+            <button class="btn-action del" title="Hapus" onclick="confirmDelete(${d.IDTRANSAKSI}, '${xa(d.NOTRANSAKSI)}', '${d.JENISTRANSAKSI}', '${xa(d.IDSERVIS || "")}')"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </td>
+      </tr>`;
     });
 
     $("#table-body").html(html);

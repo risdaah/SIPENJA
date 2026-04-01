@@ -1,20 +1,39 @@
-const db = require("../config/db");
+/**
+ * controllers/authController.js — Controller autentikasi
+ *
+ * Menangani proses login, pengecekan user aktif (me), dan logout.
+ * JWT (JSON Web Token) digunakan sebagai mekanisme autentikasi stateless:
+ *   - Server tidak menyimpan session — token berisi semua info yang diperlukan
+ *   - Token berlaku selama JWT_EXPIRES (default 8 jam)
+ *   - Logout dilakukan dengan menghapus token di sisi client (localStorage)
+ */
+
+const db   = require("../config/db");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+const jwt  = require("jsonwebtoken");
 const User = require("../models/userModel");
 
-const JWT_SECRET = process.env.JWT_SECRET || "sipenja_secret_key_ganti_di_env";
+// Ambil dari .env — WAJIB diganti dengan nilai acak yang kuat di produksi
+const JWT_SECRET  = process.env.JWT_SECRET  || "sipenja_secret_key_ganti_di_env";
 const JWT_EXPIRES = process.env.JWT_EXPIRES || "8h";
 
 // ══════════════════════════════════════════════════════════
 //  POST /api/auth/login
-//  Body   : { USERNAME, PASSWORD }
+//  Body    : { USERNAME, PASSWORD }
 //  Response: { success, token, user: { IDUSER, NAMA, USERNAME, ROLE, STATUS } }
+//
+//  Alur:
+//    1. Cari user berdasarkan USERNAME
+//    2. Cek status akun (harus AKTIF)
+//    3. Bandingkan PASSWORD dengan hash bcrypt di DB
+//    4. Update LASTLOGIN
+//    5. Buat JWT token dan kembalikan ke client
 // ══════════════════════════════════════════════════════════
 const login = async (req, res) => {
   try {
     const { USERNAME, PASSWORD } = req.body;
 
+    // Validasi input wajib
     if (!USERNAME || !PASSWORD) {
       return res.status(400).json({
         success: false,
@@ -22,9 +41,10 @@ const login = async (req, res) => {
       });
     }
 
-    // Cari user berdasarkan USERNAME (method getByUsername ambil semua kolom termasuk PASSWORD hash)
+    // Cari user di DB (getByUsername mengambil semua kolom termasuk hash PASSWORD)
     const user = await User.getByUsername(USERNAME);
 
+    // Gunakan pesan generik agar tidak bocorkan info apakah username ada atau tidak
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -32,7 +52,7 @@ const login = async (req, res) => {
       });
     }
 
-    // Cek status akun
+    // Tolak login jika akun sedang dinonaktifkan admin
     if (user.STATUS !== "AKTIF") {
       return res.status(403).json({
         success: false,
@@ -40,7 +60,7 @@ const login = async (req, res) => {
       });
     }
 
-    // Verifikasi password dengan bcrypt
+    // Bandingkan password teks (dari request) dengan hash tersimpan di DB
     const isMatch = await bcrypt.compare(PASSWORD, user.PASSWORD);
     if (!isMatch) {
       return res.status(401).json({
@@ -49,22 +69,22 @@ const login = async (req, res) => {
       });
     }
 
-    // Update LASTLOGIN di tabel USER
+    // Catat waktu login terakhir di DB untuk keperluan audit
     await db.query("UPDATE USER SET LASTLOGIN = ? WHERE IDUSER = ?", [
       new Date(),
       user.IDUSER,
     ]);
 
-    // Buat payload JWT — berisi data user yang akan ada di setiap request
+    // Payload JWT — data ini akan tersedia di req.user setelah token diverifikasi
     const payload = {
-      IDUSER: user.IDUSER,
-      NAMA: user.NAMA,
+      IDUSER:   user.IDUSER,
+      NAMA:     user.NAMA,
       USERNAME: user.USERNAME,
-      ROLE: user.ROLE, // 'admin' | 'kasir' | 'mekanik'
-      STATUS: user.STATUS,
+      ROLE:     user.ROLE,    // 'admin' | 'kasir' | 'mekanik'
+      STATUS:   user.STATUS,
     };
 
-    // Generate token
+    // Buat token JWT yang berlaku selama JWT_EXPIRES
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES });
 
     return res.json({
@@ -82,7 +102,10 @@ const login = async (req, res) => {
 //  GET /api/auth/me
 //  Header  : Authorization: Bearer <token>
 //  Response: { success, user }
-//  Digunakan untuk refresh data user yang sedang login
+//
+//  Digunakan frontend untuk:
+//    - Load ulang data user setelah refresh halaman
+//    - Validasi token masih berlaku saat app dibuka kembali
 // ══════════════════════════════════════════════════════════
 const me = async (req, res) => {
   try {
@@ -102,8 +125,11 @@ const me = async (req, res) => {
 // ══════════════════════════════════════════════════════════
 //  POST /api/auth/logout
 //  Header  : Authorization: Bearer <token>
-//  Logout dilakukan di sisi client dengan menghapus token dari localStorage.
-//  Endpoint ini hanya sebagai konfirmasi ke server.
+//
+//  Karena JWT stateless, logout sesungguhnya terjadi di sisi client
+//  dengan menghapus token dari localStorage/sessionStorage.
+//  Endpoint ini hanya sebagai konfirmasi ke server (dan bisa dipakai
+//  untuk audit/logging di masa mendatang).
 // ══════════════════════════════════════════════════════════
 const logout = async (req, res) => {
   return res.json({ success: true, message: "Logout berhasil" });

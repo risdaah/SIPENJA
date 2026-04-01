@@ -1,20 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="utf-8">
-    <title>SIPENJA - Bengkel Ani Jaya</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <link href="img/favicon.ico" rel="icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIPENJA — Transaksi Baru</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <script src="https://kit.fontawesome.com/e943a573af.js" crossorigin="anonymous"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/transaksi-kasir.css" rel="stylesheet">
-
+    <link href="css/app.css" rel="stylesheet">
     <style>
         /* ── Struk modal styles ── */
         #struk-print-area {
@@ -158,77 +155,73 @@
             }
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
-    <div class="container-xxl position-relative d-flex p-0" style="background:var(--light)">
-
-        <!-- Spinner -->
-        <div id="spinner"
-            class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-            <div class="spinner-border text-primary" style="width:3rem;height:3rem;" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-        </div>
-
-        <!-- Sidebar -->
-        <div class="sidebar pe-4 pb-3">
-            <nav class="navbar bg-light navbar-light">
-                <a href="transaksi-kasir.html" class="navbar-brand mx-4 mb-3">
-                    <h3 class="text-primary">SIPENJA</h3>
-                </a>
-                <div class="navbar-nav w-100">
-                    <a href="transaksi-kasir.html" class="nav-item nav-link active"><i
-                            class="fa-solid fa-house me-2"></i>Transaksi</a>
-                    <a href="sparepart-kasir.html" class="nav-item nav-link"><i
-                            class="fa fa-gear me-2"></i>Sparepart</a>
-                    <a href="layanan-servis-kasir.html" class="nav-item nav-link"><i
-                            class="fa-solid fa-tag me-2"></i>Layanan Servis</a>
-                    <a href="perbarui-transaksi-kasir.html" class="nav-item nav-link"><i
-                            class="fa-solid fa-bag-shopping me-2"></i>Perbarui Transaksi</a>
-                    <a href="riwayat-transaksi-kasir.html" class="nav-item nav-link"><i
-                            class="fa-solid fa-clock-rotate-left me-2"></i>Riwayat Transaksi</a>
+    <div id="spinner">
+        <div class="spinner-ring"></div>
+    </div>
+    <div class="app-shell">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-icon">
+                    <img src="img/Any Jaya Logo White.png" alt="Ani Jaya Logo">
                 </div>
-            </nav>
-        </div>
-
-        <!-- Content -->
-        <div class="content">
-
-            <!-- Navbar -->
-            <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
-                <a href="transaksi-kasir.html" class="navbar-brand d-flex d-lg-none me-4">
-                    <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
+                <span class="sidebar-brand-name">SIPENJA</span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="transaksi-kasir.html" class="nav-link active">
+                    <i class="fa-solid fa-plus-circle"></i> Transaksi Baru
                 </a>
-                <a href="#" class="sidebar-toggler flex-shrink-0"><i class="fa fa-bars"></i></a>
-                <div class="navbar-nav align-items-center ms-auto">
-                    <a href="edit-profil.html"
-                        class="nav-item me-3 d-none d-sm-flex align-items-center gap-2 text-decoration-none"
-                        style="cursor:pointer">
-                        <i class="fa-solid fa-circle-user text-primary" style="font-size:1.3rem"></i>
-                        <div style="line-height:1.2">
-                            <div style="font-size:.82rem;font-weight:600;color:#191C24" id="navbar-nama">—</div>
-                            <div style="font-size:.72rem;color:#8e9bb0;text-transform:capitalize" id="navbar-role">—
-                            </div>
-                        </div>
-                    </a>
-                    <button class="btn btn-danger btn-sm" onclick="confirmLogout()">
-                        <i class="fa-solid fa-right-from-bracket me-1"></i>LOGOUT
+                <a href="sparepart-kasir.html" class="nav-link">
+                    <i class="fa-solid fa-gear"></i> Sparepart
+                </a>
+                <a href="layanan-servis-kasir.html" class="nav-link">
+                    <i class="fa-solid fa-wrench"></i> Layanan Servis
+                </a>
+                <a href="perbarui-transaksi-kasir.html" class="nav-link">
+                    <i class="fa-solid fa-pen-to-square"></i> Perbarui Transaksi
+                </a>
+                <a href="riwayat-transaksi-kasir.html" class="nav-link">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Riwayat Transaksi
+                </a>
+            </nav>
+        </aside>
+        <div class="main">
+            <header class="topbar">
+                <button class="topbar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="topbar-spacer"></div>
+                <a href="edit-profil.html" class="topbar-user" id="topbarUser">
+                    <div class="topbar-avatar" id="topbarAvatar">—</div>
+                    <div>
+                        <div class="topbar-user-name" id="navbar-nama">—</div>
+                        <div class="topbar-user-role" id="navbar-role">—</div>
+                    </div>
+                </a>
+                <button class="btn-logout" onclick="confirmLogout()">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+                </button>
+            </header>
+            <div class="page-body">
+                <div class="page-header">
+                    <div>
+                        <div class="page-title">Transaksi Baru</div>
+                        <div class="page-subtitle">Tambahkan transaksi servis atau pembelian sparepart</div>
+                    </div>
+                    <button class="btn btn-ghost btn-sm" id="btnBantuan" onclick="tampilkanBantuan()">
+                        <i class="fa-solid fa-circle-question"></i> Panduan
                     </button>
                 </div>
-            </nav>
-
-            <!-- Main Content -->
-            <div class="container-fluid pt-4 px-4">
-                <div class="card border-0 shadow-sm rounded-3">
-                    <div class="card-body p-4">
-
+                <div class="card">
+                    <div class="card-body" style="padding:24px">
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h5 class="fw-bold mb-0">Tambahkan Transaksi Baru</h5>
-                            <button class="btn btn-sm btn-outline-secondary rounded-circle" id="btnBantuan"
-                                title="Bantuan" onclick="tampilkanBantuan()">
-                                <i class="fa-solid fa-question"></i>
-                            </button>
+                            <!-- <button class="btn btn-ghost btn-sm" id="btnBantuanCard" onclick="tampilkanBantuan()">
+                                <i class="fa-solid fa-circle-question"></i> Panduan
+                            </button> -->
                         </div>
 
                         <!-- Tanggal, Jenis, NOHP -->
@@ -283,12 +276,15 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">Cari Jenis Layanan Servis</label>
-                                <div class="input-group" style="max-width:420px">
-                                    <input type="text" class="form-control" id="inputCariLayanan"
-                                        placeholder="Input Layanan Servis">
-                                    <button class="btn btn-secondary" id="btnCariLayanan" type="button">Cari</button>
+                                <div class="dropdown-hasil-wrap" style="max-width:420px">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="inputCariLayanan"
+                                            placeholder="Input Layanan Servis">
+                                        <button class="btn btn-secondary" id="btnCariLayanan"
+                                            type="button">Cari</button>
+                                    </div>
+                                    <div id="hasilCariLayanan" class="dropdown-hasil d-none"></div>
                                 </div>
-                                <div id="hasilCariLayanan" class="dropdown-hasil d-none"></div>
                             </div>
                             <div class="table-responsive mb-3">
                                 <table class="table table-bordered table-sm align-middle">
@@ -324,12 +320,15 @@
                             <hr class="my-3">
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">Cari Sparepart</label>
-                                <div class="input-group" style="max-width:420px">
-                                    <input type="text" class="form-control" id="inputCariSparepart"
-                                        placeholder="Input nama sparepart">
-                                    <button class="btn btn-secondary" id="btnCariSparepart" type="button">Cari</button>
+                                <div class="dropdown-hasil-wrap" style="max-width:420px">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="inputCariSparepart"
+                                            placeholder="Input nama sparepart">
+                                        <button class="btn btn-secondary" id="btnCariSparepart"
+                                            type="button">Cari</button>
+                                    </div>
+                                    <div id="hasilCariSparepart" class="dropdown-hasil d-none"></div>
                                 </div>
-                                <div id="hasilCariSparepart" class="dropdown-hasil d-none"></div>
                             </div>
                             <div class="table-responsive mb-3">
                                 <table class="table table-bordered table-sm align-middle">
@@ -369,103 +368,133 @@
                                 Tambahkan Transaksi
                             </button>
                         </div>
-
                     </div>
                 </div>
+                <footer class="page-footer">&copy; 2025 SIPENJA &mdash; Bengkel Ani Jaya</footer>
             </div>
-
-            <!-- Footer -->
-            <div class="container-fluid pt-4 px-4">
-                <div class="bg-light rounded-top p-4">
-                    <div class="row">
-                        <div class="col-12 col-sm-6 text-center text-sm-start">&copy; <a href="#">SIPENJA - Bengkel Any
-                                Jaya</a>, All Right Reserved.</div>
-                        <div class="col-12 col-sm-6 text-center text-sm-end">
-                            Designed By <a href="https://htmlcodex.com">HTML Codex</a><br>
-                            Distributed By <a class="border-bottom" href="https://themewagon.com"
-                                target="_blank">ThemeWagon</a>
+        </div>
+        <div id="struk-print-area">
+            <div class="text-center py-4">
+                <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                <!-- Modal Bantuan -->
+                <div class="modal fade" id="modalBantuan" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title fw-bold">
+                                    <i class="fa-solid fa-circle-info me-2 text-primary"></i>Panduan Tambah Transaksi
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body" id="modalBantuanBody">
+                                <ol class="mb-0">
+                                    <li class="mb-2">Pilih <strong>Jenis Transaksi</strong>:
+                                        <span class="badge-role" style="background:#EBF4FF;color:#1D4ED8">Servis
+                                            Kendaraan</span>
+                                        atau
+                                        <span class="badge-role" style="background:#F0FDF4;color:#15803D">Pembelian
+                                            Sparepart</span>.
+                                    </li>
+                                    <li class="mb-2">Jika <strong>Servis</strong>: isi <strong>Nama Pelanggan</strong>,
+                                        pilih <strong>Mekanik</strong>, cari dan tambahkan <strong>Layanan
+                                            Servis</strong>, lalu isi <strong>Catatan Keluhan</strong>.</li>
+                                    <li class="mb-2">Jika <strong>Pembelian Sparepart</strong>: cari dan pilih
+                                        sparepart, atur jumlah dengan tombol
+                                        <span class="badge" style="background:#FEF3C7;color:#B45309">−</span>
+                                        dan
+                                        <span class="badge" style="background:#DCFCE7;color:#15803D">+</span>.
+                                    </li>
+                                    <li class="mb-2">(Opsional) Isi <strong>No. HP</strong> pelanggan untuk kirim struk
+                                        via WhatsApp setelah transaksi.</li>
+                                    <li class="mb-2">Klik <strong style="color:#0070F3">Tambahkan Transaksi</strong>
+                                        untuk menyimpan.</li>
+                                    <li>Setelah berhasil, struk transaksi dapat dicetak atau dikirim via
+                                        <span class="badge-role" style="background:#DCFCE7;color:#15803D"><i
+                                                class="fab fa-whatsapp me-1"></i>WhatsApp</span>.
+                                    </li>
+                                </ol>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary btn-sm"
+                                    data-bs-dismiss="modal">Tutup</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="sidebar-overlay" id="sidebarOverlay"></div>
-        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
-    </div>
-
-    <!-- Modal Bantuan -->
-    <div class="modal fade" id="modalBantuan" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold">Panduan Tambah Transaksi</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body" id="modalBantuanBody"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ══════════════════════════════════════
+                <!-- ══════════════════════════════════════
          Modal Struk Transaksi
     ══════════════════════════════════════ -->
-    <div class="modal fade" id="modalStruk" tabindex="-1" aria-labelledby="modalStrukLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable" style="max-width:460px">
-            <div class="modal-content">
-                <div class="modal-header py-2">
-                    <h6 class="modal-title fw-bold" id="modalStrukLabel">
-                        <i class="fa fa-receipt me-2 text-primary"></i>Struk Transaksi
-                    </h6>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-3">
-                    <!-- No HP inline form -->
-                    <div id="struk-nohp-box" class="bg-light border rounded px-3 py-2 mb-3">
-                        <label class="small fw-semibold mb-1 d-block">
-                            <i class="fab fa-whatsapp text-success me-1"></i>No. HP Pelanggan
-                            <span id="struk-nohp-saved" class="text-muted fw-normal ms-1" style="display:none"></span>
-                        </label>
-                        <div class="d-flex gap-2">
-                            <input type="tel" id="struk-nohp-input" class="form-control form-control-sm"
-                                placeholder="Contoh: 08123456789" maxlength="15" oninput="onNohpInput()">
-                            <button class="btn btn-primary btn-sm px-3" id="btn-simpan-nohp"
-                                onclick="simpanNohpStruk()">
-                                Simpan
-                            </button>
+                <div class="modal fade" id="modalStruk" tabindex="-1" aria-labelledby="modalStrukLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable" style="max-width:460px">
+                        <div class="modal-content">
+                            <div class="modal-header py-2">
+                                <h6 class="modal-title fw-bold" id="modalStrukLabel">
+                                    <i class="fa fa-receipt me-2 text-primary"></i>Struk Transaksi
+                                </h6>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body p-3">
+                                <!-- No HP inline form -->
+                                <div id="struk-nohp-box" class="bg-light border rounded px-3 py-2 mb-3">
+                                    <label class="small fw-semibold mb-1 d-block">
+                                        <i class="fab fa-whatsapp text-success me-1"></i>No. HP Pelanggan
+                                        <span id="struk-nohp-saved" class="text-muted fw-normal ms-1"
+                                            style="display:none"></span>
+                                    </label>
+                                    <div class="d-flex gap-2">
+                                        <input type="tel" id="struk-nohp-input" class="form-control form-control-sm"
+                                            placeholder="Contoh: 08123456789" maxlength="15" oninput="onNohpInput()">
+                                        <button class="btn btn-primary btn-sm px-3" id="btn-simpan-nohp"
+                                            onclick="simpanNohpStruk()">
+                                            Simpan
+                                        </button>
+                                    </div>
+                                    <div id="struk-nohp-feedback" class="small mt-1 text-danger" style="display:none">
+                                    </div>
+                                </div>
+                                <!-- Area cetak -->
+                                <div id="struk-print-area">
+                                    <div class="text-center py-4">
+                                        <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer py-2 flex-wrap gap-1">
+                                <button type="button" class="btn btn-secondary btn-sm"
+                                    data-bs-dismiss="modal">Tutup</button>
+                                <button type="button" class="btn btn-success btn-sm" id="btn-kirim-wa"
+                                    onclick="kirimWAStruk()" disabled>
+                                    <i class="fab fa-whatsapp me-1"></i>Kirim WA (Gambar)
+                                </button>
+                                <button type="button" class="btn btn-warning btn-sm text-dark" id="btn-download-img"
+                                    onclick="downloadStrukGambar()">
+                                    <i class="fa fa-image me-1"></i>Download Gambar
+                                </button>
+                                <button type="button" class="btn btn-primary btn-sm" onclick="cetakStruk()">
+                                    <i class="fa fa-print me-1"></i>Cetak / PDF
+                                </button>
+                            </div>
                         </div>
-                        <div id="struk-nohp-feedback" class="small mt-1 text-danger" style="display:none"></div>
-                    </div>
-                    <!-- Area cetak -->
-                    <div id="struk-print-area">
-                        <div class="text-center py-4">
-                            <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
-                        </div>
                     </div>
                 </div>
-                <div class="modal-footer py-2 flex-wrap gap-1">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
-                    <button type="button" class="btn btn-success btn-sm" id="btn-kirim-wa" onclick="kirimWAStruk()"
-                        disabled>
-                        <i class="fab fa-whatsapp me-1"></i>Kirim WA (Gambar)
-                    </button>
-                    <button type="button" class="btn btn-warning btn-sm text-dark" id="btn-download-img"
-                        onclick="downloadStrukGambar()">
-                        <i class="fa fa-image me-1"></i>Download Gambar
-                    </button>
-                    <button type="button" class="btn btn-primary btn-sm" onclick="cetakStruk()">
-                        <i class="fa fa-print me-1"></i>Cetak / PDF
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="js/login.js"></script>
-    <script src="js/transaksi-kasir.js"></script>
+                <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+                <script src="js/login.js"></script>
+                <script src="js/transaksi-kasir.js"></script>
+                <script>
+                    function toggleSidebar() {
+                        document.getElementById('sidebar').classList.toggle('open');
+                    }
+                    document.addEventListener('click', function (e) {
+                        const sb = document.getElementById('sidebar');
+                        const btn = document.getElementById('sidebarToggle');
+                        if (sb && btn && !sb.contains(e.target) && !btn.contains(e.target)) {
+                            sb.classList.remove('open');
+                        }
+                    });
+                </script>
 </body>
 
 </html>

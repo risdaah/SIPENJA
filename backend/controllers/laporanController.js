@@ -1,6 +1,24 @@
-const db = require("../config/db"); // sesuaikan path koneksi DB kamu
+/**
+ * controllers/laporanController.js — Controller laporan bengkel
+ *
+ * Menyediakan data laporan untuk keperluan cetak atau ekspor.
+ * Semua endpoint menerima filter rentang tanggal via query parameter:
+ *   ?tgl_awal=YYYY-MM-DD&tgl_akhir=YYYY-MM-DD
+ *
+ * Laporan yang tersedia:
+ *   1. Laporan Sparepart  — Rekap penjualan sparepart per item dalam periode
+ *   2. Laporan Servis     — Rekap layanan servis yang dikerjakan dalam periode
+ *   3. Logo bengkel       — Gambar logo dalam base64 untuk ditampilkan di print preview
+ */
 
-/* ─── LAPORAN SPAREPART ──────────────────────────── */
+const db = require("../config/db");
+const fs = require("fs");
+const path = require("path");
+
+/* ── LAPORAN SPAREPART ────────────────────────────────────────────────────────
+   Query JOIN: TRANSAKSIPEMBELIANSPAREPART → TRANSAKSI → SPAREPART → KATEGORISPAREPART
+   Menghasilkan: tanggal, nama sparepart, kategori, harga satuan, qty, subtotal
+────────────────────────────────────────────────────────────────────────────── */
 exports.laporanSparepart = async (req, res) => {
   const { tgl_awal, tgl_akhir } = req.query;
 
@@ -30,12 +48,15 @@ exports.laporanSparepart = async (req, res) => {
     const [results] = await db.query(sql, [tgl_awal, tgl_akhir]);
     res.json({ data: results });
   } catch (err) {
-    console.error("laporanSparepart error:", err);
     res.status(500).json({ message: "DB error", error: err });
   }
 };
 
-/* ─── LAPORAN SERVIS ─────────────────────────────── */
+/* ── LAPORAN SERVIS ──────────────────────────────────────────────────────────
+   Query JOIN: DETAILTRANSAKSISERVIS → LAYANANSERVIS → SERVIS
+   Menghasilkan: tanggal, kode layanan, nama layanan, biaya, jumlah pengerjaan
+   Dikelompokkan per hari + per layanan untuk melihat frekuensi pekerjaan
+────────────────────────────────────────────────────────────────────────────── */
 exports.laporanServis = async (req, res) => {
   const { tgl_awal, tgl_akhir } = req.query;
 
@@ -64,14 +85,15 @@ exports.laporanServis = async (req, res) => {
     const [results] = await db.query(sql, [tgl_awal, tgl_akhir]);
     res.json({ data: results });
   } catch (err) {
-    console.error("laporanServis error:", err);
     res.status(500).json({ message: "DB error", error: err });
   }
 };
 
-const fs = require("fs");
-const path = require("path");
-
+/* ── GET LOGO ────────────────────────────────────────────────────────────────
+   Membaca file logo dari folder img dan mengembalikannya dalam format base64.
+   Digunakan oleh frontend untuk menampilkan logo di halaman print preview
+   tanpa perlu URL relatif yang bisa bermasalah saat print.
+────────────────────────────────────────────────────────────────────────────── */
 exports.getLogo = (req, res) => {
   const logoPath = path.join(__dirname, "../../frontend/img/logo-anijaya.jpeg");
   const img = fs.readFileSync(logoPath);

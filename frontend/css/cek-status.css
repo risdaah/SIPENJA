@@ -44,18 +44,20 @@ body {
 
 /* ===== NAVBAR ===== */
 .navbar-top {
-    background: #fff;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
-    padding: 0 32px;
-    height: 60px;
+    padding: 0 2rem;
+    height: 64px;
     display: flex;
     align-items: center;
     flex-shrink: 0;
 }
 
+
 .navbar-inner {
     width: 100%;
-    max-width: 900px;
+    max-width: 1200px;
     margin: 0 auto;
 }
 
@@ -63,11 +65,25 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-weight: 800;
-    font-size: 1.1rem;
-    color: var(--text);
     text-decoration: none;
+    color: inherit;
 }
+
+
+.brand img {
+    height: 38px;
+    border-radius: 6px;
+    object-fit: contain;
+}
+
+.brand-name {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--primary);
+    letter-spacing: -0.5px;
+}
+
+
 
 .brand-icon {
     color: var(--primary);
@@ -84,7 +100,7 @@ body {
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    padding: 48px 16px 64px;
+    padding: 48px 32px 64px;
 }
 
 /* ===== CARD SEARCH ===== */
@@ -93,8 +109,8 @@ body {
     border: 1px solid var(--border);
     border-radius: var(--radius);
     width: 100%;
-    max-width: 860px;
-    padding: 48px 48px 56px;
+    max-width: 1200px;
+    padding: 56px 64px 64px;
 }
 
 .card-search__header {
@@ -507,7 +523,7 @@ body {
 }
 
 .footer-inner {
-    max-width: 900px;
+    max-width: 1200px;
     margin: 0 auto;
     display: flex;
     align-items: center;
@@ -519,7 +535,21 @@ body {
 }
 
 /* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .card-search {
+        padding: 32px 24px 40px;
+    }
+
+    .card-search__title {
+        font-size: 1.5rem;
+    }
+}
+
 @media (max-width: 600px) {
+    .main-wrap {
+        padding: 24px 16px 48px;
+    }
+
     .card-search {
         padding: 28px 18px 36px;
     }

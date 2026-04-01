@@ -182,10 +182,10 @@ function renderTable(data) {
         formatTanggal(s.TANGGALSELESAI) +
         "</td>" +
         '<td class="text-center">' +
-        '<button class="btn btn-info btn-sm btn-square" title="Lihat Detail" onclick="bukaModalDetail(' +
+        '<div class="action-btns"><button class="btn-action view" title="Lihat Detail" onclick="bukaModalDetail(' +
         s.IDSERVIS +
         ')">' +
-        '<i class="fa fa-eye"></i></button>' +
+        '<i class="fa fa-eye"></i></button></div>' +
         "</td>" +
         "</tr>"
       );
@@ -379,25 +379,7 @@ function bukaModalDetail(idServis) {
 
       var progressHtml = "";
       if (s.PROGRESS && s.PROGRESS.length) {
-        progressHtml =
-          '<h6 class="fw-semibold mb-2"><i class="fa-solid fa-timeline me-1 text-primary"></i>Riwayat Progress</h6>' +
-          '<div class="mb-4">' +
-          s.PROGRESS.map(function (p) {
-            return (
-              '<div class="detail-progress-item">' +
-              '<div class="d-flex justify-content-between align-items-center">' +
-              "<span>" +
-              badgeStatus(p.STATUS) +
-              "</span>" +
-              '<small class="text-muted">' +
-              formatWaktu(p.WAKTU) +
-              "</small></div>" +
-              '<div class="small mt-1">' +
-              escapeHtml(p.KETERANGAN || "-") +
-              "</div></div>"
-            );
-          }).join("") +
-          "</div>";
+        progressHtml = buildProgressTimeline(s.PROGRESS, formatWaktu);
       }
 
       var totalLayanan = (s.LAYANAN || []).reduce(function (a, l) {
@@ -432,6 +414,64 @@ function bukaModalDetail(idServis) {
 }
 
 /* ===== UTILS ===== */
+
+function buildProgressTimeline(progressArr, formatWaktiFn) {
+  if (!progressArr || !progressArr.length) return "";
+
+  var statusKey = {
+    Belum: "belum",
+    "Dalam Proses": "proses",
+    Selesai: "selesai",
+  };
+
+  var items = progressArr.map(function (p, i) {
+    var isLast = i === progressArr.length - 1;
+    var dotCls = statusKey[p.STATUS] || "belum";
+    var waktu = formatWaktiFn ? formatWaktiFn(p.WAKTU) : p.WAKTU || "-";
+    var ket =
+      typeof escapeHtml === "function"
+        ? escapeHtml(p.KETERANGAN || "-")
+        : p.KETERANGAN || "-";
+    var label =
+      typeof escapeHtml === "function"
+        ? escapeHtml(p.STATUS || "-")
+        : p.STATUS || "-";
+
+    return (
+      '<div class="timeline-item">' +
+      '<div class="timeline-item-left">' +
+      '<div class="timeline-dot ' +
+      dotCls +
+      '"></div>' +
+      (isLast ? "" : '<div class="timeline-line"></div>') +
+      "</div>" +
+      '<div class="timeline-content">' +
+      '<div class="timeline-status">' +
+      label +
+      "</div>" +
+      '<div class="timeline-time">' +
+      waktu +
+      "</div>" +
+      '<div class="timeline-keterangan">' +
+      ket +
+      "</div>" +
+      "</div>" +
+      "</div>"
+    );
+  });
+
+  return (
+    '<div style="margin-bottom:8px">' +
+    '<div class="timeline-heading">' +
+    '<i class="fa-solid fa-timeline"></i> RIWAYAT PROGRESS' +
+    "</div>" +
+    '<div class="timeline">' +
+    items.join("") +
+    "</div>" +
+    "</div>"
+  );
+}
+
 function badgeStatus(status) {
   var map = {
     Belum: "bg-secondary",

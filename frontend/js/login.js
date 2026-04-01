@@ -313,3 +313,59 @@
     }
   }
 })();
+
+/* ══════════════════════════════════════════════════════════════
+   TOPBAR AVATAR — inisial dari nama user yang sedang login
+   Dipanggil otomatis saat DOM siap. Semua halaman pakai ini.
+══════════════════════════════════════════════════════════════ */
+(function () {
+  // Warna avatar berdasarkan role
+  var ROLE_COLORS = {
+    admin:   { bg: "#DBEAFE", color: "#1D4ED8" },
+    kasir:   { bg: "#DCFCE7", color: "#15803D" },
+    mekanik: { bg: "#FEF3C7", color: "#B45309" },
+  };
+
+  function getInitials(nama) {
+    if (!nama) return "?";
+    var parts = nama.trim().split(/\s+/);
+    if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+    return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+  }
+
+  function applyAvatar() {
+    var user = window.Session && Session.getUser();
+    if (!user) return;
+
+    var initials = getInitials(user.NAMA);
+    var role     = (user.ROLE || "").toLowerCase();
+    var scheme   = ROLE_COLORS[role] || { bg: "#E2E8F0", color: "#475569" };
+
+    // Update semua elemen #topbarAvatar yang ada di halaman
+    document.querySelectorAll("#topbarAvatar").forEach(function (el) {
+      el.textContent      = initials;
+      el.style.background = scheme.bg;
+      el.style.color      = scheme.color;
+    });
+
+    // Update nama & role di topbar jika belum diisi JS lain
+    var elNama = document.getElementById("navbar-nama");
+    var elRole = document.getElementById("navbar-role");
+    if (elNama && (!elNama.textContent || elNama.textContent === "—")) {
+      elNama.textContent = user.NAMA;
+    }
+    if (elRole && (!elRole.textContent || elRole.textContent === "—")) {
+      elRole.textContent = user.ROLE;
+    }
+  }
+
+  // Jalankan setelah DOM siap
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", applyAvatar);
+  } else {
+    applyAvatar();
+  }
+
+  // Expose agar bisa dipanggil ulang setelah update nama profil
+  window.applyTopbarAvatar = applyAvatar;
+})();

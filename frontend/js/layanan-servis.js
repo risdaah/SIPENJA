@@ -58,7 +58,9 @@ function formatRupiah(angka) {
 /* ===== LOAD DATA ===== */
 async function loadLayanan() {
   try {
-    const res = await fetch(`${API_BASE_URL}/api/layanan-servis/get-all`);
+    const res = await fetch(`${API_BASE_URL}/api/layanan-servis/get-all`, {
+      headers: getAuthHeaders(),
+    });
     if (!res.ok) throw new Error("Gagal mengambil data");
     const json = await res.json();
     const data = json.data ?? [];
@@ -97,15 +99,15 @@ function renderTable(data) {
             <td>${escapeHtml(item.NAMA)}</td>
             <td class="text-end">${formatRupiah(item.BIAYAPOKOK)}</td>
             <td>${escapeHtml(item.DESKRIPSI) || '<span class="text-muted fst-italic">-</span>'}</td>
-            <td class="text-center">
-                <button class="btn btn-warning btn-sm btn-square me-1" title="Edit"
-                    onclick="bukaModalEdit(${item.IDLAYANANSERVIS})">
-                    <i class="fa fa-pen-to-square"></i>
+            <td>
+              <div class="action-btns">
+                <button class="btn-action edit" title="Edit" onclick="bukaModalEdit(${item.IDLAYANANSERVIS})">
+                  <i class="fa fa-pen-to-square"></i>
                 </button>
-                <button class="btn btn-danger btn-sm btn-square" title="Hapus"
-                    onclick="konfirmasiHapus(${item.IDLAYANANSERVIS})">
-                    <i class="fa fa-trash"></i>
+                <button class="btn-action del" title="Hapus" onclick="konfirmasiHapus(${item.IDLAYANANSERVIS})">
+                  <i class="fa fa-trash"></i>
                 </button>
+              </div>
             </td>
         </tr>
     `,

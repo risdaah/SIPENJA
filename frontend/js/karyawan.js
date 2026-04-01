@@ -1,5 +1,6 @@
 /* ===== KONFIGURASI BASE URL API ===== */
 const API_BASE_URL = "http://localhost:3000";
+
 /* ===== AUTH HEADERS — kirim token JWT ke setiap request ===== */
 function getAuthHeaders() {
   return {
@@ -60,28 +61,41 @@ function formatTanggal(iso) {
 
 function formatTanggalInput(iso) {
   if (!iso) return "";
-  return iso.substring(0, 10); // YYYY-MM-DD
+  return iso.substring(0, 10);
 }
 
 function badgeRole(role) {
-  const map = {
-    admin: "bg-danger",
-    kasir: "bg-primary",
-    mekanik: "bg-success",
+  var colors = {
+    admin: "background:#DBEAFE;color:#1D4ED8",
+    kasir: "background:#DCFCE7;color:#15803D",
+    mekanik: "background:#FEF3C7;color:#B45309",
   };
-  const cls = map[role] ?? "bg-secondary";
-  return `<span class="badge ${cls} text-capitalize">${escapeHtml(role)}</span>`;
+  var s = colors[role] || "background:#F1F5F9;color:#64748B";
+  return (
+    '<span class="badge-role" style="' + s + '">' + escapeHtml(role) + "</span>"
+  );
 }
 
 function badgeStatus(status) {
-  const cls = status === "AKTIF" ? "bg-success" : "bg-secondary";
-  return `<span class="badge ${cls}">${escapeHtml(status)}</span>`;
+  var s =
+    status === "AKTIF"
+      ? "background:#DCFCE7;color:#15803D"
+      : "background:#F1F5F9;color:#64748B";
+  return (
+    '<span class="badge-role" style="' +
+    s +
+    '">' +
+    escapeHtml(status) +
+    "</span>"
+  );
 }
 
 /* ===== LOAD DATA ===== */
 async function loadKaryawan() {
   try {
-    const res = await fetch(`${API_BASE_URL}/api/user/get-all`);
+    const res = await fetch(`${API_BASE_URL}/api/user/get-all`, {
+      headers: getAuthHeaders(),
+    });
     if (!res.ok) throw new Error("Gagal mengambil data");
     const json = await res.json();
     const data = json.data ?? [];
@@ -122,19 +136,18 @@ function renderTable(data) {
             <td class="text-center">${escapeHtml(item.JENISKELAMIN)}</td>
             <td class="text-center">${badgeRole(item.ROLE)}</td>
             <td class="text-center">${badgeStatus(item.STATUS)}</td>
-            <td class="text-center">
-                <button class="btn btn-warning btn-sm btn-square me-1" title="Edit"
-                    onclick="bukaModalEdit(${item.IDUSER})">
-                    <i class="fa fa-pen-to-square"></i>
+            <td>
+              <div class="action-btns">
+                <button class="btn-action edit" title="Edit" onclick="bukaModalEdit(${item.IDUSER})">
+                  <i class="fa fa-pen-to-square"></i>
                 </button>
-                <button class="btn btn-info btn-sm btn-square me-1" title="Ganti Password"
-                    onclick="bukaModalPassword(${item.IDUSER})">
-                    <i class="fa fa-key"></i>
+                <button class="btn-action key" title="Ganti Password" onclick="bukaModalPassword(${item.IDUSER})">
+                  <i class="fa fa-key"></i>
                 </button>
-                <button class="btn btn-danger btn-sm btn-square" title="Hapus"
-                    onclick="konfirmasiHapus(${item.IDUSER})">
-                    <i class="fa fa-trash"></i>
+                <button class="btn-action del" title="Hapus" onclick="konfirmasiHapus(${item.IDUSER})">
+                  <i class="fa fa-trash"></i>
                 </button>
+              </div>
             </td>
         </tr>
     `,
@@ -231,7 +244,6 @@ function _applyFilter(keyword) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  // ── SESSION ──────────────────────────────────────────
   if (!Session.guard(["admin"])) return;
   Session.setupAjax();
   var _u = Session.getUser();
@@ -241,14 +253,23 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("navbar-role") &&
       (document.getElementById("navbar-role").textContent = _u.ROLE);
   }
-  // ─────────────────────────────────────────────────────
   document.getElementById("searchInput").addEventListener("keyup", function () {
     _applyFilter(this.value.toLowerCase());
   });
   loadKaryawan();
 });
 
-/* ===== TAMBAH ===== */
+/* ── Validasi password ── */
+function validatePassword(password, username) {
+  if (!password || password.length < 8) return "Password minimal 8 karakter";
+  if (!/[A-Za-z]/.test(password)) return "Password harus mengandung huruf";
+  if (!/[0-9]/.test(password)) return "Password harus mengandung angka";
+  if (username && password.toLowerCase() === username.toLowerCase())
+    return "Password tidak boleh sama dengan username";
+  return null;
+}
+
+/* ===== TAMBAH KARYAWAN (kasir / mekanik) ===== */
 async function simpanKaryawan() {
   const payload = {
     NAMA: document.getElementById("inputNama").value.trim(),
@@ -269,6 +290,16 @@ async function simpanKaryawan() {
       icon: "warning",
       title: "Perhatian",
       text: "Nama, Username, Password, dan Role wajib diisi.",
+    });
+    return;
+  }
+
+  var passErr = validatePassword(payload.PASSWORD, payload.USERNAME);
+  if (passErr) {
+    Swal.fire({
+      icon: "warning",
+      title: "Password Tidak Valid",
+      text: passErr,
     });
     return;
   }
@@ -300,11 +331,93 @@ async function simpanKaryawan() {
   }
 }
 
+/* ===== TAMBAH ADMIN ===== */
+async function simpanAdmin() {
+  const nama = document.getElementById("adminNama").value.trim();
+  const username = document.getElementById("adminUsername").value.trim();
+  const password = document.getElementById("adminPassword").value;
+  const konfirm = document.getElementById("adminPasswordKonfirm").value;
+  const tglLahir = document.getElementById("adminTanggalLahir").value;
+  const jk = document.getElementById("adminJenisKelamin").value;
+
+  // ── Validasi wajib ──
+  if (!nama || !username || !password || !konfirm) {
+    Swal.fire({
+      icon: "warning",
+      title: "Perhatian",
+      text: "Nama, Username, Password, dan Konfirmasi Password wajib diisi.",
+    });
+    return;
+  }
+
+  // ── Validasi kekuatan password ──
+  var passErr = validatePassword(password, username);
+  if (passErr) {
+    Swal.fire({
+      icon: "warning",
+      title: "Password Tidak Valid",
+      text: passErr,
+    });
+    return;
+  }
+
+  // ── Konfirmasi password harus cocok ──
+  if (password !== konfirm) {
+    Swal.fire({
+      icon: "warning",
+      title: "Perhatian",
+      text: "Password dan konfirmasi tidak cocok.",
+    });
+    return;
+  }
+
+  const payload = {
+    NAMA: nama,
+    USERNAME: username,
+    PASSWORD: password,
+    TANGGALLAHIR: tglLahir || null,
+    JENISKELAMIN: jk || null,
+  };
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/user/create-admin`, {
+      method: "POST",
+      headers: getAuthHeaders(), // kirim JWT — backend akan verifikasi role admin
+      body: JSON.stringify(payload),
+    });
+
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.message || "Gagal membuat akun admin");
+
+    bootstrap.Modal.getInstance(
+      document.getElementById("modalTambahAdmin"),
+    ).hide();
+
+    // Reset form
+    document.getElementById("adminNama").value = "";
+    document.getElementById("adminUsername").value = "";
+    document.getElementById("adminPassword").value = "";
+    document.getElementById("adminPasswordKonfirm").value = "";
+    document.getElementById("adminTanggalLahir").value = "";
+    document.getElementById("adminJenisKelamin").value = "";
+
+    await loadKaryawan();
+    Swal.fire({
+      icon: "success",
+      title: "Berhasil!",
+      text: "Akun admin berhasil dibuat.",
+      timer: 1800,
+      showConfirmButton: false,
+    });
+  } catch (err) {
+    Swal.fire({ icon: "error", title: "Gagal!", text: err.message });
+  }
+}
+
 /* ===== EDIT ===== */
 function bukaModalEdit(id) {
   const item = allData.find((d) => d.IDUSER == id);
   if (!item) return;
-
   document.getElementById("editId").value = item.IDUSER;
   document.getElementById("editNama").value = item.NAMA ?? "";
   document.getElementById("editUsername").value = item.USERNAME ?? "";
@@ -313,7 +426,6 @@ function bukaModalEdit(id) {
   );
   document.getElementById("editJenisKelamin").value = item.JENISKELAMIN ?? "";
   document.getElementById("editRole").value = item.ROLE ?? "";
-
   new bootstrap.Modal(document.getElementById("modalEdit")).show();
 }
 
@@ -390,6 +502,16 @@ async function gantiPassword() {
     return;
   }
 
+  var passErr2 = validatePassword(pass, null);
+  if (passErr2) {
+    Swal.fire({
+      icon: "warning",
+      title: "Password Tidak Valid",
+      text: passErr2,
+    });
+    return;
+  }
+
   try {
     const res = await fetch(`${API_BASE_URL}/api/user/update-password/${id}`, {
       method: "PUT",
@@ -457,6 +579,7 @@ function escapeHtml(str) {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
 }
+
 /* ===== LOGOUT ===== */
 function confirmLogout() {
   Swal.fire({

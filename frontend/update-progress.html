@@ -1,266 +1,221 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
-    <meta charset="utf-8">
-    <title>SIPENJA - Update Progress Servis</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
-    <link href="img/favicon.ico" rel="icon">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/e943a573af.js" crossorigin="anonymous"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/update-progress.css" rel="stylesheet">
-    <style>
-        .layanan-cell {
-            max-width: 220px;
-        }
-
-        .layanan-cell .badge {
-            font-size: .72rem;
-            font-weight: 500;
-            margin-bottom: 2px;
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIPENJA — Update Progress</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <script src="https://kit.fontawesome.com/e943a573af.js" crossorigin="anonymous"></script>
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/app.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
-    <div class="container-xxl position-relative d-flex p-0" style="background:var(--light)">
-
-        <!-- Spinner -->
-        <div id="spinner"
-            class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-            <div class="spinner-border text-primary" style="width:3rem;height:3rem;" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
+  <div id="spinner">
+    <div class="spinner-ring"></div>
+  </div>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-icon">
+          <img src="img/Any Jaya Logo White.png" alt="Ani Jaya Logo">
         </div>
-
-        <!-- Sidebar -->
-        <div class="sidebar pe-4 pb-3">
-            <nav class="navbar bg-light navbar-light">
-                <a href="update-progress.html" class="navbar-brand mx-4 mb-3">
-                    <h3 class="text-primary">SIPENJA</h3>
-                </a>
-                <div class="navbar-nav w-100">
-                    <a href="update-progress.html" class="nav-item nav-link active">
-                        <i class="fa-solid fa-house me-2"></i>Update Progress
-                    </a>
-                    <a href="riwayat-pekerjaan.html" class="nav-item nav-link">
-                        <i class="fa-solid fa-clock-rotate-left me-2"></i>Riwayat Pekerjaan
-                    </a>
-                </div>
-            </nav>
+        <span class="sidebar-brand-name">SIPENJA</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="update-progress.html" class="nav-link active">
+          <i class="fa-solid fa-list-check"></i> Update Progress
+        </a>
+        <a href="riwayat-pekerjaan.html" class="nav-link">
+          <i class="fa-solid fa-clock-rotate-left"></i> Riwayat Pekerjaan
+        </a>
+      </nav>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="topbar-spacer"></div>
+        <a href="edit-profil.html" class="topbar-user" id="topbarUser">
+          <div class="topbar-avatar" id="topbarAvatar">—</div>
+          <div>
+            <div class="topbar-user-name" id="navbar-nama">—</div>
+            <div class="topbar-user-role" id="navbar-role">—</div>
+          </div>
+        </a>
+        <button class="btn-logout" onclick="confirmLogout()">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+        </button>
+      </header>
+      <div class="page-body">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Update Progress Servis</div>
+            <div class="page-subtitle">Kelola status antrian servis aktif</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="tampilkanPetunjuk()">
+            <i class="fa-solid fa-circle-question"></i> Petunjuk
+          </button>
         </div>
-
-        <!-- Content -->
-        <div class="content">
-
-            <!-- Navbar -->
-            <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
-                <a href="update-progress.html" class="navbar-brand d-flex d-lg-none me-4">
-                    <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
-                </a>
-                <a href="#" class="sidebar-toggler flex-shrink-0"><i class="fa fa-bars"></i></a>
-                <div class="navbar-nav align-items-center ms-auto">
-                    <a href="edit-profil.html"
-                        class="nav-item me-3 d-none d-sm-flex align-items-center gap-2 text-decoration-none"
-                        style="cursor:pointer">
-                        <i class="fa-solid fa-circle-user text-primary" style="font-size:1.3rem"></i>
-                        <div style="line-height:1.2">
-                            <div style="font-size:.82rem;font-weight:600;color:#191C24" id="navbar-nama">—</div>
-                            <div style="font-size:.72rem;color:#8e9bb0;text-transform:capitalize" id="navbar-role">—
-                            </div>
-                        </div>
-                    </a>
-                    <button class="btn btn-danger btn-sm" onclick="confirmLogout()">
-                        <i class="fa-solid fa-right-from-bracket me-1"></i>LOGOUT
-                    </button>
-                </div>
-            </nav>
-
-            <!-- Main Content -->
-            <div class="container-fluid pt-4 px-4">
-                <div class="bg-light rounded p-4 position-relative">
-
-                    <!-- Header -->
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h5 class="fw-bold mb-0">Update Progress Servis</h5>
-                        <button class="btn btn-sm btn-outline-secondary rounded-circle" onclick="tampilkanPetunjuk()"
-                            title="Petunjuk">
-                            <i class="fa-solid fa-question"></i>
-                        </button>
-                    </div>
-
-                    <!-- Daftar Servis Aktif -->
-                    <div class="table-responsive rounded mb-2">
-                        <table class="table table-bordered table-hover align-middle mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th class="text-center" style="width:50px">No</th>
-                                    <th class="text-center">Kode Antrian</th>
-                                    <th>Pelanggan</th>
-                                    <th>Keluhan</th>
-                                    <th>Layanan</th>
-                                    <th class="text-center">Status</th>
-                                    <th class="text-center">Tgl Masuk</th>
-                                    <th class="text-center" style="width:90px">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tableBody">
-                                <tr>
-                                    <td colspan="8" class="text-center py-4 text-muted">
-                                        <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
-                                        </div>
-                                        Memuat data...
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Footer -->
-            <div class="container-fluid pt-4 px-4">
-                <div class="bg-light rounded-top p-4">
-                    <div class="row">
-                        <div class="col-12 col-sm-6 text-center text-sm-start">
-                            &copy; <a href="#">SIPENJA - Bengkel Any Jaya</a>, All Right Reserved.
-                        </div>
-                        <div class="col-12 col-sm-6 text-center text-sm-end">
-                            Designed By <a href="https://htmlcodex.com">HTML Codex</a><br>
-                            Distributed By <a class="border-bottom" href="https://themewagon.com"
-                                target="_blank">ThemeWagon</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+        <div class="table-card">
+          <div class="table-card-header"><span class="table-count" id="table-count"></span></div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width:46px">No</th>
+                  <th>Kode Antrian</th>
+                  <th>Pelanggan</th>
+                  <th>Keluhan</th>
+                  <th>Layanan</th>
+                  <th style="text-align:center">Status</th>
+                  <th>Tgl Masuk</th>
+                  <th style="width:70px;text-align:center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody">
+                <tr class="loading-row">
+                  <td colspan="8"><span class="spinner-sm"></span> Memuat data...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-        <!-- Content End -->
-
-        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+      </div>
+      <footer class="page-footer">&copy; 2025 SIPENJA &mdash; Bengkel Ani Jaya</footer>
     </div>
-
-    <!-- Modal Update Progress -->
-    <div class="modal fade" id="modalProgress" tabindex="-1" aria-labelledby="modalProgressLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold" id="modalProgressLabel">Update Progress Servis</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" id="progressIdServis">
-
-                    <!-- Info Servis + Layanan Terdaftar -->
-                    <div class="alert alert-light border mb-4" id="infoServis"></div>
-
-                    <!-- Status -->
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Status <span class="text-danger">*</span></label>
-                        <select class="form-select" id="progressStatus">
-                            <option value="">Pilih Status</option>
-                            <option value="Belum">Belum</option>
-                            <option value="Dalam Proses">Dalam Proses</option>
-                            <option value="Selesai">Selesai</option>
-                        </select>
-                    </div>
-
-                    <!-- Keterangan -->
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold">Keterangan Progress</label>
-                        <textarea class="form-control" id="progressKeterangan" rows="2"
-                            placeholder="Contoh: Sedang mengganti oli dan filter..."></textarea>
-                    </div>
-
-                    <hr>
-
-                    <!-- Tambah Layanan Tambahan -->
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <label class="form-label fw-semibold mb-0">
-                                <i class="fa-solid fa-tag me-1 text-warning"></i>Layanan Tambahan <small
-                                    class="text-muted fw-normal">(opsional)</small>
-                            </label>
-                            <button class="btn btn-warning btn-sm" onclick="tambahBarisCariLayanan()">
-                                <i class="fa-solid fa-plus me-1"></i>Tambah
-                            </button>
-                        </div>
-                        <div id="listCariLayanan"></div>
-                    </div>
-
-                    <hr>
-
-                    <!-- Tambah Sparepart -->
-                    <div class="mb-2">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <label class="form-label fw-semibold mb-0">
-                                <i class="fa fa-gear me-1 text-secondary"></i>Sparepart Digunakan <small
-                                    class="text-muted fw-normal">(opsional)</small>
-                            </label>
-                            <button class="btn btn-secondary btn-sm" onclick="tambahBarisCariSparepart()">
-                                <i class="fa-solid fa-plus me-1"></i>Tambah
-                            </button>
-                        </div>
-                        <div id="listCariSparepart"></div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-primary btn-sm px-4" id="btnSimpanProgress"
-                        onclick="simpanProgress()">
-                        Simpan Progress
-                    </button>
-                </div>
-            </div>
+  </div>
+  <!-- Modal Update Progress -->
+  <div class="modal fade" id="modalProgress" tabindex="-1" aria-labelledby="modalProgressLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold" id="modalProgressLabel">Update Progress Servis</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-    </div>
+        <div class="modal-body">
+          <input type="hidden" id="progressIdServis">
 
-    <!-- Modal Petunjuk -->
-    <div class="modal fade" id="modalPetunjuk" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold"><i class="fa-solid fa-circle-info me-2 text-primary"></i>Petunjuk
-                        Update Progress</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <ol class="mb-0">
-                        <li class="mb-2">Klik tombol <span class="badge bg-primary"><i
-                                    class="fa fa-pen-to-square"></i></span> pada baris servis yang ingin diupdate.</li>
-                        <li class="mb-2">Lihat <strong>Layanan Servis Terdaftar</strong> di bagian atas modal untuk
-                            memastikan layanan yang perlu dikerjakan.</li>
-                        <li class="mb-2">Pilih <strong>Status</strong> terbaru dari servis tersebut.</li>
-                        <li class="mb-2">Isi <strong>Keterangan</strong> untuk menjelaskan perkembangan servis.</li>
-                        <li class="mb-2">Jika ada <strong>Layanan Tambahan</strong>, klik tombol <span
-                                class="badge bg-warning text-dark">+ Tambah</span> di bagian Layanan Tambahan, ketik
-                            nama layanan lalu pilih dari daftar.</li>
-                        <li class="mb-2">Jika ada <strong>Sparepart</strong> yang dipakai, klik tombol <span
-                                class="badge bg-secondary">+ Tambah</span> di bagian Sparepart, ketik nama lalu pilih
-                            dan isi jumlah.</li>
-                        <li class="mb-2">Klik <strong class="text-primary">Simpan Progress</strong> untuk menyimpan.
-                        </li>
-                        <li>Servis yang sudah berstatus <span class="badge bg-success">Selesai</span> tidak dapat
-                            diupdate lagi.</li>
-                    </ol>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
-                </div>
+          <!-- Info Servis + Layanan Terdaftar -->
+          <div class="alert alert-light border mb-4" id="infoServis"></div>
+
+          <!-- Status -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Status <span class="text-danger">*</span></label>
+            <select class="form-select" id="progressStatus">
+              <option value="">Pilih Status</option>
+              <option value="Belum">Belum</option>
+              <option value="Dalam Proses">Dalam Proses</option>
+              <option value="Selesai">Selesai</option>
+            </select>
+          </div>
+
+          <!-- Keterangan -->
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Keterangan Progress</label>
+            <textarea class="form-control" id="progressKeterangan" rows="2"
+              placeholder="Contoh: Sedang mengganti oli dan filter..."></textarea>
+          </div>
+
+          <hr>
+
+          <!-- Tambah Layanan Tambahan -->
+          <div class="mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <label class="form-label fw-semibold mb-0">
+                <i class="fa-solid fa-tag me-1 text-warning"></i>Layanan Tambahan <small
+                  class="text-muted fw-normal">(opsional)</small>
+              </label>
+              <button class="btn btn-warning btn-sm" onclick="tambahBarisCariLayanan()">
+                <i class="fa-solid fa-plus me-1"></i>Tambah
+              </button>
             </div>
-        </div>
-    </div>
+            <div id="listCariLayanan"></div>
+          </div>
 
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/login.js"></script>
-    <script src="js/update-progress.js"></script>
+          <hr>
+
+          <!-- Tambah Sparepart -->
+          <div class="mb-2">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <label class="form-label fw-semibold mb-0">
+                <i class="fa fa-gear me-1 text-secondary"></i>Sparepart Digunakan <small
+                  class="text-muted fw-normal">(opsional)</small>
+              </label>
+              <button class="btn btn-secondary btn-sm" onclick="tambahBarisCariSparepart()">
+                <i class="fa-solid fa-plus me-1"></i>Tambah
+              </button>
+            </div>
+            <div id="listCariSparepart"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+          <button type="button" class="btn btn-primary btn-sm px-4" id="btnSimpanProgress" onclick="simpanProgress()">
+            Simpan Progress
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Petunjuk -->
+  <div class="modal fade" id="modalPetunjuk" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold"><i class="fa-solid fa-circle-info me-2 text-primary"></i>Petunjuk
+            Update Progress</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <ol class="mb-0">
+            <li class="mb-2">Klik tombol <span class="badge bg-primary"><i class="fa fa-pen-to-square"></i></span> pada
+              baris servis yang ingin diupdate.</li>
+            <li class="mb-2">Lihat <strong>Layanan Servis Terdaftar</strong> di bagian atas modal untuk
+              memastikan layanan yang perlu dikerjakan.</li>
+            <li class="mb-2">Pilih <strong>Status</strong> terbaru dari servis tersebut.</li>
+            <li class="mb-2">Isi <strong>Keterangan</strong> untuk menjelaskan perkembangan servis.</li>
+            <li class="mb-2">Jika ada <strong>Layanan Tambahan</strong>, klik tombol <span
+                class="badge bg-warning text-dark">+ Tambah</span> di bagian Layanan Tambahan, ketik
+              nama layanan lalu pilih dari daftar.</li>
+            <li class="mb-2">Jika ada <strong>Sparepart</strong> yang dipakai, klik tombol <span
+                class="badge bg-secondary">+ Tambah</span> di bagian Sparepart, ketik nama lalu pilih
+              dan isi jumlah.</li>
+            <li class="mb-2">Klik <strong class="text-primary">Simpan Progress</strong> untuk menyimpan.
+            </li>
+            <li>Servis yang sudah berstatus <span class="badge bg-success">Selesai</span> tidak dapat
+              diupdate lagi.</li>
+          </ol>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/login.js"></script>
+  <script src="js/update-progress.js"></script>
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+    }
+    document.addEventListener('click', function (e) {
+      const sb = document.getElementById('sidebar');
+      const btn = document.getElementById('sidebarToggle');
+      if (sb && btn && !sb.contains(e.target) && !btn.contains(e.target)) {
+        sb.classList.remove('open');
+      }
+    });
+  </script>
 </body>
 
 </html>

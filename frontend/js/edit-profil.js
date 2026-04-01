@@ -143,10 +143,8 @@ function renderSidebar(role) {
   var config = SIDEBAR_MENUS[role];
   if (!config) return;
 
-  var brand = document.getElementById("sidebar-brand");
-  var brandMobile = document.getElementById("navbar-brand-mobile");
-  if (brand) brand.href = config.home;
-  if (brandMobile) brandMobile.href = config.home;
+  var brandEl = document.getElementById("sidebar-brand");
+  if (brandEl) brandEl.href = config.home;
 
   var menuEl = document.getElementById("sidebar-menu");
   if (!menuEl) return;
@@ -155,10 +153,10 @@ function renderSidebar(role) {
       return (
         '<a href="' +
         m.href +
-        '" class="nav-item nav-link">' +
+        '" class="nav-link">' +
         '<i class="' +
         m.icon +
-        ' me-2"></i>' +
+        '"></i> ' +
         m.label +
         "</a>"
       );
@@ -246,6 +244,7 @@ async function simpanProfil() {
 
     // Update tampilan
     document.getElementById("navbar-nama").textContent = nama;
+    if (typeof applyTopbarAvatar === "function") applyTopbarAvatar();
     document.getElementById("profileNamaDisplay").textContent = nama;
     document.getElementById("profileUsernameDisplay").textContent =
       "@" + username;

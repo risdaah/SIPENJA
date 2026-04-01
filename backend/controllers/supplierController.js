@@ -1,5 +1,15 @@
+/**
+ * controllers/supplierController.js — Controller data supplier
+ *
+ * Supplier adalah pemasok/vendor yang menyediakan sparepart ke bengkel.
+ * Data supplier digunakan untuk:
+ *   - Menandai asal sparepart (setiap sparepart punya IDSUPPLIER)
+ *   - Referensi kontak saat perlu restock
+ */
+
 const Supplier = require('../models/supplierModel');
 
+// Ambil semua supplier
 const getAllSupplier = async (req, res) => {
   try {
     const data = await Supplier.getAll();
@@ -9,6 +19,7 @@ const getAllSupplier = async (req, res) => {
   }
 };
 
+// Ambil satu supplier berdasarkan ID
 const getSupplierById = async (req, res) => {
   try {
     const data = await Supplier.getById(req.params.id);
@@ -19,6 +30,7 @@ const getSupplierById = async (req, res) => {
   }
 };
 
+// Tambah supplier baru — NAMA dan NOHP wajib diisi
 const createSupplier = async (req, res) => {
   try {
     const { NAMA, NOHP } = req.body;
@@ -32,10 +44,12 @@ const createSupplier = async (req, res) => {
   }
 };
 
+// Edit data supplier
 const updateSupplier = async (req, res) => {
   try {
     const existing = await Supplier.getById(req.params.id);
     if (!existing) return res.status(404).json({ success: false, message: 'Supplier tidak ditemukan' });
+
     const data = await Supplier.update(req.params.id, req.body);
     res.json({ success: true, message: 'Supplier berhasil diupdate', data });
   } catch (error) {
@@ -43,10 +57,12 @@ const updateSupplier = async (req, res) => {
   }
 };
 
+// Hapus supplier
 const deleteSupplier = async (req, res) => {
   try {
     const existing = await Supplier.getById(req.params.id);
     if (!existing) return res.status(404).json({ success: false, message: 'Supplier tidak ditemukan' });
+
     await Supplier.delete(req.params.id);
     res.json({ success: true, message: 'Supplier berhasil dihapus' });
   } catch (error) {

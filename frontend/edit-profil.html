@@ -1,219 +1,204 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="utf-8">
-    <title>SIPENJA - Edit Profil</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <link href="img/favicon.ico" rel="icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIPENJA — Edit Profil</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <script src="https://kit.fontawesome.com/e943a573af.js" crossorigin="anonymous"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/app.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="css/style.css" rel="stylesheet">
-    <link href="css/edit-profil.css" rel="stylesheet">
 </head>
 
 <body>
-    <div class="container-xxl position-relative bg-white d-flex p-0">
-
-        <!-- Spinner -->
-        <div id="spinner"
-            class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-            <div class="spinner-border text-primary" style="width:3rem;height:3rem;" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-        </div>
-
-        <!-- ══ SIDEBAR ══ -->
-        <div class="sidebar pe-4 pb-3">
-            <nav class="navbar bg-light navbar-light">
-                <a href="#" class="navbar-brand mx-4 mb-3" id="sidebar-brand">
-                    <h3 class="text-primary">SIPENJA</h3>
-                </a>
-                <div class="navbar-nav w-100" id="sidebar-menu"></div>
-            </nav>
-        </div>
-
-        <!-- ══ CONTENT ══ -->
-        <div class="content">
-
-            <!-- Navbar -->
-            <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
-                <a href="#" class="navbar-brand d-flex d-lg-none me-4" id="navbar-brand-mobile">
-                    <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
-                </a>
-                <a href="#" class="sidebar-toggler flex-shrink-0"><i class="fa fa-bars"></i></a>
-                <div class="navbar-nav align-items-center ms-auto">
-                    <div class="nav-item me-3 d-none d-sm-flex align-items-center gap-2">
-                        <i class="fa-solid fa-circle-user text-primary" style="font-size:1.3rem"></i>
-                        <div style="line-height:1.2">
-                            <div style="font-size:.82rem;font-weight:600;color:#191C24" id="navbar-nama">—</div>
-                            <div style="font-size:.72rem;color:#8e9bb0;text-transform:capitalize" id="navbar-role">—
-                            </div>
-                        </div>
-                    </div>
-                    <button class="btn btn-danger btn-sm" onclick="confirmLogout()">
-                        <i class="fa-solid fa-right-from-bracket me-1"></i>LOGOUT
-                    </button>
+    <div id="spinner">
+        <div class="spinner-ring"></div>
+    </div>
+    <div class="app-shell">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-icon">
+                    <img src="img/Any Jaya Logo White.png" alt="Ani Jaya Logo">
                 </div>
+                <span class="sidebar-brand-name">SIPENJA</span>
+            </div>
+            <nav class="sidebar-nav" id="sidebar-menu">
+                <!-- Diisi dinamis oleh renderSidebar() sesuai role user -->
             </nav>
-
-            <!-- ══ MAIN CONTENT ══ -->
-            <div class="container-fluid pt-4 px-4">
-                <div class="edit-page-wrap">
-
-                    <!-- Tombol Kembali -->
-                    <button class="back-btn" onclick="kembali()">
-                        <i class="fa fa-arrow-left"></i> Kembali
-                    </button>
-
-                    <!-- Page Title -->
-                    <div class="d-flex align-items-center gap-3 mb-4">
-                        <h4 class="page-title mb-0">Edit Profil</h4>
-                        <span id="page-role-badge" class="role-badge"></span>
+        </aside>
+        <div class="main">
+            <header class="topbar">
+                <button class="topbar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="topbar-spacer"></div>
+                <a href="edit-profil.html" class="topbar-user" id="topbarUser">
+                    <div class="topbar-avatar" id="topbarAvatar">—</div>
+                    <div>
+                        <div class="topbar-user-name" id="navbar-nama">—</div>
+                        <div class="topbar-user-role" id="navbar-role">—</div>
                     </div>
+                </a>
+                <button class="btn-logout" onclick="confirmLogout()">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+                </button>
+            </header>
+            <div class="page-body">
+                <div class="">
+                    <div class="edit-page-wrap">
 
-                    <!-- ── Kartu Info Singkat ── -->
-                    <div class="edit-card mb-4">
-                        <div class="edit-card-body">
-                            <div class="row g-2">
-                                <div class="col-sm-4">
-                                    <div class="info-label">Nama</div>
-                                    <div class="info-val" id="profileNamaDisplay">—</div>
-                                </div>
-                                <div class="col-sm-4">
-                                    <div class="info-label">Username</div>
-                                    <div class="info-val" id="profileUsernameDisplay">—</div>
-                                </div>
-                                <div class="col-sm-4">
-                                    <div class="info-label">Bergabung Sejak</div>
-                                    <div class="info-val" id="profileDateCreated">—</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                        <!-- Tombol Kembali -->
+                        <button class="back-btn" onclick="kembali()">
+                            <i class="fa fa-arrow-left"></i> Kembali
+                        </button>
 
-                    <!-- ── Kartu Edit Data Diri ── -->
-                    <div class="edit-card">
-                        <div class="edit-card-header">
-                            <i class="fa-solid fa-user me-2 text-primary"></i>
-                            Data Diri
+                        <!-- Page Title -->
+                        <div class="d-flex align-items-center gap-3 mb-4">
+                            <h4 class="page-title mb-0">Edit Profil</h4>
+                            <span id="page-role-badge" class="role-badge"></span>
                         </div>
-                        <div class="edit-card-body">
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label fw-semibold">Nama Lengkap</label>
-                                    <input type="text" id="inputNama" class="form-control" placeholder="Nama lengkap"
-                                        maxlength="100">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label fw-semibold">Username</label>
-                                    <input type="text" id="inputUsername" class="form-control" placeholder="Username"
-                                        maxlength="100">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label fw-semibold">Tanggal Lahir</label>
-                                    <input type="date" id="inputTglLahir" class="form-control">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label fw-semibold">Jenis Kelamin</label>
-                                    <select id="inputJK" class="form-select">
-                                        <option value="">— Pilih —</option>
-                                        <option value="Laki-laki">Laki-laki</option>
-                                        <option value="Perempuan">Perempuan</option>
-                                    </select>
-                                </div>
-                            </div>
 
-                            <div class="save-bar mt-4">
-                                <button class="btn btn-outline-secondary btn-sm px-3" onclick="batalEditProfil()">
-                                    <i class="fa fa-rotate-left me-1"></i>Reset
-                                </button>
-                                <button class="btn btn-primary btn-sm px-4" id="btnSimpanProfil"
-                                    onclick="simpanProfil()">
-                                    <i class="fa fa-floppy-disk me-1"></i>Simpan Perubahan
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ── Kartu Ganti Password ── -->
-                    <div class="edit-card mt-3">
-                        <div class="edit-card-header">
-                            <i class="fa-solid fa-lock me-2 text-warning"></i>
-                            Ganti Password
-                        </div>
-                        <div class="edit-card-body">
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label fw-semibold">Password Baru</label>
-                                    <div class="pw-wrap">
-                                        <input type="password" id="inputPwBaru" class="form-control"
-                                            placeholder="Minimal 6 karakter" maxlength="100">
-                                        <button class="pw-toggle" type="button"
-                                            onclick="togglePw('inputPwBaru','iconPwBaru')">
-                                            <i class="fa fa-eye" id="iconPwBaru"></i>
-                                        </button>
+                        <!-- ── Kartu Info Singkat ── -->
+                        <div class="edit-card mb-4">
+                            <div class="edit-card-body">
+                                <div class="row g-2">
+                                    <div class="col-sm-4">
+                                        <div class="info-label">Nama</div>
+                                        <div class="info-val" id="profileNamaDisplay">—</div>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label fw-semibold">Konfirmasi Password Baru</label>
-                                    <div class="pw-wrap">
-                                        <input type="password" id="inputPwKonfirm" class="form-control"
-                                            placeholder="Ulangi password baru" maxlength="100">
-                                        <button class="pw-toggle" type="button"
-                                            onclick="togglePw('inputPwKonfirm','iconPwKonfirm')">
-                                            <i class="fa fa-eye" id="iconPwKonfirm"></i>
-                                        </button>
+                                    <div class="col-sm-4">
+                                        <div class="info-label">Username</div>
+                                        <div class="info-val" id="profileUsernameDisplay">—</div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="info-label">Bergabung Sejak</div>
+                                        <div class="info-val" id="profileDateCreated">—</div>
                                     </div>
                                 </div>
                             </div>
-                            <p class="text-muted mt-2 mb-0 small">
-                                <i class="fa fa-circle-info me-1"></i>
-                                Kosongkan jika tidak ingin mengganti password.
-                            </p>
+                        </div>
 
-                            <div class="save-bar mt-3">
-                                <button class="btn btn-outline-secondary btn-sm px-3" onclick="batalGantiPassword()">
-                                    <i class="fa fa-rotate-left me-1"></i>Reset
-                                </button>
-                                <button class="btn btn-warning btn-sm px-4" id="btnSimpanPassword"
-                                    onclick="simpanPassword()">
-                                    <i class="fa fa-key me-1"></i>Ganti Password
-                                </button>
+                        <!-- ── Kartu Edit Data Diri ── -->
+                        <div class="edit-card">
+                            <div class="edit-card-header">
+                                <i class="fa-solid fa-user me-2 text-primary"></i>
+                                Data Diri
+                            </div>
+                            <div class="edit-card-body">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Nama Lengkap</label>
+                                        <input type="text" id="inputNama" class="form-control"
+                                            placeholder="Nama lengkap" maxlength="100">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Username</label>
+                                        <input type="text" id="inputUsername" class="form-control"
+                                            placeholder="Username" maxlength="100">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Tanggal Lahir</label>
+                                        <input type="date" id="inputTglLahir" class="form-control">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Jenis Kelamin</label>
+                                        <select id="inputJK" class="form-select">
+                                            <option value="">— Pilih —</option>
+                                            <option value="Laki-laki">Laki-laki</option>
+                                            <option value="Perempuan">Perempuan</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="save-bar mt-4">
+                                    <button class="btn btn-outline-secondary btn-sm px-3" onclick="batalEditProfil()">
+                                        <i class="fa fa-rotate-left me-1"></i>Reset
+                                    </button>
+                                    <button class="btn btn-primary btn-sm px-4" id="btnSimpanProfil"
+                                        onclick="simpanProfil()">
+                                        <i class="fa fa-floppy-disk me-1"></i>Simpan Perubahan
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
+                        <!-- ── Kartu Ganti Password ── -->
+                        <div class="edit-card mt-3">
+                            <div class="edit-card-header">
+                                <i class="fa-solid fa-lock me-2 text-warning"></i>
+                                Ganti Password
+                            </div>
+                            <div class="edit-card-body">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Password Baru</label>
+                                        <div class="pw-wrap">
+                                            <input type="password" id="inputPwBaru" class="form-control"
+                                                placeholder="Minimal 6 karakter" maxlength="100">
+                                            <button class="pw-toggle" type="button"
+                                                onclick="togglePw('inputPwBaru','iconPwBaru')">
+                                                <i class="fa fa-eye" id="iconPwBaru"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Konfirmasi Password Baru</label>
+                                        <div class="pw-wrap">
+                                            <input type="password" id="inputPwKonfirm" class="form-control"
+                                                placeholder="Ulangi password baru" maxlength="100">
+                                            <button class="pw-toggle" type="button"
+                                                onclick="togglePw('inputPwKonfirm','iconPwKonfirm')">
+                                                <i class="fa fa-eye" id="iconPwKonfirm"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="text-muted mt-2 mb-0 small">
+                                    <i class="fa fa-circle-info me-1"></i>
+                                    Kosongkan jika tidak ingin mengganti password.
+                                </p>
+
+                                <div class="save-bar mt-3">
+                                    <button class="btn btn-outline-secondary btn-sm px-3"
+                                        onclick="batalGantiPassword()">
+                                        <i class="fa fa-rotate-left me-1"></i>Reset
+                                    </button>
+                                    <button class="btn btn-warning btn-sm px-4" id="btnSimpanPassword"
+                                        onclick="simpanPassword()">
+                                        <i class="fa fa-key me-1"></i>Ganti Password
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
-
-            <!-- Footer -->
-            <div class="container-fluid pt-4 px-4 mt-4">
-                <div class="bg-light rounded-top p-4">
-                    <div class="row">
-                        <div class="col-12 col-sm-6 text-center text-sm-start">
-                            &copy; <a href="#">SIPENJA - Bengkel Any Jaya</a>, All Right Reserved.
-                        </div>
-                        <div class="col-12 col-sm-6 text-center text-sm-end">
-                            Designed By <a href="https://htmlcodex.com">HTML Codex</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <footer class="page-footer">&copy; 2025 SIPENJA &mdash; Bengkel Ani Jaya</footer>
         </div>
-
-        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/login.js"></script>
     <script src="js/edit-profil.js"></script>
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+        document.addEventListener('click', function (e) {
+            const sb = document.getElementById('sidebar');
+            const btn = document.getElementById('sidebarToggle');
+            if (sb && btn && !sb.contains(e.target) && !btn.contains(e.target)) {
+                sb.classList.remove('open');
+            }
+        });
+    </script>
 </body>
 
 </html>

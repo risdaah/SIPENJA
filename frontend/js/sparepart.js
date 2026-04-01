@@ -45,7 +45,9 @@ function formatRupiah(angka) {
 /* ===== LOAD DATA ===== */
 async function loadSparepart() {
   try {
-    const res = await fetch(`${API_BASE_URL}/api/sparepart/get-all`);
+    const res = await fetch(`${API_BASE_URL}/api/sparepart/get-all`, {
+      headers: getAuthHeaders(),
+    });
     if (!res.ok) throw new Error("Gagal mengambil data");
     const json = await res.json();
     allData = json.data ?? [];
@@ -92,19 +94,21 @@ function renderTable(data) {
         </td>
         <td class="text-center">${item.STOKMINIMUM}</td>
         <td class="text-center">${escapeHtml(item.NAMA_SUPPLIER ?? "-")}</td>
-        <td class="text-center">
-          <button class="btn btn-primary btn-sm btn-square me-1" title="Tambah Stok"
-            onclick="bukaModalTambahStok(${item.IDSPAREPART})">
-            <i class="fa-solid fa-boxes-stacked"></i>
-          </button>
-          <button class="btn btn-warning btn-sm btn-square me-1" title="Edit"
-            onclick="bukaModalEdit(${item.IDSPAREPART})">
-            <i class="fa fa-pen-to-square"></i>
-          </button>
-          <button class="btn btn-danger btn-sm btn-square" title="Hapus"
-            onclick="konfirmasiHapus(${item.IDSPAREPART})">
-            <i class="fa fa-trash"></i>
-          </button>
+        <td>
+          <div class="action-btns">
+            <button class="btn-action view" title="Tambah Stok"
+              onclick="bukaModalTambahStok(${item.IDSPAREPART})">
+              <i class="fa-solid fa-boxes-stacked"></i>
+            </button>
+            <button class="btn-action edit" title="Edit"
+              onclick="bukaModalEdit(${item.IDSPAREPART})">
+              <i class="fa fa-pen-to-square"></i>
+            </button>
+            <button class="btn-action del" title="Hapus"
+              onclick="konfirmasiHapus(${item.IDSPAREPART})">
+              <i class="fa fa-trash"></i>
+            </button>
+          </div>
         </td>
       </tr>
     `;

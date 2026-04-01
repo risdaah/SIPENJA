@@ -1,250 +1,213 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
-    <meta charset="utf-8">
-    <title>SIPENJA - Bengkel Ani Jaya</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
-    <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
-
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- Icon Font Stylesheet -->
-    <script src="https://kit.fontawesome.com/e943a573af.js" crossorigin="anonymous"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Template Stylesheet -->
-    <link href="css/layanan-servis.css" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIPENJA — Layanan Servis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <script src="https://kit.fontawesome.com/e943a573af.js" crossorigin="anonymous"></script>
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/app.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
-    <div class="container-xxl position-relative bg-white d-flex p-0">
-        <!-- Spinner Start -->
-        <div id="spinner"
-            class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
+  <div id="spinner">
+    <div class="spinner-ring"></div>
+  </div>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-icon">
+          <img src="img/Any Jaya Logo White.png" alt="Ani Jaya Logo">
         </div>
-        <!-- Spinner End -->
-
-        <!-- Sidebar Start -->
-        <div class="sidebar pe-4 pb-3">
-            <nav class="navbar bg-light navbar-light">
-                <a href="dashboard-admin.html" class="navbar-brand mx-4 mb-3">
-                    <h3 class="text-primary">SIPENJA</h3>
-                </a>
-                <div class="navbar-nav w-100">
-                    <a href="dashboard-admin.html" class="nav-item nav-link"><i
-                            class="fa-solid fa-square-poll-vertical me-2"></i>Dashboard</a>
-                    <a href="kategori-sparepart.html" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Kategori
-                        Sparepart</a>
-                    <a href="sparepart.html" class="nav-item nav-link"><i
-                            class="fa-solid fa-gear me-2"></i>Sparepart</a>
-                    <a href="layanan-servis.html" class="nav-item nav-link active"><i
-                            class="fa-solid fa-tag me-2"></i>Layanan Servis</a>
-                    <a href="supplier.html" class="nav-item nav-link"><i
-                            class="fa-solid fa-cart-flatbed me-2"></i>Supplier</a>
-                    <a href="laporan.html" class="nav-item nav-link"><i class="fa-solid fa-copy me-2"></i>Laporan</a>
-                    <a href="transaksi.html" class="nav-item nav-link"><i
-                            class="fa-solid fa-bag-shopping me-2"></i>Transaksi</a>
-                    <a href="karyawan.html" class="nav-item nav-link"><i
-                            class="fa-solid fa-user-group me-2"></i>Karyawan</a>
-                </div>
-            </nav>
+        <span class="sidebar-brand-name">SIPENJA</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="dashboard-admin.html" class="nav-link">
+          <i class="fa-solid fa-gauge-high"></i> Dashboard
+        </a>
+        <a href="kategori-sparepart.html" class="nav-link">
+          <i class="fa-solid fa-tags"></i> Kategori Sparepart
+        </a>
+        <a href="sparepart.html" class="nav-link">
+          <i class="fa-solid fa-gear"></i> Sparepart
+        </a>
+        <a href="layanan-servis.html" class="nav-link active">
+          <i class="fa-solid fa-wrench"></i> Layanan Servis
+        </a>
+        <a href="supplier.html" class="nav-link">
+          <i class="fa-solid fa-truck"></i> Supplier
+        </a>
+        <a href="laporan.html" class="nav-link">
+          <i class="fa-solid fa-chart-bar"></i> Laporan
+        </a>
+        <a href="transaksi.html" class="nav-link">
+          <i class="fa-solid fa-receipt"></i> Transaksi
+        </a>
+        <a href="karyawan.html" class="nav-link">
+          <i class="fa-solid fa-users"></i> Karyawan
+        </a>
+      </nav>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="topbar-spacer"></div>
+        <a href="edit-profil.html" class="topbar-user" id="topbarUser">
+          <div class="topbar-avatar" id="topbarAvatar">—</div>
+          <div>
+            <div class="topbar-user-name" id="navbar-nama">—</div>
+            <div class="topbar-user-role" id="navbar-role">—</div>
+          </div>
+        </a>
+        <button class="btn-logout" onclick="confirmLogout()">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+        </button>
+      </header>
+      <div class="page-body">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Layanan Servis</div>
+            <div class="page-subtitle">Data layanan servis bengkel</div>
+          </div>
+          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambah">
+            <i class="fa-solid fa-plus"></i> Tambah Layanan
+          </button>
         </div>
-        <!-- Sidebar End -->
-
-        <!-- Content Start -->
-        <div class="content">
-            <!-- Navbar Start -->
-            <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
-                <a href="dashboard-admin.html" class="navbar-brand d-flex d-lg-none me-4">
-                    <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
-                </a>
-                <a href="#" class="sidebar-toggler flex-shrink-0">
-                    <i class="fa fa-bars"></i>
-                </a>
-                <div class="navbar-nav align-items-center ms-auto">
-
-                    <a href="edit-profil.html"
-                        class="nav-item me-3 d-none d-sm-flex align-items-center gap-2 text-decoration-none"
-                        style="cursor:pointer">
-                        <i class="fa-solid fa-circle-user text-primary" style="font-size:1.3rem"></i>
-                        <div style="line-height:1.2">
-                            <div style="font-size:.82rem;font-weight:600;color:#191C24" id="navbar-nama">—</div>
-                            <div style="font-size:.72rem;color:#8e9bb0;text-transform:capitalize" id="navbar-role">—
-                            </div>
-                        </div>
-                    </a>
-                    <div>
-                        <button class="btn btn-danger btn-sm" onclick="confirmLogout()">
-                            <i class="fa-solid fa-right-from-bracket me-1"></i>LOGOUT
-                        </button>
-                    </div>
-                </div>
-            </nav>
-            <!-- Navbar End -->
-
-            <!-- Main Content Start -->
-            <div class="container-fluid pt-4 px-4">
-                <div class="bg-light rounded p-4">
-                    <h5 class="mb-4 fw-bold">Kelola Data Layanan Servis Bengkel</h5>
-
-                    <!-- Action Bar -->
-                    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-                        <button class="btn btn-primary btn-sm px-3" data-bs-toggle="modal"
-                            data-bs-target="#modalTambah">
-                            <i class="fa fa-plus me-1"></i> Tambah Layanan
-                        </button>
-                        <div class="d-flex gap-2">
-                            <input type="text" id="searchInput" class="form-control form-control-sm"
-                                placeholder="Cari Data" style="width: 220px;">
-                            <button class="btn btn-success btn-sm px-3" onclick="searchData()">Cari</button>
-                        </div>
-                    </div>
-
-                    <!-- Table -->
-                    <div class="table-wrapper rounded">
-                        <table class="table table-bordered table-hover align-middle mb-0">
-                            <thead>
-                                <tr>
-                                    <th class="text-center" style="width:50px;">No</th>
-                                    <th class="text-center">Kode Layanan</th>
-                                    <th class="text-center">Nama Layanan</th>
-                                    <th class="text-center">Biaya Pokok</th>
-                                    <th class="text-center">Deskripsi</th>
-                                    <th class="text-center" style="width:110px;">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tableBody">
-                                <tr>
-                                    <td colspan="6" class="text-center py-4 text-muted">
-                                        <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
-                                        </div>
-                                        Memuat data...
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Pagination -->
-                    <div id="paginationContainer"></div>
-                </div>
-            </div>
-            <!-- Main Content End -->
-
-            <!-- Footer Start -->
-            <div class="container-fluid pt-4 px-4">
-                <div class="bg-light rounded-top p-4">
-                    <div class="row">
-                        <div class="col-12 col-sm-6 text-center text-sm-start">
-                            &copy; <a href="#">SIPENJA - Bengkel Any Jaya</a>, All Right Reserved.
-                        </div>
-                        <div class="col-12 col-sm-6 text-center text-sm-end">
-                            Designed By <a href="https://htmlcodex.com">HTML Codex</a><br>
-                            Distributed By <a class="border-bottom" href="https://themewagon.com"
-                                target="_blank">ThemeWagon</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Footer End -->
+        <div class="filter-bar">
+          <div class="filter-group" style="flex:1">
+            <label class="filter-label">Cari</label>
+            <input type="text" id="searchInput" class="filter-control" placeholder="Cari kode / nama layanan..."
+              style="min-width:220px">
+          </div>
+          <div class="filter-actions">
+            <button class="btn-filter apply" onclick="searchData()"><i class="fa-solid fa-magnifying-glass"></i>
+              Cari</button>
+          </div>
         </div>
-        <!-- Content End -->
-
-        <!-- Back to Top -->
-        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+        <div class="table-card">
+          <div class="table-card-header"><span class="table-count" id="table-count"></span></div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width:46px">No</th>
+                  <th>Kode Layanan</th>
+                  <th>Nama Layanan</th>
+                  <th style="text-align:right">Biaya Pokok</th>
+                  <th>Deskripsi</th>
+                  <th style="width:100px;text-align:center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody">
+                <tr class="loading-row">
+                  <td colspan="6"><span class="spinner-sm"></span> Memuat data...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="pagination-bar">
+            <span class="page-info" id="page-info"></span>
+            <div id="paginationContainer" class="page-btns"></div>
+          </div>
+        </div>
+      </div>
+      <footer class="page-footer">&copy; 2025 SIPENJA &mdash; Bengkel Ani Jaya</footer>
     </div>
-
-    <!-- Modal Tambah Layanan -->
-    <div class="modal fade" id="modalTambah" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalTambahLabel">Tambah Layanan Servis</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">Kode Layanan</label>
-                        <input type="text" class="form-control" id="inputKode" placeholder="Contoh: SRV-4">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Nama Layanan</label>
-                        <input type="text" class="form-control" id="inputNama" placeholder="Contoh: Ganti Oli">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Biaya Pokok</label>
-                        <input type="number" class="form-control" id="inputBiaya" placeholder="0">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Deskripsi</label>
-                        <textarea class="form-control" id="inputDeskripsi" rows="3" placeholder="Opsional"></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-primary btn-sm" onclick="simpanLayanan()">Simpan</button>
-                </div>
-            </div>
+  </div>
+  <!-- Modal Tambah Layanan -->
+  <div class="modal fade" id="modalTambah" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalTambahLabel">Tambah Layanan Servis</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-    </div>
-
-    <!-- Modal Edit Layanan -->
-    <div class="modal fade" id="modalEdit" tabindex="-1" aria-labelledby="modalEditLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalEditLabel">Edit Layanan Servis</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" id="editId">
-                    <div class="mb-3">
-                        <label class="form-label">Kode Layanan</label>
-                        <input type="text" class="form-control" id="editKode">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Nama Layanan</label>
-                        <input type="text" class="form-control" id="editNama">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Biaya Pokok</label>
-                        <input type="number" class="form-control" id="editBiaya">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Deskripsi</label>
-                        <textarea class="form-control" id="editDeskripsi" rows="3"></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-warning btn-sm" onclick="updateLayanan()">Update</button>
-                </div>
-            </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Kode Layanan</label>
+            <input type="text" class="form-control" id="inputKode" placeholder="Contoh: SRV-4">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Nama Layanan</label>
+            <input type="text" class="form-control" id="inputNama" placeholder="Contoh: Ganti Oli">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Biaya Pokok</label>
+            <input type="number" class="form-control" id="inputBiaya" placeholder="0">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Deskripsi</label>
+            <textarea class="form-control" id="inputDeskripsi" rows="3" placeholder="Opsional"></textarea>
+          </div>
         </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+          <button type="button" class="btn btn-primary btn-sm" onclick="simpanLayanan()">Simpan</button>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Modal Edit Layanan -->
+  <div class="modal fade" id="modalEdit" tabindex="-1" aria-labelledby="modalEditLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalEditLabel">Edit Layanan Servis</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="editId">
+          <div class="mb-3">
+            <label class="form-label">Kode Layanan</label>
+            <input type="text" class="form-control" id="editKode">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Nama Layanan</label>
+            <input type="text" class="form-control" id="editNama">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Biaya Pokok</label>
+            <input type="number" class="form-control" id="editBiaya">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Deskripsi</label>
+            <textarea class="form-control" id="editDeskripsi" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+          <button type="button" class="btn btn-warning btn-sm" onclick="updateLayanan()">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    <!-- Template Javascript -->
-    <script src="js/login.js"></script>
-    <script src="js/layanan-servis.js"></script>
+  <!-- JavaScript Libraries -->
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/login.js"></script>
+  <script src="js/layanan-servis.js"></script>
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+    }
+    document.addEventListener('click', function (e) {
+      const sb = document.getElementById('sidebar');
+      const btn = document.getElementById('sidebarToggle');
+      if (sb && btn && !sb.contains(e.target) && !btn.contains(e.target)) {
+        sb.classList.remove('open');
+      }
+    });
+  </script>
 </body>
 
 </html>

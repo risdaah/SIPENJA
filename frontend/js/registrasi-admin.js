@@ -39,6 +39,17 @@
   // ══════════════════════════════════════════════
   //  REGISTRASI
   // ══════════════════════════════════════════════
+  // ── Validasi kekuatan password ──
+  function validatePassword(password, username) {
+    if (!password || password.length < 8)
+      return "Kata sandi minimal 8 karakter";
+    if (!/[A-Za-z]/.test(password)) return "Kata sandi harus mengandung huruf";
+    if (!/[0-9]/.test(password)) return "Kata sandi harus mengandung angka";
+    if (username && password.toLowerCase() === username.toLowerCase())
+      return "Kata sandi tidak boleh sama dengan username";
+    return null;
+  }
+
   function doDaftar() {
     hideAlert();
     clearErrors();
@@ -68,9 +79,12 @@
     if (!password) {
       setError("wrap-password", "Kata sandi wajib diisi.");
       valid = false;
-    } else if (password.length < 6) {
-      setError("wrap-password", "Kata sandi minimal 6 karakter.");
-      valid = false;
+    } else {
+      var passErr = validatePassword(password, username);
+      if (passErr) {
+        setError("wrap-password", passErr);
+        valid = false;
+      }
     }
     if (!konfirmasi) {
       setError("wrap-konfirmasi", "Konfirmasi kata sandi wajib diisi.");

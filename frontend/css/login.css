@@ -22,7 +22,7 @@
 html,
 body {
     height: 100%;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Plus Jakarta Sans', sans-serif;
     background: #edf0f4;
 }
 
@@ -93,7 +93,7 @@ body {
 /* ── Logo ── */
 .card-logo {
     width: 52px;
-    height: 52px;
+    height: 48px;
     background: var(--primary);
     border-radius: 14px;
     display: flex;
@@ -103,9 +103,11 @@ body {
     box-shadow: 0 6px 20px rgba(0, 156, 255, 0.28);
 }
 
-.card-logo i {
-    font-size: 1.3rem;
-    color: #fff;
+.card-logo .logo-img {
+    height: 38px;
+    width: auto;
+    border-radius: 6px;
+    object-fit: contain;
 }
 
 /* ── Header ── */
@@ -186,7 +188,7 @@ body {
     outline: none;
     background: transparent;
     padding: 14px 12px 14px 0;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 0.95rem;
     color: var(--dark);
 }
@@ -271,7 +273,7 @@ body {
     color: #fff;
     border: none;
     border-radius: var(--radius);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;

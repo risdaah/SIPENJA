@@ -807,26 +807,7 @@ function resetForm() {
 
 /* ===== BANTUAN ===== */
 function tampilkanBantuan() {
-  var jenis = $("#selectJenisTransaksi").val();
-  var html;
-  if (jenis === "servis") {
-    html =
-      "<ol><li>Pilih <strong>Jenis Transaksi</strong> → <em>Servis Kendaraan</em></li>" +
-      "<li>Masukkan <strong>Nama Pelanggan</strong></li><li>Pilih <strong>Mekanik</strong></li>" +
-      "<li>Cari dan pilih layanan servis</li><li>Isi <strong>Catatan Keluhan</strong></li>" +
-      "<li>(Opsional) Isi <strong>No. HP</strong> untuk kirim struk via WhatsApp</li>" +
-      "<li>Klik <strong class='text-primary'>Tambahkan Transaksi</strong></li></ol>";
-  } else if (jenis === "sparepart") {
-    html =
-      "<ol><li>Pilih <strong>Jenis Transaksi</strong> → <em>Pembelian Sparepart</em></li>" +
-      "<li>Cari dan pilih sparepart</li><li>Atur jumlah dengan tombol +/-</li>" +
-      "<li>(Opsional) Isi <strong>No. HP</strong> untuk kirim struk via WhatsApp</li>" +
-      "<li>Klik <strong class='text-primary'>Tambahkan Transaksi</strong></li></ol>";
-  } else {
-    html =
-      "<p class='text-muted'>Pilih <strong>Jenis Transaksi</strong> terlebih dahulu.</p>";
-  }
-  $("#modalBantuanBody").html(html);
+  // Isi modal sudah static di HTML — cukup buka modal
   new bootstrap.Modal(document.getElementById("modalBantuan")).show();
 }
 

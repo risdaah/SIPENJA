@@ -1,5 +1,18 @@
+/**
+ * controllers/sparepartController.js — Controller data sparepart
+ *
+ * Mengelola data suku cadang/barang yang dijual atau digunakan untuk servis.
+ * Stok dikelola secara otomatis:
+ *   - Berkurang saat sparepart dipakai di servis (ServisSparepart.create)
+ *   - Berkurang saat pelanggan membeli (TransaksiPembelianSparepart.createDetail)
+ *   - Bertambah saat pengisian stok dicatat lewat pengeluaranController.tambahStok
+ *   - Dikembalikan saat transaksi/servis dihapus
+ */
+
 const Sparepart = require('../models/sparepartModel');
 
+// ── GET ALL ──────────────────────────────────────────────────────────────────
+// Mengembalikan semua sparepart beserta nama kategori dan nama supplier (JOIN di model)
 const getAllSparepart = async (req, res) => {
   try {
     const data = await Sparepart.getAll();
@@ -9,6 +22,7 @@ const getAllSparepart = async (req, res) => {
   }
 };
 
+// ── GET BY ID ────────────────────────────────────────────────────────────────
 const getSparepartById = async (req, res) => {
   try {
     const data = await Sparepart.getById(req.params.id);
@@ -19,6 +33,9 @@ const getSparepartById = async (req, res) => {
   }
 };
 
+// ── GET LOW STOCK ─────────────────────────────────────────────────────────────
+// Mengembalikan sparepart yang STOK < STOKMINIMUM
+// Digunakan untuk notifikasi di panel admin / topbar
 const getLowStock = async (req, res) => {
   try {
     const data = await Sparepart.getLowStock();
@@ -28,12 +45,16 @@ const getLowStock = async (req, res) => {
   }
 };
 
+// ── CREATE ───────────────────────────────────────────────────────────────────
 const createSparepart = async (req, res) => {
   try {
     const { IDKATEGORI, IDSUPPLIER, KODESPAREPART, NAMA, HARGAJUAL, STOK, STOKMINIMUM } = req.body;
+
+    // Field wajib — IDKATEGORI opsional (bisa NULL)
     if (!IDSUPPLIER || !KODESPAREPART || !NAMA || !HARGAJUAL) {
       return res.status(400).json({ success: false, message: 'IDSUPPLIER, KODESPAREPART, NAMA, HARGAJUAL wajib diisi' });
     }
+
     const data = await Sparepart.create(req.body);
     res.status(201).json({ success: true, message: 'Sparepart berhasil dibuat', data });
   } catch (error) {
@@ -41,10 +62,12 @@ const createSparepart = async (req, res) => {
   }
 };
 
+// ── UPDATE ───────────────────────────────────────────────────────────────────
 const updateSparepart = async (req, res) => {
   try {
     const existing = await Sparepart.getById(req.params.id);
     if (!existing) return res.status(404).json({ success: false, message: 'Sparepart tidak ditemukan' });
+
     const data = await Sparepart.update(req.params.id, req.body);
     res.json({ success: true, message: 'Sparepart berhasil diupdate', data });
   } catch (error) {
@@ -52,10 +75,12 @@ const updateSparepart = async (req, res) => {
   }
 };
 
+// ── DELETE ───────────────────────────────────────────────────────────────────
 const deleteSparepart = async (req, res) => {
   try {
     const existing = await Sparepart.getById(req.params.id);
     if (!existing) return res.status(404).json({ success: false, message: 'Sparepart tidak ditemukan' });
+
     await Sparepart.delete(req.params.id);
     res.json({ success: true, message: 'Sparepart berhasil dihapus' });
   } catch (error) {
@@ -63,6 +88,9 @@ const deleteSparepart = async (req, res) => {
   }
 };
 
+// ── GET STOK (untuk dropdown) ────────────────────────────────────────────────
+// Mengembalikan hanya kolom ID, kode, nama, dan stok — lebih ringan dari getAll
+// Dipakai di frontend sebagai pilihan dropdown saat input transaksi
 const getStok = async (req, res) => {
   try {
     const data = await Sparepart.getStok();
@@ -72,6 +100,9 @@ const getStok = async (req, res) => {
   }
 };
 
+// ── UPDATE STOK (koreksi manual) ─────────────────────────────────────────────
+// Override nilai stok secara langsung — berbeda dengan tambahStok di pengeluaran
+// yang menambahkan nilai (STOK + QTY). Ini meng-SET stok ke nilai baru.
 const updateStok = async (req, res) => {
   try {
     const { STOK } = req.body;

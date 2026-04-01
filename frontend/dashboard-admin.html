@@ -1,591 +1,369 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
-    <meta charset="utf-8">
-    <title>SIPENJA - Dashboard Admin</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <link href="img/favicon.ico" rel="icon">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/e943a573af.js" crossorigin="anonymous"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="css/style.css" rel="stylesheet">
-    <link href="css/dashboard-admin.css" rel="stylesheet">
-
-    <style>
-        /* ── Bell & Panel ── */
-        .notif-wrap {
-            position: relative;
-            margin-right: 8px;
-        }
-
-        .notif-btn {
-            background: none;
-            border: none;
-            padding: 6px 8px;
-            cursor: pointer;
-            position: relative;
-            color: #444;
-            font-size: 1.2rem;
-            border-radius: 8px;
-            transition: background .15s;
-        }
-
-        .notif-btn:hover {
-            background: #f0f2f5;
-        }
-
-        .notif-badge {
-            position: absolute;
-            top: 2px;
-            right: 2px;
-            background: #e02424;
-            color: #fff;
-            font-size: .6rem;
-            font-weight: 700;
-            min-width: 16px;
-            height: 16px;
-            border-radius: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 3px;
-            line-height: 1;
-        }
-
-        .notif-badge.hidden {
-            display: none;
-        }
-
-        .notif-panel {
-            display: none;
-            position: absolute;
-            top: calc(100% + 10px);
-            right: 0;
-            width: 340px;
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 14px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, .13);
-            z-index: 9999;
-            overflow: hidden;
-        }
-
-        .notif-panel.show {
-            display: block;
-            animation: notifFadeIn .2s ease;
-        }
-
-        @keyframes notifFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-8px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .notif-panel__head {
-            padding: 14px 18px 12px;
-            border-bottom: 1px solid #f0f0f0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .notif-panel__title {
-            font-weight: 700;
-            font-size: .95rem;
-            color: #111;
-        }
-
-        .notif-panel__close {
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: #888;
-            font-size: 1rem;
-            padding: 2px 6px;
-            border-radius: 6px;
-        }
-
-        .notif-panel__close:hover {
-            background: #f3f4f6;
-            color: #333;
-        }
-
-        .notif-panel__body {
-            max-height: 400px;
-            overflow-y: auto;
-            padding: 8px 0;
-        }
-
-        .notif-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 10px 18px;
-            transition: background .12s;
-            cursor: default;
-        }
-
-        .notif-item:hover {
-            background: #fafafa;
-        }
-
-        .notif-item__icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            background: #fff3f3;
-            color: #e02424;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: .9rem;
-            flex-shrink: 0;
-        }
-
-        .notif-item__nama {
-            font-size: .88rem;
-            font-weight: 600;
-            color: #111;
-            line-height: 1.3;
-        }
-
-        .notif-item__stok {
-            font-size: .78rem;
-            color: #e02424;
-            font-weight: 500;
-            margin-top: 2px;
-        }
-
-        .notif-item__min {
-            font-size: .75rem;
-            color: #9ca3af;
-            margin-top: 1px;
-        }
-
-        .notif-empty {
-            text-align: center;
-            padding: 32px 16px;
-            color: #9ca3af;
-            font-size: .88rem;
-        }
-
-        .notif-empty i {
-            font-size: 2rem;
-            display: block;
-            margin-bottom: 8px;
-            opacity: .4;
-        }
-
-        .notif-loading {
-            text-align: center;
-            padding: 24px;
-            color: #9ca3af;
-            font-size: .85rem;
-        }
-
-        .notif-panel__footer {
-            border-top: 1px solid #f0f0f0;
-            padding: 10px 18px;
-            text-align: center;
-        }
-
-        .notif-panel__footer a {
-            font-size: .82rem;
-            color: #1d6ff3;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .notif-panel__footer a:hover {
-            text-decoration: underline;
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIPENJA — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <script src="https://kit.fontawesome.com/e943a573af.js" crossorigin="anonymous"></script>
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/app.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
-    <div class="container-xxl position-relative bg-white d-flex p-0">
-
-        <!-- Spinner -->
-        <div id="spinner"
-            class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-            <div class="spinner-border text-primary" style="width:3rem;height:3rem;" role="status">
-                <span class="sr-only">Loading...</span>
+  <div id="spinner">
+    <div class="spinner-ring"></div>
+  </div>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-icon">
+          <img src="img/Any Jaya Logo White.png" alt="Ani Jaya Logo">
+        </div>
+        <span class="sidebar-brand-name">SIPENJA</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="dashboard-admin.html" class="nav-link active">
+          <i class="fa-solid fa-gauge-high"></i> Dashboard
+        </a>
+        <a href="kategori-sparepart.html" class="nav-link">
+          <i class="fa-solid fa-tags"></i> Kategori Sparepart
+        </a>
+        <a href="sparepart.html" class="nav-link">
+          <i class="fa-solid fa-gear"></i> Sparepart
+        </a>
+        <a href="layanan-servis.html" class="nav-link">
+          <i class="fa-solid fa-wrench"></i> Layanan Servis
+        </a>
+        <a href="supplier.html" class="nav-link">
+          <i class="fa-solid fa-truck"></i> Supplier
+        </a>
+        <a href="laporan.html" class="nav-link">
+          <i class="fa-solid fa-chart-bar"></i> Laporan
+        </a>
+        <a href="transaksi.html" class="nav-link">
+          <i class="fa-solid fa-receipt"></i> Transaksi
+        </a>
+        <a href="karyawan.html" class="nav-link">
+          <i class="fa-solid fa-users"></i> Karyawan
+        </a>
+      </nav>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="topbar-spacer"></div>
+        <div class="notif-wrap" id="notifWrap">
+          <button class="notif-btn" id="notifBtn" onclick="toggleNotifPanel()">
+            <i class="fa-solid fa-bell"></i>
+            <span class="notif-badge hidden" id="notifBadge"></span>
+          </button>
+          <div class="notif-panel" id="notifPanel">
+            <div class="notif-panel__head">
+              <span style="font-weight:700;font-size:13px">Notifikasi</span>
+              <button onclick="tutupNotifPanel()"
+                style="background:none;border:none;cursor:pointer;color:var(--ink-4);font-size:14px;padding:2px 6px"><i
+                  class="fa-solid fa-xmark"></i></button>
             </div>
+            <div class="notif-panel__body" id="notifBody">
+              <div style="padding:24px;text-align:center;color:var(--ink-4);font-size:13px">Tidak ada notifikasi</div>
+            </div>
+          </div>
+        </div>
+        <a href="edit-profil.html" class="topbar-user" id="topbarUser">
+          <div class="topbar-avatar" id="topbarAvatar">—</div>
+          <div>
+            <div class="topbar-user-name" id="navbar-nama">—</div>
+            <div class="topbar-user-role" id="navbar-role">—</div>
+          </div>
+        </a>
+        <button class="btn-logout" onclick="confirmLogout()">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+        </button>
+      </header>
+      <div class="page-body">
+
+        <div class="d-flex align-items-center justify-content-between mb-4">
+          <div>
+            <h4 class="page-title mb-0">Dashboard Admin</h4>
+            <p class="page-subtitle mb-0">Selamat datang, <strong id="header-nama">—</strong></p>
+          </div>
         </div>
 
-        <!-- ══ SIDEBAR ══ -->
-        <div class="sidebar pe-4 pb-3">
-            <nav class="navbar bg-light navbar-light">
-                <a href="dashboard-admin.html" class="navbar-brand mx-4 mb-3">
-                    <h3 class="text-primary">SIPENJA</h3>
-                </a>
-                <div class="navbar-nav w-100">
-                    <a href="dashboard-admin.html" class="nav-item nav-link active">
-                        <i class="fa-solid fa-square-poll-vertical me-2"></i>Dashboard</a>
-                    <a href="kategori-sparepart.html" class="nav-item nav-link">
-                        <i class="fa fa-th me-2"></i>Kategori Sparepart</a>
-                    <a href="sparepart.html" class="nav-item nav-link">
-                        <i class="fa-solid fa-gear me-2"></i>Sparepart</a>
-                    <a href="layanan-servis.html" class="nav-item nav-link">
-                        <i class="fa-solid fa-tag me-2"></i>Layanan Servis</a>
-                    <a href="supplier.html" class="nav-item nav-link">
-                        <i class="fa-solid fa-cart-flatbed me-2"></i>Supplier</a>
-                    <a href="laporan.html" class="nav-item nav-link">
-                        <i class="fa-solid fa-copy me-2"></i>Laporan</a>
-                    <a href="transaksi.html" class="nav-item nav-link">
-                        <i class="fa-solid fa-bag-shopping me-2"></i>Transaksi</a>
-                    <a href="karyawan.html" class="nav-item nav-link">
-                        <i class="fa-solid fa-user-group me-2"></i>Karyawan</a>
-                </div>
-            </nav>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-icon blue"><i class="fa-solid fa-gear"></i></div>
+            <div class="stat-label">Total Sparepart</div>
+            <div class="stat-value" id="stat-sparepart"><span class="skel" style="width:60px"></span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+            <div class="stat-label">Jumlah Layanan Servis</div>
+            <div class="stat-value" style="color:#28a745" id="stat-layanan"><span class="skel"
+                style="width:40px"></span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon orange"><i class="fa-solid fa-bag-shopping"></i></div>
+            <div class="stat-label">Jumlah Transaksi</div>
+            <div class="stat-value" style="color:#f57c00" id="stat-transaksi"><span class="skel"
+                style="width:50px"></span></div>
+          </div>
         </div>
 
-        <!-- ══ CONTENT ══ -->
-        <div class="content">
-
-            <!-- Navbar -->
-            <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
-                <a href="dashboard-admin.html" class="navbar-brand d-flex d-lg-none me-4">
-                    <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
-                </a>
-                <a href="#" class="sidebar-toggler flex-shrink-0"><i class="fa fa-bars"></i></a>
-                <div class="navbar-nav align-items-center ms-auto">
-
-                    <!-- ── NOTIFIKASI ── -->
-                    <div class="notif-wrap" id="notifWrap">
-                        <button class="notif-btn" id="notifBtn" onclick="toggleNotifPanel()"
-                            title="Notifikasi Stok Menipis">
-                            <i class="fa-solid fa-bell"></i>
-                            <span class="notif-badge hidden" id="notifBadge">0</span>
-                        </button>
-                        <div class="notif-panel" id="notifPanel">
-                            <div class="notif-panel__head">
-                                <span class="notif-panel__title">
-                                    <i class="fa-solid fa-triangle-exclamation me-1 text-warning"></i>
-                                    Pemberitahuan Stok Bengkel
-                                </span>
-                                <button class="notif-panel__close" onclick="tutupNotifPanel()">
-                                    <i class="fa fa-times"></i>
-                                </button>
-                            </div>
-                            <div class="notif-panel__body" id="notifBody">
-                                <div class="notif-loading">
-                                    <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
-                                    Memuat...
-                                </div>
-                            </div>
-                            <div class="notif-panel__footer">
-                                <a href="sparepart.html">Lihat semua sparepart &rarr;</a>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="edit-profil.html"
-                        class="nav-item me-3 d-none d-sm-flex align-items-center gap-2 text-decoration-none"
-                        style="cursor:pointer">
-                        <i class="fa-solid fa-circle-user text-primary" style="font-size:1.3rem"></i>
-                        <div style="line-height:1.2">
-                            <div style="font-size:.82rem;font-weight:600;color:#191C24" id="navbar-nama">—</div>
-                            <div style="font-size:.72rem;color:#8e9bb0;text-transform:capitalize" id="navbar-role">—
-                            </div>
-                        </div>
-                    </a>
-                    <button class="btn btn-danger btn-sm" onclick="confirmLogout()">
-                        <i class="fa-solid fa-right-from-bracket me-1"></i>LOGOUT
-                    </button>
+        <div class="keuangan-grid">
+          <div class="keuangan-card">
+            <div class="keu-header">
+              <span class="keu-title"><i class="fa-solid fa-arrow-trend-up me-2 text-success"></i>Pendapatan</span>
+              <div class="periode-wrap">
+                <button class="btn-periode" onclick="togglePeriode('pp-pendapatan')"><i
+                    class="fa-solid fa-calendar-days"></i> Periode</button>
+                <div class="periode-popup" id="pp-pendapatan">
+                  <div class="pp-title">Filter Periode</div>
+                  <div class="pp-row"><input type="date" id="pend-tgl-awal"><span class="pp-sep">—</span><input
+                      type="date" id="pend-tgl-akhir"></div>
+                  <div class="pp-or">— atau pilih bulan —</div>
+                  <div class="pp-row">
+                    <select id="pend-bulan">
+                      <option value="">Bulan</option>
+                      <option value="1">Januari</option>
+                      <option value="2">Februari</option>
+                      <option value="3">Maret</option>
+                      <option value="4">April</option>
+                      <option value="5">Mei</option>
+                      <option value="6">Juni</option>
+                      <option value="7">Juli</option>
+                      <option value="8">Agustus</option>
+                      <option value="9">September</option>
+                      <option value="10">Oktober</option>
+                      <option value="11">November</option>
+                      <option value="12">Desember</option>
+                    </select>
+                    <select id="pend-tahun"></select>
+                  </div>
+                  <button class="pp-apply" onclick="applyPendapatan()">Terapkan</button>
                 </div>
-            </nav>
-
-            <!-- ══ MAIN ══ -->
-            <div class="container-fluid pt-4 px-4">
-
-                <div class="d-flex align-items-center justify-content-between mb-4">
-                    <div>
-                        <h4 class="page-title mb-0">Dashboard Admin</h4>
-                        <p class="page-subtitle mb-0">Selamat datang, <strong id="header-nama">—</strong></p>
-                    </div>
-                </div>
-
-                <div class="stat-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon blue"><i class="fa-solid fa-gear"></i></div>
-                        <div class="stat-label">Total Sparepart</div>
-                        <div class="stat-value" id="stat-sparepart"><span class="skel" style="width:60px"></span></div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon green"><i class="fa-solid fa-screwdriver-wrench"></i></div>
-                        <div class="stat-label">Jumlah Layanan Servis</div>
-                        <div class="stat-value" style="color:#28a745" id="stat-layanan"><span class="skel"
-                                style="width:40px"></span></div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon orange"><i class="fa-solid fa-bag-shopping"></i></div>
-                        <div class="stat-label">Jumlah Transaksi</div>
-                        <div class="stat-value" style="color:#f57c00" id="stat-transaksi"><span class="skel"
-                                style="width:50px"></span></div>
-                    </div>
-                </div>
-
-                <div class="keuangan-grid">
-                    <div class="keuangan-card">
-                        <div class="keu-header">
-                            <span class="keu-title"><i
-                                    class="fa-solid fa-arrow-trend-up me-2 text-success"></i>Pendapatan</span>
-                            <div class="periode-wrap">
-                                <button class="btn-periode" onclick="togglePeriode('pp-pendapatan')"><i
-                                        class="fa-solid fa-calendar-days"></i> Periode</button>
-                                <div class="periode-popup" id="pp-pendapatan">
-                                    <div class="pp-title">Filter Periode</div>
-                                    <div class="pp-row"><input type="date" id="pend-tgl-awal"><span
-                                            class="pp-sep">—</span><input type="date" id="pend-tgl-akhir"></div>
-                                    <div class="pp-or">— atau pilih bulan —</div>
-                                    <div class="pp-row">
-                                        <select id="pend-bulan">
-                                            <option value="">Bulan</option>
-                                            <option value="1">Januari</option>
-                                            <option value="2">Februari</option>
-                                            <option value="3">Maret</option>
-                                            <option value="4">April</option>
-                                            <option value="5">Mei</option>
-                                            <option value="6">Juni</option>
-                                            <option value="7">Juli</option>
-                                            <option value="8">Agustus</option>
-                                            <option value="9">September</option>
-                                            <option value="10">Oktober</option>
-                                            <option value="11">November</option>
-                                            <option value="12">Desember</option>
-                                        </select>
-                                        <select id="pend-tahun"></select>
-                                    </div>
-                                    <button class="pp-apply" onclick="applyPendapatan()">Terapkan</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="keu-amount pendapatan" id="keu-pendapatan"><span class="skel"
-                                style="width:180px;height:32px"></span></div>
-                        <div class="keu-sub" id="keu-pendapatan-periode">—</div>
-                    </div>
-                    <div class="keuangan-card">
-                        <div class="keu-header">
-                            <span class="keu-title"><i
-                                    class="fa-solid fa-arrow-trend-down me-2 text-danger"></i>Pengeluaran</span>
-                            <div class="periode-wrap">
-                                <button class="btn-periode" onclick="togglePeriode('pp-pengeluaran')"><i
-                                        class="fa-solid fa-calendar-days"></i> Periode</button>
-                                <div class="periode-popup" id="pp-pengeluaran">
-                                    <div class="pp-title">Filter Periode</div>
-                                    <div class="pp-row"><input type="date" id="keluar-tgl-awal"><span
-                                            class="pp-sep">—</span><input type="date" id="keluar-tgl-akhir"></div>
-                                    <div class="pp-or">— atau pilih bulan —</div>
-                                    <div class="pp-row">
-                                        <select id="keluar-bulan">
-                                            <option value="">Bulan</option>
-                                            <option value="1">Januari</option>
-                                            <option value="2">Februari</option>
-                                            <option value="3">Maret</option>
-                                            <option value="4">April</option>
-                                            <option value="5">Mei</option>
-                                            <option value="6">Juni</option>
-                                            <option value="7">Juli</option>
-                                            <option value="8">Agustus</option>
-                                            <option value="9">September</option>
-                                            <option value="10">Oktober</option>
-                                            <option value="11">November</option>
-                                            <option value="12">Desember</option>
-                                        </select>
-                                        <select id="keluar-tahun"></select>
-                                    </div>
-                                    <button class="pp-apply" onclick="applyPengeluaran()">Terapkan</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="keu-amount pengeluaran" id="keu-pengeluaran"><span class="skel"
-                                style="width:180px;height:32px"></span></div>
-                        <div class="keu-sub" id="keu-pengeluaran-periode">—</div>
-                    </div>
-                </div>
-
-                <div class="bottom-grid">
-                    <div class="dash-card">
-                        <div class="dash-card-header">
-                            <span class="dash-card-title"><i class="fa-solid fa-medal me-2"
-                                    style="color:#f5a623"></i>Top 10 Sparepart</span>
-                            <div class="periode-wrap">
-                                <button class="btn-periode" onclick="togglePeriode('pp-sparepart')"><i
-                                        class="fa-solid fa-calendar-days"></i> Periode</button>
-                                <div class="periode-popup" id="pp-sparepart">
-                                    <div class="pp-title">Filter Periode</div>
-                                    <div class="pp-row"><input type="date" id="sp-tgl-awal"><span
-                                            class="pp-sep">—</span><input type="date" id="sp-tgl-akhir"></div>
-                                    <div class="pp-or">— atau pilih bulan —</div>
-                                    <div class="pp-row">
-                                        <select id="sp-bulan">
-                                            <option value="">Bulan</option>
-                                            <option value="1">Januari</option>
-                                            <option value="2">Februari</option>
-                                            <option value="3">Maret</option>
-                                            <option value="4">April</option>
-                                            <option value="5">Mei</option>
-                                            <option value="6">Juni</option>
-                                            <option value="7">Juli</option>
-                                            <option value="8">Agustus</option>
-                                            <option value="9">September</option>
-                                            <option value="10">Oktober</option>
-                                            <option value="11">November</option>
-                                            <option value="12">Desember</option>
-                                        </select>
-                                        <select id="sp-tahun"></select>
-                                    </div>
-                                    <button class="pp-apply" onclick="applyTopSparepart()">Terapkan</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="dash-card-body">
-                            <table class="dash-table">
-                                <thead>
-                                    <tr>
-                                        <th style="width:38px">No</th>
-                                        <th style="width:80px">Kode</th>
-                                        <th>Nama</th>
-                                        <th style="text-align:center;width:70px">Terjual</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tbody-sparepart">
-                                    <tr>
-                                        <td colspan="4" style="text-align:center;padding:20px;color:#aaa">Memuat…</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="bottom-right-col">
-                        <div class="dash-card">
-                            <div class="dash-card-header">
-                                <span class="dash-card-title"><i class="fa-solid fa-chart-column me-2"
-                                        style="color:#009CFF"></i>Progress Penjualan</span>
-                                <div class="periode-wrap">
-                                    <button class="btn-periode" onclick="togglePeriode('pp-grafik')"><i
-                                            class="fa-solid fa-calendar-days"></i> Periode</button>
-                                    <div class="periode-popup" id="pp-grafik">
-                                        <div class="pp-title">Filter Periode</div>
-                                        <div class="pp-row"><input type="date" id="grafik-tgl-awal"><span
-                                                class="pp-sep">—</span><input type="date" id="grafik-tgl-akhir"></div>
-                                        <div class="pp-or">— atau pilih bulan —</div>
-                                        <div class="pp-row">
-                                            <select id="grafik-bulan">
-                                                <option value="">Bulan</option>
-                                                <option value="1">Januari</option>
-                                                <option value="2">Februari</option>
-                                                <option value="3">Maret</option>
-                                                <option value="4">April</option>
-                                                <option value="5">Mei</option>
-                                                <option value="6">Juni</option>
-                                                <option value="7">Juli</option>
-                                                <option value="8">Agustus</option>
-                                                <option value="9">September</option>
-                                                <option value="10">Oktober</option>
-                                                <option value="11">November</option>
-                                                <option value="12">Desember</option>
-                                            </select>
-                                            <select id="grafik-tahun"></select>
-                                        </div>
-                                        <button class="pp-apply" onclick="applyGrafik()">Terapkan</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="chart-wrap"><canvas id="chart-penjualan"></canvas></div>
-                        </div>
-
-                        <div class="dash-card">
-                            <div class="dash-card-header">
-                                <span class="dash-card-title"><i class="fa-solid fa-star me-2"
-                                        style="color:#f5a623"></i>Top 5 Layanan Servis</span>
-                                <div class="periode-wrap">
-                                    <button class="btn-periode" onclick="togglePeriode('pp-layanan')"><i
-                                            class="fa-solid fa-calendar-days"></i> Periode</button>
-                                    <div class="periode-popup" id="pp-layanan">
-                                        <div class="pp-title">Filter Periode</div>
-                                        <div class="pp-row"><input type="date" id="lay-tgl-awal"><span
-                                                class="pp-sep">—</span><input type="date" id="lay-tgl-akhir"></div>
-                                        <div class="pp-or">— atau pilih bulan —</div>
-                                        <div class="pp-row">
-                                            <select id="lay-bulan">
-                                                <option value="">Bulan</option>
-                                                <option value="1">Januari</option>
-                                                <option value="2">Februari</option>
-                                                <option value="3">Maret</option>
-                                                <option value="4">April</option>
-                                                <option value="5">Mei</option>
-                                                <option value="6">Juni</option>
-                                                <option value="7">Juli</option>
-                                                <option value="8">Agustus</option>
-                                                <option value="9">September</option>
-                                                <option value="10">Oktober</option>
-                                                <option value="11">November</option>
-                                                <option value="12">Desember</option>
-                                            </select>
-                                            <select id="lay-tahun"></select>
-                                        </div>
-                                        <button class="pp-apply" onclick="applyTopLayanan()">Terapkan</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="dash-card-body">
-                                <table class="dash-table">
-                                    <thead>
-                                        <tr>
-                                            <th style="width:38px">No</th>
-                                            <th style="width:80px">Kode</th>
-                                            <th>Nama</th>
-                                            <th style="text-align:center;width:100px">Terselesaikan</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tbody-layanan">
-                                        <tr>
-                                            <td colspan="4" style="text-align:center;padding:20px;color:#aaa">Memuat…
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+              </div>
             </div>
-
-            <div class="container-fluid px-4 mt-2">
-                <div class="bg-light rounded-top p-4">
-                    <div class="row">
-                        <div class="col-12 col-sm-6 text-center text-sm-start">&copy; <a href="#">SIPENJA - Bengkel Any
-                                Jaya</a>, All Right Reserved.</div>
-                        <div class="col-12 col-sm-6 text-center text-sm-end">Designed By <a
-                                href="https://htmlcodex.com">HTML Codex</a></div>
-                    </div>
+            <div class="keu-amount pendapatan" id="keu-pendapatan"><span class="skel"
+                style="width:180px;height:32px"></span></div>
+            <div class="keu-sub" id="keu-pendapatan-periode">—</div>
+          </div>
+          <div class="keuangan-card">
+            <div class="keu-header">
+              <span class="keu-title"><i class="fa-solid fa-arrow-trend-down me-2 text-danger"></i>Pengeluaran</span>
+              <div class="periode-wrap">
+                <button class="btn-periode" onclick="togglePeriode('pp-pengeluaran')"><i
+                    class="fa-solid fa-calendar-days"></i> Periode</button>
+                <div class="periode-popup" id="pp-pengeluaran">
+                  <div class="pp-title">Filter Periode</div>
+                  <div class="pp-row"><input type="date" id="keluar-tgl-awal"><span class="pp-sep">—</span><input
+                      type="date" id="keluar-tgl-akhir"></div>
+                  <div class="pp-or">— atau pilih bulan —</div>
+                  <div class="pp-row">
+                    <select id="keluar-bulan">
+                      <option value="">Bulan</option>
+                      <option value="1">Januari</option>
+                      <option value="2">Februari</option>
+                      <option value="3">Maret</option>
+                      <option value="4">April</option>
+                      <option value="5">Mei</option>
+                      <option value="6">Juni</option>
+                      <option value="7">Juli</option>
+                      <option value="8">Agustus</option>
+                      <option value="9">September</option>
+                      <option value="10">Oktober</option>
+                      <option value="11">November</option>
+                      <option value="12">Desember</option>
+                    </select>
+                    <select id="keluar-tahun"></select>
+                  </div>
+                  <button class="pp-apply" onclick="applyPengeluaran()">Terapkan</button>
                 </div>
+              </div>
             </div>
-
+            <div class="keu-amount pengeluaran" id="keu-pengeluaran"><span class="skel"
+                style="width:180px;height:32px"></span></div>
+            <div class="keu-sub" id="keu-pengeluaran-periode">—</div>
+          </div>
         </div>
 
-        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+        <div class="bottom-grid">
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <span class="dash-card-title"><i class="fa-solid fa-medal me-2" style="color:#f5a623"></i>Top 10
+                Sparepart</span>
+              <div class="periode-wrap">
+                <button class="btn-periode" onclick="togglePeriode('pp-sparepart')"><i
+                    class="fa-solid fa-calendar-days"></i> Periode</button>
+                <div class="periode-popup" id="pp-sparepart">
+                  <div class="pp-title">Filter Periode</div>
+                  <div class="pp-row"><input type="date" id="sp-tgl-awal"><span class="pp-sep">—</span><input
+                      type="date" id="sp-tgl-akhir"></div>
+                  <div class="pp-or">— atau pilih bulan —</div>
+                  <div class="pp-row">
+                    <select id="sp-bulan">
+                      <option value="">Bulan</option>
+                      <option value="1">Januari</option>
+                      <option value="2">Februari</option>
+                      <option value="3">Maret</option>
+                      <option value="4">April</option>
+                      <option value="5">Mei</option>
+                      <option value="6">Juni</option>
+                      <option value="7">Juli</option>
+                      <option value="8">Agustus</option>
+                      <option value="9">September</option>
+                      <option value="10">Oktober</option>
+                      <option value="11">November</option>
+                      <option value="12">Desember</option>
+                    </select>
+                    <select id="sp-tahun"></select>
+                  </div>
+                  <button class="pp-apply" onclick="applyTopSparepart()">Terapkan</button>
+                </div>
+              </div>
+            </div>
+            <div class="dash-card-body">
+              <table class="dash-table">
+                <thead>
+                  <tr>
+                    <th style="width:38px">No</th>
+                    <th style="width:80px">Kode</th>
+                    <th>Nama</th>
+                    <th style="text-align:center;width:70px">Terjual</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-sparepart">
+                  <tr>
+                    <td colspan="4" style="text-align:center;padding:20px;color:#aaa">Memuat…</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="bottom-right-col">
+            <div class="dash-card">
+              <div class="dash-card-header">
+                <span class="dash-card-title"><i class="fa-solid fa-chart-column me-2"
+                    style="color:#009CFF"></i>Progress Penjualan</span>
+                <div class="periode-wrap">
+                  <button class="btn-periode" onclick="togglePeriode('pp-grafik')"><i
+                      class="fa-solid fa-calendar-days"></i> Periode</button>
+                  <div class="periode-popup" id="pp-grafik">
+                    <div class="pp-title">Filter Periode</div>
+                    <div class="pp-row"><input type="date" id="grafik-tgl-awal"><span class="pp-sep">—</span><input
+                        type="date" id="grafik-tgl-akhir"></div>
+                    <div class="pp-or">— atau pilih bulan —</div>
+                    <div class="pp-row">
+                      <select id="grafik-bulan">
+                        <option value="">Bulan</option>
+                        <option value="1">Januari</option>
+                        <option value="2">Februari</option>
+                        <option value="3">Maret</option>
+                        <option value="4">April</option>
+                        <option value="5">Mei</option>
+                        <option value="6">Juni</option>
+                        <option value="7">Juli</option>
+                        <option value="8">Agustus</option>
+                        <option value="9">September</option>
+                        <option value="10">Oktober</option>
+                        <option value="11">November</option>
+                        <option value="12">Desember</option>
+                      </select>
+                      <select id="grafik-tahun"></select>
+                    </div>
+                    <button class="pp-apply" onclick="applyGrafik()">Terapkan</button>
+                  </div>
+                </div>
+              </div>
+              <div class="chart-wrap"><canvas id="chart-penjualan"></canvas></div>
+            </div>
+
+            <div class="dash-card">
+              <div class="dash-card-header">
+                <span class="dash-card-title"><i class="fa-solid fa-star me-2" style="color:#f5a623"></i>Top 5 Layanan
+                  Servis</span>
+                <div class="periode-wrap">
+                  <button class="btn-periode" onclick="togglePeriode('pp-layanan')"><i
+                      class="fa-solid fa-calendar-days"></i> Periode</button>
+                  <div class="periode-popup" id="pp-layanan">
+                    <div class="pp-title">Filter Periode</div>
+                    <div class="pp-row"><input type="date" id="lay-tgl-awal"><span class="pp-sep">—</span><input
+                        type="date" id="lay-tgl-akhir"></div>
+                    <div class="pp-or">— atau pilih bulan —</div>
+                    <div class="pp-row">
+                      <select id="lay-bulan">
+                        <option value="">Bulan</option>
+                        <option value="1">Januari</option>
+                        <option value="2">Februari</option>
+                        <option value="3">Maret</option>
+                        <option value="4">April</option>
+                        <option value="5">Mei</option>
+                        <option value="6">Juni</option>
+                        <option value="7">Juli</option>
+                        <option value="8">Agustus</option>
+                        <option value="9">September</option>
+                        <option value="10">Oktober</option>
+                        <option value="11">November</option>
+                        <option value="12">Desember</option>
+                      </select>
+                      <select id="lay-tahun"></select>
+                    </div>
+                    <button class="pp-apply" onclick="applyTopLayanan()">Terapkan</button>
+                  </div>
+                </div>
+              </div>
+              <div class="dash-card-body">
+                <table class="dash-table">
+                  <thead>
+                    <tr>
+                      <th style="width:38px">No</th>
+                      <th style="width:80px">Kode</th>
+                      <th>Nama</th>
+                      <th style="text-align:center;width:100px">Terselesaikan</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tbody-layanan">
+                    <tr>
+                      <td colspan="4" style="text-align:center;padding:20px;color:#aaa">Memuat…
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <footer class="page-footer">&copy; 2025 SIPENJA &mdash; Bengkel Ani Jaya</footer>
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script src="js/login.js"></script>
-    <script src="js/dashboard-admin.js"></script>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/login.js"></script>
+  <script src="js/dashboard-admin.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+    }
+    document.addEventListener('click', function (e) {
+      const sb = document.getElementById('sidebar');
+      const btn = document.getElementById('sidebarToggle');
+      if (sb && btn && !sb.contains(e.target) && !btn.contains(e.target)) {
+        sb.classList.remove('open');
+      }
+    });
+  </script>
 </body>
 
 </html>

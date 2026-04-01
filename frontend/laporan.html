@@ -1,268 +1,280 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="utf-8">
-    <title>SIPENJA - Bengkel Any Jaya</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIPENJA — Laporan</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <script src="https://kit.fontawesome.com/e943a573af.js" crossorigin="anonymous"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/app.css" rel="stylesheet">
     <link href="css/laporan.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
-    <div class="container-xxl position-relative bg-white d-flex p-0">
-
-        <div id="spinner"
-            class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-            <div class="spinner-border text-primary" style="width:3rem;height:3rem;" role="status"><span
-                    class="sr-only">Loading...</span></div>
-        </div>
-
-        <div class="sidebar pe-4 pb-3">
-            <nav class="navbar bg-light navbar-light">
-                <a href="dashboard-admin.html" class="navbar-brand mx-4 mb-3">
-                    <h3 class="text-primary">SIPENJA</h3>
-                </a>
-                <div class="navbar-nav w-100">
-                    <a href="dashboard-admin.html" class="nav-item nav-link"><i
-                            class="fa-solid fa-square-poll-vertical me-2"></i>Dashboard</a>
-                    <a href="kategori-sparepart.html" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Kategori
-                        Sparepart</a>
-                    <a href="sparepart.html" class="nav-item nav-link"><i
-                            class="fa-solid fa-gear me-2"></i>Sparepart</a>
-                    <a href="layanan-servis.html" class="nav-item nav-link"><i class="fa-solid fa-tag me-2"></i>Layanan
-                        Servis</a>
-                    <a href="supplier.html" class="nav-item nav-link"><i
-                            class="fa-solid fa-cart-flatbed me-2"></i>Supplier</a>
-                    <a href="laporan.html" class="nav-item nav-link active"><i
-                            class="fa-solid fa-copy me-2"></i>Laporan</a>
-                    <a href="transaksi.html" class="nav-item nav-link"><i
-                            class="fa-solid fa-bag-shopping me-2"></i>Transaksi</a>
-                    <a href="karyawan.html" class="nav-item nav-link"><i
-                            class="fa-solid fa-user-group me-2"></i>Karyawan</a>
-                </div>
-            </nav>
-        </div>
-
-        <div class="content">
-            <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
-                <a href="dashboard-admin.html" class="navbar-brand d-flex d-lg-none me-4">
-                    <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
-                </a>
-                <a href="#" class="sidebar-toggler flex-shrink-0"><i class="fa fa-bars"></i></a>
-                <div class="navbar-nav align-items-center ms-auto">
-                    <a href="edit-profil.html"
-                        class="nav-item me-3 d-none d-sm-flex align-items-center gap-2 text-decoration-none"
-                        style="cursor:pointer">
-                        <i class="fa-solid fa-circle-user text-primary" style="font-size:1.3rem"></i>
-                        <div style="line-height:1.2">
-                            <div style="font-size:.82rem;font-weight:600;color:#191C24" id="navbar-nama">—</div>
-                            <div style="font-size:.72rem;color:#8e9bb0;text-transform:capitalize" id="navbar-role">—
-                            </div>
-                        </div>
-                    </a>
-                    <button class="btn btn-danger btn-sm" onclick="confirmLogout()">
-                        <i class="fa-solid fa-right-from-bracket me-1"></i>LOGOUT
-                    </button>
-                </div>
-            </nav>
-
-            <!-- VIEW: MENU -->
-            <div id="view-menu" class="container-fluid pt-4 px-4">
-                <h4 class="mb-4 fw-bold">Laporan Bengkel Any Jaya</h4>
-                <div class="row g-4">
-                    <div class="col-12 col-md-6 col-xl-4">
-                        <div class="laporan-card" onclick="showView('sparepart')">
-                            <div class="card-icon"><i class="fa-solid fa-database"></i></div>
-                            <div class="card-label">Laporan Penjualan<br>Sparepart</div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-xl-4">
-                        <div class="laporan-card" onclick="showView('servis')">
-                            <div class="card-icon"><i class="fa-solid fa-headset"></i></div>
-                            <div class="card-label">Laporan Pelayanan<br>Servis</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- VIEW: LAPORAN SPAREPART -->
-            <div id="view-sparepart" class="container-fluid pt-4 px-4" style="display:none">
-                <button class="btn-back" onclick="showView('menu')"><i class="fa-solid fa-arrow-left"></i>
-                    Kembali</button>
-                <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
-                    <h4 class="fw-bold mb-0">Laporan Penjualan Sparepart Bengkel Any Jaya</h4>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-success btn-cetak" onclick="exportExcel('sparepart')">
-                            <i class="fa-solid fa-file-excel me-1"></i>Export Excel
-                        </button>
-                        <button class="btn btn-secondary btn-cetak" onclick="cetakLaporan('sparepart')">
-                            <i class="fa-solid fa-print me-1"></i>Cetak / PDF
-                        </button>
-                    </div>
-                </div>
-                <div class="period-bar mb-4">
-                    <label>Input Periode</label>
-                    <input type="date" id="sp-tgl-awal">
-                    <span class="dash">——</span>
-                    <input type="date" id="sp-tgl-akhir">
-                    <button class="btn btn-primary btn-sm ms-2" onclick="loadLaporanSparepart()">
-                        <i class="fa-solid fa-search me-1"></i>Tampilkan
-                    </button>
-                </div>
-                <div class="preview-wrapper">
-                    <div class="preview-paper" id="preview-sparepart">
-                        <!-- Header Bengkel -->
-                        <div class="text-center mb-3">
-                            <img class="logo-bengkel" src="" style="height:64px;margin-bottom:6px;object-fit:contain;">
-                            <h4 style="margin-bottom:2px;font-size:1.2rem;">Bengkel Any Jaya</h4>
-                            <div style="font-size:.8rem;color:#444;">
-                                Kalitengah, Kec. Tanggulangin, Kabupaten Sidoarjo, Jawa Timur 61272
-                            </div>
-                            <div style="font-size:.8rem;color:#444;">Telp: +62 897-9980-073</div>
-                            <hr style="border-top:2px solid #111;margin:8px 0 3px;">
-                            <hr style="border-top:1px solid #111;margin:0 0 10px;">
-                        </div>
-                        <div class="period-line" id="sp-period-line">Laporan Penjualan Sparepart — pilih periode lalu
-                            klik Tampilkan</div>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Tanggal</th>
-                                    <th>Sparepart</th>
-                                    <th>Kategori</th>
-                                    <th>Harga Satuan (Rp)</th>
-                                    <th>Jumlah Terjual</th>
-                                    <th>Sub Total (Rp)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="sp-tbody">
-                                <tr>
-                                    <td colspan="7" class="center" style="color:#888;padding:16px">Pilih periode dan
-                                        klik Tampilkan</td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr class="total-row">
-                                    <td colspan="6" class="center"><strong>Total</strong></td>
-                                    <td class="num" id="sp-total">—</td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                        <div class="print-date" id="sp-print-date"></div>
-                        <div class="signature">
-                            <div>Mengetahui, Pemilik</div>
-                            <div>Bengkel Any Jaya</div>
-                            <div class="sig-name">Pamuji Slamet</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- VIEW: LAPORAN SERVIS -->
-            <div id="view-servis" class="container-fluid pt-4 px-4" style="display:none">
-                <button class="btn-back" onclick="showView('menu')"><i class="fa-solid fa-arrow-left"></i>
-                    Kembali</button>
-                <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
-                    <h4 class="fw-bold mb-0">Laporan Pelayanan Servis Bengkel Any Jaya</h4>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-success btn-cetak" onclick="exportExcel('servis')">
-                            <i class="fa-solid fa-file-excel me-1"></i>Export Excel
-                        </button>
-                        <button class="btn btn-secondary btn-cetak" onclick="cetakLaporan('servis')">
-                            <i class="fa-solid fa-print me-1"></i>Cetak / PDF
-                        </button>
-                    </div>
-                </div>
-                <div class="period-bar mb-4">
-                    <label>Input Periode</label>
-                    <input type="date" id="sv-tgl-awal">
-                    <span class="dash">——</span>
-                    <input type="date" id="sv-tgl-akhir">
-                    <button class="btn btn-primary btn-sm ms-2" onclick="loadLaporanServis()">
-                        <i class="fa-solid fa-search me-1"></i>Tampilkan
-                    </button>
-                </div>
-                <div class="preview-wrapper">
-                    <div class="preview-paper" id="preview-servis">
-                        <!-- Header Bengkel -->
-                        <div class="text-center mb-3">
-                            <img class="logo-bengkel" src="" style="height:64px;margin-bottom:6px;object-fit:contain;">
-                            <h4 style="margin-bottom:2px;font-size:1.2rem;">Bengkel Any Jaya</h4>
-                            <div style="font-size:.8rem;color:#444;">
-                                Kalitengah, Kec. Tanggulangin, Kabupaten Sidoarjo, Jawa Timur 61272
-                            </div>
-                            <div style="font-size:.8rem;color:#444;">Telp: +62 897-9980-073</div>
-                            <hr style="border-top:2px solid #111;margin:8px 0 3px;">
-                            <hr style="border-top:1px solid #111;margin:0 0 10px;">
-                        </div>
-                        <div class="period-line" id="sv-period-line">Laporan Layanan Servis — pilih periode lalu klik
-                            Tampilkan</div>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Tanggal</th>
-                                    <th>Kode Layanan</th>
-                                    <th>Jenis Layanan</th>
-                                    <th>Biaya (Rp)</th>
-                                    <th>Jumlah</th>
-                                    <th>SubTotal (Rp)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="sv-tbody">
-                                <tr>
-                                    <td colspan="7" class="center" style="color:#888;padding:16px">Pilih periode dan
-                                        klik Tampilkan</td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr class="total-row">
-                                    <td colspan="6" class="center"><strong>Total</strong></td>
-                                    <td class="num" id="sv-total">—</td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                        <div class="print-date" id="sv-print-date"></div>
-                        <div class="signature" style="margin-top:32px;">
-                            <div>Mengetahui, Pemilik</div>
-                            <div>Bengkel Any Jaya</div>
-                            <div class="sig-name">Pamuji Slamet</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="container-fluid pt-4 px-4 mt-4">
-                <div class="bg-light rounded-top p-4">
-                    <div class="row">
-                        <div class="col-12 col-sm-6 text-center text-sm-start">&copy; <a href="#">SIPENJA - Bengkel Any
-                                Jaya</a>, All Right Reserved.</div>
-                        <div class="col-12 col-sm-6 text-center text-sm-end">Designed By <a
-                                href="https://htmlcodex.com">HTML Codex</a></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+    <div id="spinner">
+        <div class="spinner-ring"></div>
     </div>
+    <div class="app-shell">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-icon">
+                    <img src="img/Any Jaya Logo White.png" alt="Ani Jaya Logo">
+                </div>
+                <span class="sidebar-brand-name">SIPENJA</span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard-admin.html" class="nav-link">
+                    <i class="fa-solid fa-gauge-high"></i> Dashboard
+                </a>
+                <a href="kategori-sparepart.html" class="nav-link">
+                    <i class="fa-solid fa-tags"></i> Kategori Sparepart
+                </a>
+                <a href="sparepart.html" class="nav-link">
+                    <i class="fa-solid fa-gear"></i> Sparepart
+                </a>
+                <a href="layanan-servis.html" class="nav-link">
+                    <i class="fa-solid fa-wrench"></i> Layanan Servis
+                </a>
+                <a href="supplier.html" class="nav-link">
+                    <i class="fa-solid fa-truck"></i> Supplier
+                </a>
+                <a href="laporan.html" class="nav-link active">
+                    <i class="fa-solid fa-chart-bar"></i> Laporan
+                </a>
+                <a href="transaksi.html" class="nav-link">
+                    <i class="fa-solid fa-receipt"></i> Transaksi
+                </a>
+                <a href="karyawan.html" class="nav-link">
+                    <i class="fa-solid fa-users"></i> Karyawan
+                </a>
+            </nav>
+        </aside>
+        <div class="main">
+            <header class="topbar">
+                <button class="topbar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="topbar-spacer"></div>
+                <a href="edit-profil.html" class="topbar-user" id="topbarUser">
+                    <div class="topbar-avatar" id="topbarAvatar">—</div>
+                    <div>
+                        <div class="topbar-user-name" id="navbar-nama">—</div>
+                        <div class="topbar-user-role" id="navbar-role">—</div>
+                    </div>
+                </a>
+                <button class="btn-logout" onclick="confirmLogout()">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+                </button>
+            </header>
+            <div class="page-body" style="padding:0">
+                <!-- VIEW: MENU -->
+                <div id="view-menu" class="container-fluid pt-4 px-4">
+                    <div class="page-header mb-4">
+                        <div>
+                            <div class="page-title">Laporan Bengkel</div>
+                            <div class="page-subtitle">Pilih jenis laporan</div>
+                        </div>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-12 col-md-6 col-xl-4">
+                            <div class="laporan-card" onclick="showView('sparepart')">
+                                <div class="card-icon"><i class="fa-solid fa-database"></i></div>
+                                <div class="card-label">Laporan Penjualan<br>Sparepart</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-4">
+                            <div class="laporan-card" onclick="showView('servis')">
+                                <div class="card-icon"><i class="fa-solid fa-headset"></i></div>
+                                <div class="card-label">Laporan Pelayanan<br>Servis</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
+                <!-- VIEW: LAPORAN SPAREPART -->
+                <div id="view-sparepart" class="container-fluid pt-4 px-4" style="display:none">
+                    <button class="btn-back" onclick="showView('menu')"><i class="fa-solid fa-arrow-left"></i>
+                        Kembali</button>
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+                        <h4 class="fw-bold mb-0">Laporan Penjualan Sparepart Bengkel Any Jaya</h4>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-success btn-cetak" onclick="exportExcel('sparepart')">
+                                <i class="fa-solid fa-file-excel me-1"></i>Export Excel
+                            </button>
+                            <button class="btn btn-secondary btn-cetak" onclick="cetakLaporan('sparepart')">
+                                <i class="fa-solid fa-print me-1"></i>Cetak / PDF
+                            </button>
+                        </div>
+                    </div>
+                    <div class="period-bar mb-4">
+                        <label>Input Periode</label>
+                        <input type="date" id="sp-tgl-awal">
+                        <span class="dash">——</span>
+                        <input type="date" id="sp-tgl-akhir">
+                        <button class="btn btn-primary btn-sm ms-2" onclick="loadLaporanSparepart()">
+                            <i class="fa-solid fa-search me-1"></i>Tampilkan
+                        </button>
+                    </div>
+                    <div class="preview-wrapper">
+                        <div class="preview-paper" id="preview-sparepart">
+                            <!-- Header Bengkel -->
+                            <div class="text-center mb-3">
+                                <img class="logo-bengkel" src=""
+                                    style="height:64px;margin-bottom:6px;object-fit:contain;">
+                                <h4 style="margin-bottom:2px;font-size:1.2rem;">Bengkel Any Jaya</h4>
+                                <div style="font-size:.8rem;color:#444;">
+                                    Kalitengah, Kec. Tanggulangin, Kabupaten Sidoarjo, Jawa Timur 61272
+                                </div>
+                                <div style="font-size:.8rem;color:#444;">Telp: +62 897-9980-073</div>
+                                <hr style="border-top:2px solid #111;margin:8px 0 3px;">
+                                <hr style="border-top:1px solid #111;margin:0 0 10px;">
+                            </div>
+                            <div class="period-line" id="sp-period-line">Laporan Penjualan Sparepart — pilih periode
+                                lalu
+                                klik Tampilkan</div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Tanggal</th>
+                                        <th>Sparepart</th>
+                                        <th>Kategori</th>
+                                        <th>Harga Satuan (Rp)</th>
+                                        <th>Jumlah Terjual</th>
+                                        <th>Sub Total (Rp)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sp-tbody">
+                                    <tr>
+                                        <td colspan="7" class="center" style="color:#888;padding:16px">Pilih periode dan
+                                            klik Tampilkan</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr class="total-row">
+                                        <td colspan="6" class="center"><strong>Total</strong></td>
+                                        <td class="num" id="sp-total">—</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                            <div class="print-date" id="sp-print-date"></div>
+                            <div class="signature">
+                                <div>Mengetahui, Pemilik</div>
+                                <div>Bengkel Any Jaya</div>
+                                <div class="sig-name">Pamuji Slamet</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW: LAPORAN SERVIS -->
+                <div id="view-servis" class="container-fluid pt-4 px-4" style="display:none">
+                    <button class="btn-back" onclick="showView('menu')"><i class="fa-solid fa-arrow-left"></i>
+                        Kembali</button>
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+                        <h4 class="fw-bold mb-0">Laporan Pelayanan Servis Bengkel Any Jaya</h4>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-success btn-cetak" onclick="exportExcel('servis')">
+                                <i class="fa-solid fa-file-excel me-1"></i>Export Excel
+                            </button>
+                            <button class="btn btn-secondary btn-cetak" onclick="cetakLaporan('servis')">
+                                <i class="fa-solid fa-print me-1"></i>Cetak / PDF
+                            </button>
+                        </div>
+                    </div>
+                    <div class="period-bar mb-4">
+                        <label>Input Periode</label>
+                        <input type="date" id="sv-tgl-awal">
+                        <span class="dash">——</span>
+                        <input type="date" id="sv-tgl-akhir">
+                        <button class="btn btn-primary btn-sm ms-2" onclick="loadLaporanServis()">
+                            <i class="fa-solid fa-search me-1"></i>Tampilkan
+                        </button>
+                    </div>
+                    <div class="preview-wrapper">
+                        <div class="preview-paper" id="preview-servis">
+                            <!-- Header Bengkel -->
+                            <div class="text-center mb-3">
+                                <img class="logo-bengkel" src=""
+                                    style="height:64px;margin-bottom:6px;object-fit:contain;">
+                                <h4 style="margin-bottom:2px;font-size:1.2rem;">Bengkel Any Jaya</h4>
+                                <div style="font-size:.8rem;color:#444;">
+                                    Kalitengah, Kec. Tanggulangin, Kabupaten Sidoarjo, Jawa Timur 61272
+                                </div>
+                                <div style="font-size:.8rem;color:#444;">Telp: +62 897-9980-073</div>
+                                <hr style="border-top:2px solid #111;margin:8px 0 3px;">
+                                <hr style="border-top:1px solid #111;margin:0 0 10px;">
+                            </div>
+                            <div class="period-line" id="sv-period-line">Laporan Layanan Servis — pilih periode lalu
+                                klik
+                                Tampilkan</div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Tanggal</th>
+                                        <th>Kode Layanan</th>
+                                        <th>Jenis Layanan</th>
+                                        <th>Biaya (Rp)</th>
+                                        <th>Jumlah</th>
+                                        <th>SubTotal (Rp)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sv-tbody">
+                                    <tr>
+                                        <td colspan="7" class="center" style="color:#888;padding:16px">Pilih periode dan
+                                            klik Tampilkan</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr class="total-row">
+                                        <td colspan="6" class="center"><strong>Total</strong></td>
+                                        <td class="num" id="sv-total">—</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                            <div class="print-date" id="sv-print-date"></div>
+                            <div class="signature" style="margin-top:32px;">
+                                <div>Mengetahui, Pemilik</div>
+                                <div>Bengkel Any Jaya</div>
+                                <div class="sig-name">Pamuji Slamet</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <footer class="page-footer">&copy; 2025 SIPENJA &mdash; Bengkel Ani Jaya</footer>
+    </div>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/login.js"></script>
+    <script src="js/laporan.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
-
-    <script src="js/login.js"></script>
-    <script src="js/laporan.js"></script>
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+        document.addEventListener('click', function (e) {
+            const sb = document.getElementById('sidebar');
+            const btn = document.getElementById('sidebarToggle');
+            if (sb && btn && !sb.contains(e.target) && !btn.contains(e.target)) {
+                sb.classList.remove('open');
+            }
+        });
+    </script>
 </body>
 
 </html>

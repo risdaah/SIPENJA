@@ -1,11 +1,25 @@
+/**
+ * controllers/publikController.js — Controller endpoint publik
+ *
+ * Berisi endpoint yang bisa diakses siapapun tanpa login.
+ * Saat ini hanya ada satu endpoint: cek status servis via kode antrian.
+ *
+ * Kode antrian adalah kode unik yang diberikan kasir kepada pelanggan
+ * saat mendaftarkan kendaraan untuk servis (format: SRV-YYYYMMDD-001).
+ * Pelanggan bisa menggunakannya untuk memantau progress servis secara mandiri.
+ */
+
 const db = require("../config/db");
 
+// ── CEK STATUS SERVIS ─────────────────────────────────────────────────────────
 // GET /api/publik/cek-status/:kodeAntrian
-// Endpoint publik — tanpa authMiddleware
+// Mengembalikan info servis: nama pelanggan, keluhan, status, mekanik,
+// daftar layanan yang dikerjakan, dan riwayat progress (timeline)
 const cekStatusServis = async (req, res) => {
   try {
     const { kodeAntrian } = req.params;
 
+    // Cari servis berdasarkan kode antrian, JOIN user untuk nama mekanik
     const [servisRows] = await db.query(
       `SELECT s.*, u.NAMA as NAMA_MEKANIK
        FROM servis s
@@ -25,6 +39,7 @@ const cekStatusServis = async (req, res) => {
 
     const servis = servisRows[0];
 
+    // Ambil layanan yang dikerjakan di servis ini
     const [layananRows] = await db.query(
       `SELECT d.*, l.NAMA as NAMA_LAYANAN, l.KODELAYANAN
        FROM detailtransaksiservis d
@@ -33,6 +48,7 @@ const cekStatusServis = async (req, res) => {
       [servis.IDSERVIS],
     );
 
+    // Ambil riwayat progress diurutkan dari yang paling lama (untuk tampilan timeline)
     const [progressRows] = await db.query(
       `SELECT * FROM progressservis
        WHERE IDSERVIS = ?
@@ -40,18 +56,19 @@ const cekStatusServis = async (req, res) => {
       [servis.IDSERVIS],
     );
 
+    // Hanya kembalikan field yang relevan untuk pelanggan (tidak ekspos data sensitif)
     res.json({
       success: true,
       data: {
-        KODEANTRIAN: servis.KODEANTRIAN,
-        NAMAPELANGGAN: servis.NAMAPELANGGAN,
-        KELUHAN: servis.KELUHAN,
-        STATUS: servis.STATUS,
-        TANGGALMASUK: servis.TANGGALMASUK,
+        KODEANTRIAN:    servis.KODEANTRIAN,
+        NAMAPELANGGAN:  servis.NAMAPELANGGAN,
+        KELUHAN:        servis.KELUHAN,
+        STATUS:         servis.STATUS,
+        TANGGALMASUK:   servis.TANGGALMASUK,
         TANGGALSELESAI: servis.TANGGALSELESAI,
-        NAMA_MEKANIK: servis.NAMA_MEKANIK,
-        LAYANAN: layananRows,
-        PROGRESS: progressRows,
+        NAMA_MEKANIK:   servis.NAMA_MEKANIK,
+        LAYANAN:        layananRows,
+        PROGRESS:       progressRows,
       },
     });
   } catch (error) {

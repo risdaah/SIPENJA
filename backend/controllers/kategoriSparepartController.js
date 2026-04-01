@@ -1,5 +1,13 @@
+/**
+ * controllers/kategoriSparepartController.js — Controller kategori sparepart
+ *
+ * Kategori digunakan untuk mengelompokkan sparepart (contoh: Oli, Filter, Rem, Busi).
+ * Setiap sparepart bisa punya satu kategori (nullable).
+ */
+
 const KategoriSparepart = require('../models/kategoriSparepartModel');
 
+// Ambil semua kategori
 const getAllKategori = async (req, res) => {
   try {
     const data = await KategoriSparepart.getAll();
@@ -9,6 +17,7 @@ const getAllKategori = async (req, res) => {
   }
 };
 
+// Ambil kategori berdasarkan ID
 const getKategoriById = async (req, res) => {
   try {
     const data = await KategoriSparepart.getById(req.params.id);
@@ -19,6 +28,7 @@ const getKategoriById = async (req, res) => {
   }
 };
 
+// Tambah kategori baru — NAMA dan KODE wajib diisi
 const createKategori = async (req, res) => {
   try {
     const { NAMA, KODE } = req.body;
@@ -32,6 +42,7 @@ const createKategori = async (req, res) => {
   }
 };
 
+// Edit kategori — cek dulu apakah data ada sebelum update
 const updateKategori = async (req, res) => {
   try {
     const { NAMA, KODE } = req.body;
@@ -46,6 +57,8 @@ const updateKategori = async (req, res) => {
   }
 };
 
+// Hapus kategori — pastikan tidak menghapus kategori yang masih dipakai sparepart
+// (dijaga oleh FK constraint di DB jika dikonfigurasi)
 const deleteKategori = async (req, res) => {
   try {
     const existing = await KategoriSparepart.getById(req.params.id);
