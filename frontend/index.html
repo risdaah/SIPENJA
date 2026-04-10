@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SIPENJA - Bengkel Ani Jaya</title>
+    <title>SIPENJA - Bengkel Any Jaya</title>
 
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -16,168 +16,149 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
         rel="stylesheet" />
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/landing-page.css" />
+    <link rel="stylesheet" href="css/app.css" />
 </head>
 
 <body>
 
-    <!-- ── NAVBAR ───────────────────────────────────────────── -->
-    <nav class="navbar">
-        <div class="navbar-inner">
-            <div class="brand">
+    <!-- ── NAVBAR ── -->
+    <nav class="lp-navbar">
+        <div class="lp-navbar-inner">
+            <div class="lp-brand">
                 <img src="img/Any-Jaya Logo Blue.png" alt="Bengkel Any Jaya" />
-                <span class="brand-name">SIPENJA</span>
+                <span class="lp-brand-name">SIPENJA</span>
             </div>
-            <a href="login.html" class="btn-login">
+            <nav class="lp-nav-links">
+                <a href="#hero" class="lp-nav-link">Beranda</a>
+                <a href="#fitur" class="lp-nav-link">Fitur</a>
+            </nav>
+            <a href="login.html" class="lp-btn-login">
                 <i class="fa-solid fa-right-to-bracket"></i> Login
             </a>
         </div>
     </nav>
 
-    <!-- ── HERO ─────────────────────────────────────────────── -->
-    <section class="hero-section">
-        <div class="hero-inner">
-
-            <!-- Left: Text -->
-            <div class="hero-text">
-                <!-- <span class="hero-badge">
-                    <i class="fa-solid fa-wrench"></i> Sistem Manajemen Bengkel
-                </span> -->
-                <h1 class="hero-title">
+    <!-- ── HERO ── -->
+    <section class="lp-hero" id="hero">
+        <div class="lp-hero-inner">
+            <div class="lp-hero-text">
+                <h1 class="lp-hero-title">
                     Bengkel<br><span>Any Jaya</span>
                 </h1>
-                <p class="hero-desc">
+                <p class="lp-hero-desc">
                     Platform pengelolaan bengkel motor yang modern, cepat, dan terintegrasi.
                     Kelola servis, sparepart, karyawan, dan transaksi dalam satu sistem.
                 </p>
-                <div class="hero-actions">
-                    <a href="cek-status.html" class="btn-primary-hero">
+                <div class="lp-hero-actions">
+                    <a href="cek-status.html" class="lp-btn-primary">
                         <i class="fa-solid fa-magnifying-glass"></i>
                         Cek Status Antrian
                     </a>
-                    <!-- <a href="login.html" class="btn-outline-hero">
-                        <i class="fa-solid fa-arrow-right-to-bracket"></i>
-                        Masuk Sistem
-                    </a> -->
                 </div>
             </div>
-
-            <!-- Right: Dashboard Preview -->
-            <div class="hero-visual">
-                <svg width="100%" viewBox="0 0 680 480" xmlns="http://www.w3.org/2000/svg">
-                    <!-- paste semua isi SVG di atas di sini -->
-
-                </svg>
+            <div class="lp-hero-visual">
+                <div class="lp-img-wrap">
+                    <img src="img/illustration.jpg" alt="Ilustrasi SIPENJA" class="lp-img" />
+                    <div class="lp-img-glow"></div>
+                </div>
             </div>
-
         </div>
     </section>
 
-    <!-- ── FEATURES ─────────────────────────────────────────── -->
-    <section class="features-section">
-        <div class="section-inner">
-            <!-- <span class="section-label">Fitur Unggulan</span>
-            <h2 class="section-title">Semua yang dibutuhkan<br>bengkel Anda</h2>
-            <p class="section-subtitle">
-                SIPENJA dirancang khusus untuk kebutuhan bengkel motor — dari kelola antrian servis
-                hingga laporan keuangan, semuanya terintegrasi.
-            </p> -->
-
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fa-solid fa-screwdriver-wrench"></i>
-                    </div>
-                    <div class="feature-title">Manajemen Servis</div>
-                    <p class="feature-desc">Kelola antrian servis kendaraan, assign mekanik, dan pantau progress
+    <!-- ── FEATURES ── -->
+    <section class="lp-features" id="fitur">
+        <div class="lp-section-inner">
+            <div class="lp-features-grid">
+                <div class="lp-feature-card">
+                    <div class="lp-feature-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+                    <div class="lp-feature-title">Manajemen Servis</div>
+                    <p class="lp-feature-desc">Kelola antrian servis kendaraan, assign mekanik, dan pantau progress
                         pekerjaan secara real-time.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fa-solid fa-gear"></i>
-                    </div>
-                    <div class="feature-title">Kelola Sparepart</div>
-                    <p class="feature-desc">Pantau stok sparepart, atur harga jual, dan kelola supplier dalam satu
+                <div class="lp-feature-card">
+                    <div class="lp-feature-icon"><i class="fa-solid fa-gear"></i></div>
+                    <div class="lp-feature-title">Kelola Sparepart</div>
+                    <p class="lp-feature-desc">Pantau stok sparepart, atur harga jual, dan kelola supplier dalam satu
                         tempat yang mudah diakses.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fa-solid fa-bag-shopping"></i>
-                    </div>
-                    <div class="feature-title">Transaksi Kasir</div>
-                    <p class="feature-desc">Proses transaksi servis dan pembelian sparepart dengan cepat. Cetak struk
+                <div class="lp-feature-card">
+                    <div class="lp-feature-icon"><i class="fa-solid fa-bag-shopping"></i></div>
+                    <div class="lp-feature-title">Transaksi Kasir</div>
+                    <p class="lp-feature-desc">Proses transaksi servis dan pembelian sparepart dengan cepat. Cetak struk
                         otomatis untuk pelanggan.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fa-solid fa-user-group"></i>
-                    </div>
-                    <div class="feature-title">Manajemen Karyawan</div>
-                    <p class="feature-desc">Atur data karyawan, role akses, dan pantau aktivitas mekanik serta kasir
+                <div class="lp-feature-card">
+                    <div class="lp-feature-icon"><i class="fa-solid fa-user-group"></i></div>
+                    <div class="lp-feature-title">Manajemen Karyawan</div>
+                    <p class="lp-feature-desc">Atur data karyawan, role akses, dan pantau aktivitas mekanik serta kasir
                         dengan mudah.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fa-solid fa-chart-column"></i>
-                    </div>
-                    <div class="feature-title">Laporan & Analitik</div>
-                    <p class="feature-desc">Laporan penjualan sparepart dan servis lengkap. Export ke Excel atau cetak
-                        sebagai PDF kapan saja.</p>
+                <div class="lp-feature-card">
+                    <div class="lp-feature-icon"><i class="fa-solid fa-chart-column"></i></div>
+                    <div class="lp-feature-title">Laporan & Analitik</div>
+                    <p class="lp-feature-desc">Laporan penjualan sparepart dan servis lengkap. Export ke Excel atau
+                        cetak sebagai PDF kapan saja.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </div>
-                    <div class="feature-title">Cek Status Antrian</div>
-                    <p class="feature-desc">Pelanggan dapat memantau status servis kendaraannya secara mandiri tanpa
+                <div class="lp-feature-card">
+                    <div class="lp-feature-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                    <div class="lp-feature-title">Cek Status Antrian</div>
+                    <p class="lp-feature-desc">Pelanggan dapat memantau status servis kendaraannya secara mandiri tanpa
                         perlu menghubungi bengkel.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ── CTA ──────────────────────────────────────────────── -->
-    <!-- <section class="cta-section">
-        <div class="cta-inner">
-            <h2 class="cta-title">Siap memulai?</h2>
-            <p class="cta-desc">
-                Login ke sistem SIPENJA dan mulai kelola bengkel Anda lebih efisien.
-                Pelanggan juga dapat langsung mengecek status antrian servis.
-            </p>
-            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-                <a href="login.html" class="btn-cta-white">
-                    <i class="fa-solid fa-arrow-right-to-bracket"></i> Login Sekarang
-                </a>
-                <a href="cek-status.html" class="btn-cta-white"
-                    style="background:transparent;color:#fff;border:2px solid rgba(255,255,255,0.5);">
-                    <i class="fa-solid fa-magnifying-glass"></i> Cek Status Servis
-                </a>
-            </div>
-        </div>
-    </section> -->
-
-    <!-- ── FOOTER ────────────────────────────────────────────── -->
-    <footer>
-        <div class="footer-inner">
-            <div class="footer-top">
+    <!-- ── FOOTER ── -->
+    <footer class="lp-footer">
+        <div class="lp-footer-inner">
+            <div class="lp-footer-top">
                 <div>
-                    <div class="footer-logo">SIPE<span>NJA</span></div>
-                    <div class="footer-tagline">Sistem Informasi Pengelolaan Bengkel Any Jaya</div>
+                    <div class="lp-footer-logo">SIPE<span>NJA</span></div>
+                    <div class="lp-footer-tagline">Sistem Informasi Pengelolaan Bengkel Any Jaya</div>
                 </div>
-                <!-- <div class="footer-links">
-                    <a href="cek-status.html">Cek Status Servis</a>
-                    <a href="login.html">Login</a>
-                </div> -->
             </div>
-            <div class="footer-bottom">
-                <p class="footer-copy">&copy; 2026 Bengkel Any Jaya. All rights reserved.</p>
-                <p class="footer-copy">SIPENJA — Sistem Informasi Pencatatan Transaksi Bengkel</p>
+            <div class="lp-footer-bottom">
+                <p>&copy; 2026 Bengkel Any Jaya. All rights reserved.</p>
+                <p>SIPENJA — Sistem Informasi Pencatatan Transaksi Bengkel</p>
             </div>
         </div>
     </footer>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Scroll Active Nav -->
+    <script>
+        const lpSections = document.querySelectorAll('section[id]');
+        const lpNavLinks = document.querySelectorAll('.lp-nav-link');
+        const lpNavbar = document.querySelector('.lp-navbar');
+
+        window.addEventListener('scroll', () => {
+            lpNavbar.classList.toggle('scrolled', window.scrollY > 10);
+
+            let current = '';
+            lpSections.forEach(sec => {
+                if (window.scrollY >= sec.offsetTop - 100) current = sec.id;
+            });
+
+            lpNavLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) link.classList.add('active');
+            });
+        });
+
+        lpNavLinks.forEach(link => {
+            link.addEventListener('click', e => {
+                e.preventDefault();
+                const target = document.querySelector(link.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        window.dispatchEvent(new Event('scroll'));
+    </script>
+
 </body>
 
 </html>

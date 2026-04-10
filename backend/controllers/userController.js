@@ -150,7 +150,7 @@ const updatePassword = async (req, res) => {
 };
 
 // ── UPDATE STATUS (aktifkan / nonaktifkan akun) ──────────────────────────────
-// User yang dinonaktifkan tidak bisa login (dicek di authController)
+// User yang dinonaktifkan tidak bisa login
 const updateStatus = async (req, res) => {
   try {
     const { STATUS } = req.body;

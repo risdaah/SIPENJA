@@ -8,13 +8,13 @@
  *   - Logout dilakukan dengan menghapus token di sisi client (localStorage)
  */
 
-const db   = require("../config/db");
+const db = require("../config/db");
 const bcrypt = require("bcryptjs");
-const jwt  = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 
-// Ambil dari .env — WAJIB diganti dengan nilai acak yang kuat di produksi
-const JWT_SECRET  = process.env.JWT_SECRET  || "sipenja_secret_key_ganti_di_env";
+// Ambil dari .env
+const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES = process.env.JWT_EXPIRES || "8h";
 
 // ══════════════════════════════════════════════════════════
@@ -44,7 +44,7 @@ const login = async (req, res) => {
     // Cari user di DB (getByUsername mengambil semua kolom termasuk hash PASSWORD)
     const user = await User.getByUsername(USERNAME);
 
-    // Gunakan pesan generik agar tidak bocorkan info apakah username ada atau tidak
+    // Cek info apakah username ada atau tidak
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -69,7 +69,7 @@ const login = async (req, res) => {
       });
     }
 
-    // Catat waktu login terakhir di DB untuk keperluan audit
+    // Catat waktu login terakhir di DB
     await db.query("UPDATE USER SET LASTLOGIN = ? WHERE IDUSER = ?", [
       new Date(),
       user.IDUSER,
@@ -77,11 +77,11 @@ const login = async (req, res) => {
 
     // Payload JWT — data ini akan tersedia di req.user setelah token diverifikasi
     const payload = {
-      IDUSER:   user.IDUSER,
-      NAMA:     user.NAMA,
+      IDUSER: user.IDUSER,
+      NAMA: user.NAMA,
       USERNAME: user.USERNAME,
-      ROLE:     user.ROLE,    // 'admin' | 'kasir' | 'mekanik'
-      STATUS:   user.STATUS,
+      ROLE: user.ROLE, // 'admin' | 'kasir' | 'mekanik'
+      STATUS: user.STATUS,
     };
 
     // Buat token JWT yang berlaku selama JWT_EXPIRES
