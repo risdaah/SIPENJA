@@ -27,6 +27,7 @@ const {
   deleteUser,
   createAdmin,
 } = require("../controllers/userController");
+
 const {
   authMiddleware,
   roleMiddleware,
@@ -69,12 +70,6 @@ router.delete(
   authMiddleware,
   roleMiddleware("admin"),
   deleteUser,
-);
-router.post(
-  "/create-admin",
-  authMiddleware,
-  roleMiddleware("admin"),
-  createAdmin,
 );
 
 module.exports = router;

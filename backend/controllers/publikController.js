@@ -60,15 +60,15 @@ const cekStatusServis = async (req, res) => {
     res.json({
       success: true,
       data: {
-        KODEANTRIAN:    servis.KODEANTRIAN,
-        NAMAPELANGGAN:  servis.NAMAPELANGGAN,
-        KELUHAN:        servis.KELUHAN,
-        STATUS:         servis.STATUS,
-        TANGGALMASUK:   servis.TANGGALMASUK,
+        KODEANTRIAN: servis.KODEANTRIAN,
+        NAMAPELANGGAN: servis.NAMAPELANGGAN,
+        KELUHAN: servis.KELUHAN,
+        STATUS: servis.STATUS,
+        TANGGALMASUK: servis.TANGGALMASUK,
         TANGGALSELESAI: servis.TANGGALSELESAI,
-        NAMA_MEKANIK:   servis.NAMA_MEKANIK,
-        LAYANAN:        layananRows,
-        PROGRESS:       progressRows,
+        NAMA_MEKANIK: servis.NAMA_MEKANIK,
+        LAYANAN: layananRows,
+        PROGRESS: progressRows,
       },
     });
   } catch (error) {
@@ -76,4 +76,28 @@ const cekStatusServis = async (req, res) => {
   }
 };
 
-module.exports = { cekStatusServis };
+const getStats = async (req, res) => {
+  try {
+    const db = require("../config/db");
+
+    const [[{ totalServis }]] = await db.query(
+      "SELECT COUNT(*) as totalServis FROM LAYANANSERVIS",
+    );
+
+    const [[{ totalSparepart }]] = await db.query(
+      "SELECT COUNT(*) as totalSparepart FROM SPAREPART WHERE STOK > 0",
+    );
+
+    return res.json({
+      success: true,
+      data: {
+        totalServis,
+        totalSparepart,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+module.exports = { cekStatusServis, getStats };

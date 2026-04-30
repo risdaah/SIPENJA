@@ -5,54 +5,45 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SIPENJA - Bengkel Any Jaya</title>
-
-    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
-    <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/e943a573af.js" crossorigin="anonymous"></script>
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
         rel="stylesheet" />
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="css/app.css" />
 </head>
 
 <body>
 
-    <!-- ── NAVBAR ── -->
+    <!-- NAVBAR -->
     <nav class="lp-navbar">
         <div class="lp-navbar-inner">
             <div class="lp-brand">
                 <img src="img/Any-Jaya Logo Blue.png" alt="Bengkel Any Jaya" />
                 <span class="lp-brand-name">SIPENJA</span>
             </div>
-            <nav class="lp-nav-links">
-                <a href="#hero" class="lp-nav-link">Beranda</a>
-                <a href="#fitur" class="lp-nav-link">Fitur</a>
-            </nav>
             <a href="login.html" class="lp-btn-login">
                 <i class="fa-solid fa-right-to-bracket"></i> Login
             </a>
         </div>
     </nav>
 
-    <!-- ── HERO ── -->
+    <!-- HERO -->
     <section class="lp-hero" id="hero">
         <div class="lp-hero-inner">
             <div class="lp-hero-text">
-                <h1 class="lp-hero-title">
-                    Bengkel<br><span>Any Jaya</span>
-                </h1>
-                <p class="lp-hero-desc">
-                    Platform pengelolaan bengkel motor yang modern, cepat, dan terintegrasi.
-                    Kelola servis, sparepart, karyawan, dan transaksi dalam satu sistem.
-                </p>
+                <div class="lp-section-tag" style="margin-bottom:18px">
+                    <i class="fa-solid fa-wrench"></i> Bengkel Motor Terpercaya
+                </div>
+                <h1 class="lp-hero-title">Bengkel<br><span>Any Jaya</span></h1>
+                <p class="lp-hero-desc">Servis motor profesional, cepat, dan terpercaya. Kami melayani berbagai jenis
+                    motor dengan tenaga mekanik berpengalaman dan sparepart berkualitas.</p>
                 <div class="lp-hero-actions">
                     <a href="cek-status.html" class="lp-btn-primary">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        Cek Status Antrian
+                        <i class="fa-solid fa-magnifying-glass"></i> Cek Status Antrian
+                    </a>
+                    <a href="#tentang" class="lp-btn-outline" style="padding:13px 28px">
+                        <i class="fa-solid fa-circle-info"></i> Tentang Kami
                     </a>
                 </div>
             </div>
@@ -65,41 +56,251 @@
         </div>
     </section>
 
-    <!-- ── FEATURES ── -->
+    <!-- STATS (dari backend) -->
+    <section class="lp-stats">
+        <div class="lp-stats-inner">
+            <div class="lp-stat-item lp-reveal">
+                <div class="lp-stat-number" id="statServis">—</div>
+                <div class="lp-stat-label">Layanan Servis Tersedia</div>
+            </div>
+            <div class="lp-stat-item lp-reveal lp-reveal-delay-1">
+                <div class="lp-stat-number" id="statSparepart">—</div>
+                <div class="lp-stat-label">Sparepart Tersedia</div>
+            </div>
+            <div class="lp-stat-item lp-reveal lp-reveal-delay-2">
+                <div class="lp-stat-number">24<span>/7</span></div>
+                <div class="lp-stat-label">Pantau Status Servis</div>
+            </div>
+            <div class="lp-stat-item lp-reveal lp-reveal-delay-3">
+                <div class="lp-stat-number">100<span>%</span></div>
+                <div class="lp-stat-label">Transparan & Real-time</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TENTANG KAMI -->
+    <section class="lp-about" id="tentang">
+        <div class="lp-section-inner">
+            <div class="lp-about-inner">
+                <div class="lp-about-text lp-reveal">
+                    <div class="lp-section-tag"><i class="fa-solid fa-store"></i> Tentang Kami</div>
+                    <h2 class="lp-section-title" style="text-align:left;margin-top:12px">Bengkel
+                        Terpercaya<br><span>Sejak Lama</span></h2>
+                    <p class="lp-about-desc">Bengkel Any Jaya adalah bengkel motor yang berdiri dengan komitmen
+                        memberikan pelayanan servis terbaik, serta melayani berbagai jenis kerusakan motor.</p>
+                    <p class="lp-about-desc">Dengan mekanik berpengalaman dan peralatan modern, kami memastikan
+                        kendaraan Anda ditangani dengan standar kualitas tinggi dan harga yang transparan.</p>
+                    <div class="lp-about-points">
+                        <div class="lp-about-point">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>Mekanik berpengalaman</span>
+                        </div>
+                        <div class="lp-about-point">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>Sparepart original & berkualitas</span>
+                        </div>
+                        <div class="lp-about-point">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>Harga transparan, tidak ada biaya tersembunyi</span>
+                        </div>
+                        <div class="lp-about-point">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>Sistem antrian digital yang efisien</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="lp-about-cards lp-reveal lp-reveal-delay-1">
+                    <div class="lp-about-card">
+                        <i class="fa-solid fa-screwdriver-wrench"></i>
+                        <div class="lp-about-card-title">Servis Lengkap</div>
+                        <p>Matic, bebek, sport — semua jenis motor kami tangani</p>
+                    </div>
+                    <div class="lp-about-card">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <div class="lp-about-card-title">Bergaransi</div>
+                        <p>Setiap pekerjaan servis dilengkapi garansi pengerjaan</p>
+                    </div>
+                    <div class="lp-about-card">
+                        <i class="fa-solid fa-clock"></i>
+                        <div class="lp-about-card-title">Tepat Waktu</div>
+                        <p>Estimasi waktu pengerjaan yang akurat dan ditepati</p>
+                    </div>
+                    <div class="lp-about-card">
+                        <i class="fa-solid fa-tags"></i>
+                        <div class="lp-about-card-title">Harga Bersaing</div>
+                        <p>Tarif terjangkau dengan kualitas pengerjaan premium</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRACKING -->
+    <section class="lp-tracking" id="tracking">
+        <div class="lp-section-inner">
+            <div class="lp-tracking-inner">
+                <div class="lp-tracking-visual lp-reveal">
+                    <div class="lp-tracking-mockup">
+                        <div class="lp-mock-header">
+                            <span class="lp-mock-dot red"></span>
+                            <span class="lp-mock-dot yellow"></span>
+                            <span class="lp-mock-dot green"></span>
+                            <span class="lp-mock-url">sipenja.app/cek-status</span>
+                        </div>
+                        <div class="lp-mock-body">
+                            <div class="lp-mock-label">Kode Antrian</div>
+                            <div class="lp-mock-code">SRV-2026-0042</div>
+                            <div class="lp-mock-steps">
+                                <div class="lp-mock-step done">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    <span>Pendaftaran</span>
+                                </div>
+                                <div class="lp-mock-step done">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    <span>Diagnosa</span>
+                                </div>
+                                <div class="lp-mock-step active">
+                                    <i class="fa-solid fa-circle-dot"></i>
+                                    <span>Pengerjaan</span>
+                                </div>
+                                <div class="lp-mock-step">
+                                    <i class="fa-regular fa-circle"></i>
+                                    <span>Selesai</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="lp-tracking-text lp-reveal lp-reveal-delay-1">
+                    <div class="lp-section-tag"><i class="fa-solid fa-location-crosshairs"></i> Live Tracking</div>
+                    <h2 class="lp-section-title" style="text-align:left;margin-top:12px">Pantau Status
+                        Servis<br><span>Dari Mana Saja</span></h2>
+                    <p class="lp-about-desc">Tidak perlu menunggu di bengkel atau bolak-balik menelepon. Cukup masukkan
+                        kode antrian dan pantau progress servis kendaraan kamu secara real-time.</p>
+                    <div class="lp-tracking-features">
+                        <div class="lp-tracking-feat">
+                            <div class="lp-tracking-feat-icon"><i class="fa-solid fa-qrcode"></i></div>
+                            <div>
+                                <div class="lp-tracking-feat-title">Kode Unik per Servis</div>
+                                <p>Setiap kendaraan mendapat kode antrian unik dari kasir saat pendaftaran.</p>
+                            </div>
+                        </div>
+                        <div class="lp-tracking-feat">
+                            <div class="lp-tracking-feat-icon"><i class="fa-solid fa-rotate"></i></div>
+                            <div>
+                                <div class="lp-tracking-feat-title">Update Real-time</div>
+                                <p>Status berubah otomatis saat mekanik memperbarui progress pekerjaan.</p>
+                            </div>
+                        </div>
+                        <div class="lp-tracking-feat">
+                            <div class="lp-tracking-feat-icon"><i class="fa-solid fa-mobile-screen"></i></div>
+                            <div>
+                                <div class="lp-tracking-feat-title">Akses dari HP</div>
+                                <p>Bisa diakses dari perangkat apapun — HP, tablet, maupun komputer.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="cek-status.html" class="lp-btn-primary" style="margin-top:24px;display:inline-flex">
+                        <i class="fa-solid fa-magnifying-glass"></i> Cek Status Sekarang
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LOKASI -->
+    <section class="lp-location" id="lokasi">
+        <div class="lp-section-inner">
+            <div class="lp-section-header lp-reveal">
+                <div class="lp-section-tag"><i class="fa-solid fa-map-pin"></i> Lokasi Kami</div>
+                <h2 class="lp-section-title">Temukan <span>Bengkel Any Jaya</span></h2>
+                <p class="lp-section-desc">Kunjungi kami langsung atau gunakan peta di bawah untuk navigasi ke lokasi
+                    bengkel.</p>
+            </div>
+            <div class="lp-location-inner lp-reveal">
+                <div class="lp-map-wrap">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3957.1234567890!2d112.7378!3d-7.2575!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zN8KwMTUnMjcuMCJTIDExMsKwNDQnMTYuMSJF!5e0!3m2!1sid!2sid!4v1234567890"
+                        width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+                <div class="lp-location-info">
+                    <div class="lp-loc-item">
+                        <div class="lp-loc-icon"><i class="fa-solid fa-map-pin"></i></div>
+                        <div>
+                            <div class="lp-loc-title">Alamat</div>
+                            <p class="lp-loc-desc">Desa Kalitengah, Kecamatan Tanggulangin<br>Kabupaten Sidoarjo, Jawa
+                                Timur
+                            </p>
+                        </div>
+                    </div>
+                    <div class="lp-loc-item">
+                        <div class="lp-loc-icon"><i class="fa-solid fa-clock"></i></div>
+                        <div>
+                            <div class="lp-loc-title">Jam Operasional</div>
+                            <p class="lp-loc-desc">Senin – Jumat: 07.00 – 18.00 WIB<br>Minggu & Hari Libur: 08.00 –
+                                16.00
+                                WIB</p>
+                        </div>
+                    </div>
+                    <div class="lp-loc-item">
+                        <div class="lp-loc-icon"><i class="fa-solid fa-phone"></i></div>
+                        <div>
+                            <div class="lp-loc-title">Kontak</div>
+                            <p class="lp-loc-desc">+62 897-9800-73</p>
+                        </div>
+                    </div>
+                    <a href="https://maps.app.goo.gl/iK9Es9phLRAk5EBA9" target="_blank" class="lp-btn-primary"
+                        style="margin-top:8px;display:inline-flex">
+                        <i class="fa-solid fa-diamond-turn-right"></i> Buka di Google Maps
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FITUR -->
     <section class="lp-features" id="fitur">
         <div class="lp-section-inner">
+            <div class="lp-section-header lp-reveal">
+                <div class="lp-section-tag"><i class="fa-solid fa-star"></i> Fitur Unggulan</div>
+                <h2 class="lp-section-title">Semua yang Kamu Butuhkan<br><span>Ada di Sini</span></h2>
+                <p class="lp-section-desc">Dari manajemen servis hingga laporan keuangan — SIPENJA menyederhanakan
+                    operasional bengkel kamu.</p>
+            </div>
             <div class="lp-features-grid">
-                <div class="lp-feature-card">
+                <div class="lp-feature-card lp-reveal">
                     <div class="lp-feature-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
                     <div class="lp-feature-title">Manajemen Servis</div>
                     <p class="lp-feature-desc">Kelola antrian servis kendaraan, assign mekanik, dan pantau progress
                         pekerjaan secara real-time.</p>
                 </div>
-                <div class="lp-feature-card">
+                <div class="lp-feature-card lp-reveal lp-reveal-delay-1">
                     <div class="lp-feature-icon"><i class="fa-solid fa-gear"></i></div>
                     <div class="lp-feature-title">Kelola Sparepart</div>
                     <p class="lp-feature-desc">Pantau stok sparepart, atur harga jual, dan kelola supplier dalam satu
                         tempat yang mudah diakses.</p>
                 </div>
-                <div class="lp-feature-card">
+                <div class="lp-feature-card lp-reveal lp-reveal-delay-2">
                     <div class="lp-feature-icon"><i class="fa-solid fa-bag-shopping"></i></div>
                     <div class="lp-feature-title">Transaksi Kasir</div>
                     <p class="lp-feature-desc">Proses transaksi servis dan pembelian sparepart dengan cepat. Cetak struk
                         otomatis untuk pelanggan.</p>
                 </div>
-                <div class="lp-feature-card">
+                <div class="lp-feature-card lp-reveal">
                     <div class="lp-feature-icon"><i class="fa-solid fa-user-group"></i></div>
                     <div class="lp-feature-title">Manajemen Karyawan</div>
                     <p class="lp-feature-desc">Atur data karyawan, role akses, dan pantau aktivitas mekanik serta kasir
                         dengan mudah.</p>
                 </div>
-                <div class="lp-feature-card">
+                <div class="lp-feature-card lp-reveal lp-reveal-delay-1">
                     <div class="lp-feature-icon"><i class="fa-solid fa-chart-column"></i></div>
                     <div class="lp-feature-title">Laporan & Analitik</div>
                     <p class="lp-feature-desc">Laporan penjualan sparepart dan servis lengkap. Export ke Excel atau
                         cetak sebagai PDF kapan saja.</p>
                 </div>
-                <div class="lp-feature-card">
+                <div class="lp-feature-card lp-reveal lp-reveal-delay-2">
                     <div class="lp-feature-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
                     <div class="lp-feature-title">Cek Status Antrian</div>
                     <p class="lp-feature-desc">Pelanggan dapat memantau status servis kendaraannya secara mandiri tanpa
@@ -109,7 +310,7 @@
         </div>
     </section>
 
-    <!-- ── FOOTER ── -->
+    <!-- FOOTER -->
     <footer class="lp-footer">
         <div class="lp-footer-inner">
             <div class="lp-footer-top">
@@ -125,38 +326,59 @@
         </div>
     </footer>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Scroll Active Nav -->
     <script>
-        const lpSections = document.querySelectorAll('section[id]');
-        const lpNavLinks = document.querySelectorAll('.lp-nav-link');
-        const lpNavbar = document.querySelector('.lp-navbar');
+        const API_BASE = 'http://localhost:3000/api';
 
+        // ── Navbar scroll ──
+        const lpNavbar = document.querySelector('.lp-navbar');
         window.addEventListener('scroll', () => {
             lpNavbar.classList.toggle('scrolled', window.scrollY > 10);
-
-            let current = '';
-            lpSections.forEach(sec => {
-                if (window.scrollY >= sec.offsetTop - 100) current = sec.id;
-            });
-
-            lpNavLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === '#' + current) link.classList.add('active');
-            });
         });
 
-        lpNavLinks.forEach(link => {
-            link.addEventListener('click', e => {
-                e.preventDefault();
-                const target = document.querySelector(link.getAttribute('href'));
-                if (target) target.scrollIntoView({ behavior: 'smooth' });
+        // ── Reveal on scroll ──
+        const revealEls = document.querySelectorAll('.lp-reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
             });
-        });
+        }, { threshold: 0.12 });
+        revealEls.forEach(el => observer.observe(el));
 
-        window.dispatchEvent(new Event('scroll'));
+        // ── Load stats dari backend ──
+        async function loadStats() {
+            try {
+                const res = await fetch(`${API_BASE}/publik/stats`);
+                const data = await res.json();
+                if (data.success) {
+                    animateCount('statServis', data.data.totalServis);
+                    animateCount('statSparepart', data.data.totalSparepart);
+                }
+            } catch (e) {
+                // Gagal load stats — biarkan tampil —
+            }
+        }
+
+        function animateCount(elId, target) {
+            const el = document.getElementById(elId);
+            if (!el || !target) return;
+            let start = 0;
+            const duration = 1200;
+            const step = Math.ceil(target / (duration / 16));
+            const timer = setInterval(() => {
+                start += step;
+                if (start >= target) {
+                    start = target;
+                    clearInterval(timer);
+                }
+                el.textContent = start + '+';
+            }, 16);
+        }
+
+        loadStats();
     </script>
 
 </body>

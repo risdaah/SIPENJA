@@ -241,10 +241,9 @@ function renderTabelLayanan() {
         "</td><td>" +
         formatRupiah(item.BIAYAPOKOK) +
         "</td>" +
-        "<td><button class='btn btn-danger btn-sm btn-qty' onclick='hapusLayanan(" +
+        "<td class='text-center'><span class='aksi-buttons'><button class='btn btn-danger btn-sm btn-qty' onclick='hapusLayanan(" +
         item.IDLAYANANSERVIS +
-        ")'>" +
-        "<i class='fa-solid fa-trash-can'></i></button></td></tr>",
+        ")'><i class='fa-solid fa-trash-can'></i></button></span></td></tr>",
     );
   });
   $("#totalServis").text(formatRupiah(total));
@@ -372,7 +371,7 @@ function renderTabelSparepart() {
         formatRupiah(subtotal) +
         "</td>" +
         "<td class='text-center'>" +
-        "<button class='btn btn-danger btn-qty me-1' onclick='ubahQtySparepart(" +
+        "<button class='btn btn-danger btn-qty' onclick='ubahQtySparepart(" +
         item.IDSPAREPART +
         ", -1)'><i class='fa-solid fa-minus'></i></button>" +
         "<button class='btn btn-success btn-qty' onclick='ubahQtySparepart(" +

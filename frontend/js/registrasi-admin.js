@@ -112,7 +112,7 @@
       JENISKELAMIN: jk || null,
     };
 
-    fetch(API + "/user/create-admin", {
+    fetch(API + "/publik/create-admin", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),

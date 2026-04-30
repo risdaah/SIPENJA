@@ -120,6 +120,25 @@
             color: #666;
         }
 
+        /* Aksi buttons */
+        .btn-qty {
+            width: 28px !important;
+            height: 28px !important;
+            padding: 0 !important;
+            font-size: 0.75rem !important;
+            line-height: 1 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            border-radius: 4px !important;
+        }
+
+        .aksi-buttons {
+            display: flex !important;
+            gap: 3px !important;
+            justify-content: center !important;
+        }
+
         @media print {
             body>* {
                 display: none !important;
@@ -293,7 +312,7 @@
                                             <th style="width:50px">#</th>
                                             <th>Layanan Servis</th>
                                             <th>Biaya Pokok</th>
-                                            <th style="width:70px">Aksi</th>
+                                            <th style="width:80px">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbodyLayanan">
@@ -339,7 +358,7 @@
                                             <th style="width:90px">Qty</th>
                                             <th>Harga Satuan</th>
                                             <th>Subtotal</th>
-                                            <th style="width:90px">Aksi</th>
+                                            <th style="width:110px">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbodySparepart">

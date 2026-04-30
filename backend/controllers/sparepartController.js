@@ -9,7 +9,7 @@
  *   - Dikembalikan saat transaksi/servis dihapus
  */
 
-const Sparepart = require('../models/sparepartModel');
+const Sparepart = require("../models/sparepartModel");
 
 // ── GET ALL ──────────────────────────────────────────────────────────────────
 // Mengembalikan semua sparepart beserta nama kategori dan nama supplier (JOIN di model)
@@ -26,7 +26,10 @@ const getAllSparepart = async (req, res) => {
 const getSparepartById = async (req, res) => {
   try {
     const data = await Sparepart.getById(req.params.id);
-    if (!data) return res.status(404).json({ success: false, message: 'Sparepart tidak ditemukan' });
+    if (!data)
+      return res
+        .status(404)
+        .json({ success: false, message: "Sparepart tidak ditemukan" });
     res.json({ success: true, data });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -48,15 +51,30 @@ const getLowStock = async (req, res) => {
 // ── CREATE ───────────────────────────────────────────────────────────────────
 const createSparepart = async (req, res) => {
   try {
-    const { IDKATEGORI, IDSUPPLIER, KODESPAREPART, NAMA, HARGAJUAL, STOK, STOKMINIMUM } = req.body;
+    const {
+      IDKATEGORI,
+      IDSUPPLIER,
+      KODESPAREPART,
+      NAMA,
+      HARGAJUAL,
+      STOK,
+      STOKMINIMUM,
+    } = req.body;
 
     // Field wajib — IDKATEGORI opsional (bisa NULL)
     if (!IDSUPPLIER || !KODESPAREPART || !NAMA || !HARGAJUAL) {
-      return res.status(400).json({ success: false, message: 'IDSUPPLIER, KODESPAREPART, NAMA, HARGAJUAL wajib diisi' });
+      return res
+        .status(400)
+        .json({
+          success: false,
+          message: "IDSUPPLIER, KODESPAREPART, NAMA, HARGAJUAL wajib diisi",
+        });
     }
 
     const data = await Sparepart.create(req.body);
-    res.status(201).json({ success: true, message: 'Sparepart berhasil dibuat', data });
+    res
+      .status(201)
+      .json({ success: true, message: "Sparepart berhasil dibuat", data });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -66,10 +84,13 @@ const createSparepart = async (req, res) => {
 const updateSparepart = async (req, res) => {
   try {
     const existing = await Sparepart.getById(req.params.id);
-    if (!existing) return res.status(404).json({ success: false, message: 'Sparepart tidak ditemukan' });
+    if (!existing)
+      return res
+        .status(404)
+        .json({ success: false, message: "Sparepart tidak ditemukan" });
 
     const data = await Sparepart.update(req.params.id, req.body);
-    res.json({ success: true, message: 'Sparepart berhasil diupdate', data });
+    res.json({ success: true, message: "Sparepart berhasil diupdate", data });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -79,10 +100,13 @@ const updateSparepart = async (req, res) => {
 const deleteSparepart = async (req, res) => {
   try {
     const existing = await Sparepart.getById(req.params.id);
-    if (!existing) return res.status(404).json({ success: false, message: 'Sparepart tidak ditemukan' });
+    if (!existing)
+      return res
+        .status(404)
+        .json({ success: false, message: "Sparepart tidak ditemukan" });
 
     await Sparepart.delete(req.params.id);
-    res.json({ success: true, message: 'Sparepart berhasil dihapus' });
+    res.json({ success: true, message: "Sparepart berhasil dihapus" });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -108,20 +132,36 @@ const updateStok = async (req, res) => {
     const { STOK } = req.body;
 
     if (STOK === undefined || STOK === null) {
-      return res.status(400).json({ success: false, message: 'STOK wajib diisi' });
+      return res
+        .status(400)
+        .json({ success: false, message: "STOK wajib diisi" });
     }
     if (STOK < 0) {
-      return res.status(400).json({ success: false, message: 'STOK tidak boleh minus' });
+      return res
+        .status(400)
+        .json({ success: false, message: "STOK tidak boleh minus" });
     }
 
     const existing = await Sparepart.getById(req.params.id);
-    if (!existing) return res.status(404).json({ success: false, message: 'Sparepart tidak ditemukan' });
+    if (!existing)
+      return res
+        .status(404)
+        .json({ success: false, message: "Sparepart tidak ditemukan" });
 
     const data = await Sparepart.updateStok(req.params.id, STOK);
-    res.json({ success: true, message: 'Stok berhasil diupdate', data });
+    res.json({ success: true, message: "Stok berhasil diupdate", data });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-module.exports = { getAllSparepart, getSparepartById, getLowStock, createSparepart, updateSparepart, deleteSparepart, getStok, updateStok };
+module.exports = {
+  getAllSparepart,
+  getSparepartById,
+  getLowStock,
+  createSparepart,
+  updateSparepart,
+  deleteSparepart,
+  getStok,
+  updateStok,
+};

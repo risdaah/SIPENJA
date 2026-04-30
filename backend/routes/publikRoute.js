@@ -14,9 +14,16 @@
 
 const express = require("express");
 const router = express.Router();
-const { cekStatusServis } = require("../controllers/publikController");
+const {
+  cekStatusServis,
+  getStats,
+} = require("../controllers/publikController");
+const { createAdmin } = require("../controllers/userController");
 
 // GET /api/publik/cek-status/:kodeAntrian — tanpa login
 router.get("/cek-status/:kodeAntrian", cekStatusServis);
+router.get("/stats", getStats);
+
+router.post("/create-admin", createAdmin);
 
 module.exports = router;
