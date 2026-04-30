@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:3000";
+// API_BASE_URL diambil dari js/config.js
 
 function getAuthHeaders() {
   return {

@@ -1,5 +1,5 @@
 /* ===== KONFIGURASI BASE URL API ===== */
-const API_BASE_URL = "http://localhost:3000";
+// API_BASE_URL diambil dari js/config.js
 
 /* ===== AUTH HEADERS — kirim token JWT ke setiap request ===== */
 function getAuthHeaders() {

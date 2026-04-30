@@ -8,6 +8,10 @@
  *   4. Menjalankan server pada port yang ditentukan (.env atau default 3000)
  */
 
+// Tambahkan ini untuk mematikan validasi SSL (Self-signed certificate) sementara
+// PENTING: Hapus baris ini jika aplikasi sudah di-deploy ke server produksi/online!
+//process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config(); // Muat variabel dari file .env (DB_HOST, JWT_SECRET, PORT, dll.)
@@ -15,8 +19,8 @@ require("dotenv").config(); // Muat variabel dari file .env (DB_HOST, JWT_SECRET
 const app = express();
 
 // ── Middleware Global ──────────────────────────────────────────────────────────
-app.use(cors());          // Izinkan request dari origin berbeda (frontend di port lain)
-app.use(express.json());  // Parse body request bertipe application/json
+app.use(cors()); // Izinkan request dari origin berbeda (frontend di port lain)
+app.use(express.json()); // Parse body request bertipe application/json
 
 // ══════════════════════════════════════════════════════════
 //  ROUTES

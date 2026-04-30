@@ -1,5 +1,5 @@
 /* ===== KONFIGURASI BASE URL API ===== */
-const API_BASE_URL = "http://localhost:3000"; // Ganti sesuai alamat backend kamu
+// API_BASE_URL diambil dari js/config.js
 
 (function ($) {
   "use strict";

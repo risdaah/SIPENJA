@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const API = "http://localhost:3000/api";
+  const API = API_BASE_URL;
 
   // ── Spinner ──
   window.addEventListener("load", function () {

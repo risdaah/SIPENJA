@@ -1,4 +1,5 @@
-var BASE_URL = "http://localhost:3000";
+// BASE_URL diambil dari config.js
+var BASE_URL = API_BASE_URL;
 
 (function ($) {
   "use strict";

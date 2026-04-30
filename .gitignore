@@ -1,2 +1,7 @@
-.env.local
-backend/.env.local
+# Dependency (Sangat wajib agar tidak berat saat di-push)
+node_modules/
+
+.env
+.process.env
+backend/.env
+backend/.process.env
