@@ -16,15 +16,28 @@
  *   const [rows] = await db.query('SELECT * FROM ...');
  */
 
-const mysql = require('mysql2');
-require('dotenv').config();
+const mysql = require("mysql2");
+require("dotenv").config();
 
 const pool = mysql.createPool({
+  // Jika kamu pakai Service URI (disarankan untuk Aiven)
+  uri: process.env.DATABASE_URL,
+
+  // Jika kamu tetap ingin pakai format pisah, gunakan ini:
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
+  port: process.env.DB_PORT || 3306,
+
+  // KRUSIAL UNTUK AIVEN: Tambahkan konfigurasi SSL
+  ssl: {
+    rejectUnauthorized: true, // Aiven mendukung koneksi aman
+  },
+
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
 });
 
-// Export sebagai promise pool agar bisa digunakan dengan async/await
 module.exports = pool.promise();
