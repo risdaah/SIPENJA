@@ -1,6 +1,8 @@
 const mysql = require("mysql2");
 // Pastikan path dotenv ini benar jika file .env ada di folder backend
-require("dotenv").config();
+require("dotenv").config({
+  path: process.env.NODE_ENV === "production" ? ".env.production" : ".env",
+});
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST || "localhost",

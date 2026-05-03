@@ -337,3 +337,32 @@ body {
         font-size: 1.55rem;
     }
 }
+/* ── Responsive tambahan ── */
+@media (max-width: 640px) {
+    body {
+        align-items: flex-start;
+        padding: 20px 0;
+    }
+
+    .login-wrapper {
+        min-height: 100dvh;
+        align-items: flex-start;
+    }
+
+    .login-card {
+        border-radius: 12px;
+        margin: 0 12px;
+        padding: 28px 20px 24px;
+    }
+}
+
+@media (max-width: 360px) {
+    .login-card {
+        padding: 24px 16px 20px;
+        margin: 0 8px;
+    }
+
+    .card-title {
+        font-size: 1.35rem;
+    }
+}
