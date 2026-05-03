@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIPENJA — Perbarui Transaksi</title>
+  <link rel="icon" type="image/png" href="img/Any-Jaya Logo White.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <script src="https://kit.fontawesome.com/e943a573af.js" crossorigin="anonymous"></script>
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/app.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="js/config.js"></script>
+</head>
+
+<body>
+  <div id="spinner">
+    <div class="spinner-ring"></div>
+  </div>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-icon">
+          <img src="img/Any Jaya Logo White.png" alt="Ani Jaya Logo">
+        </div>
+        <span class="sidebar-brand-name">SIPENJA</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="transaksi-kasir.html" class="nav-link">
+          <i class="fa-solid fa-plus-circle"></i> Transaksi Baru
+        </a>
+        <a href="sparepart-kasir.html" class="nav-link">
+          <i class="fa-solid fa-gear"></i> Sparepart
+        </a>
+        <a href="layanan-servis-kasir.html" class="nav-link">
+          <i class="fa-solid fa-wrench"></i> Layanan Servis
+        </a>
+        <a href="perbarui-transaksi-kasir.html" class="nav-link active">
+          <i class="fa-solid fa-pen-to-square"></i> Perbarui Transaksi
+        </a>
+        <a href="riwayat-transaksi-kasir.html" class="nav-link">
+          <i class="fa-solid fa-clock-rotate-left"></i> Riwayat Transaksi
+        </a>
+      </nav>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="topbar-spacer"></div>
+        <a href="edit-profil.html" class="topbar-user" id="topbarUser">
+          <div class="topbar-avatar" id="topbarAvatar">—</div>
+          <div>
+            <div class="topbar-user-name" id="navbar-nama">—</div>
+            <div class="topbar-user-role" id="navbar-role">—</div>
+          </div>
+        </a>
+        <button class="btn-logout" onclick="confirmLogout()">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+        </button>
+      </header>
+      <div class="page-body">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Perbarui Transaksi</div>
+            <div class="page-subtitle">Edit dan perbarui data transaksi</div>
+          </div>
+        </div>
+        <div class="filter-bar">
+          <div class="filter-group">
+            <label class="filter-label">Jenis</label>
+            <select id="filterJenis" class="filter-control" style="min-width:150px">
+              <option value="">Semua Jenis</option>
+              <option value="SERVIS">Servis</option>
+              <option value="PEMBELIAN">Pembelian</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-card">
+          <div class="table-card-header"><span class="table-count" id="table-count"></span></div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width:46px">No</th>
+                  <th>No. Transaksi</th>
+                  <th>Kasir</th>
+                  <th style="width:110px">Jenis</th>
+                  <th style="text-align:right">Total</th>
+                  <th>Tanggal</th>
+                  <th style="width:60px;text-align:center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody">
+                <tr class="loading-row">
+                  <td colspan="7"><span class="spinner-sm"></span> Memuat data...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="pagination-bar">
+            <span class="page-info" id="page-info"></span>
+            <div id="paginationContainer" class="page-btns"></div>
+          </div>
+        </div>
+      </div>
+      <footer class="page-footer">&copy; 2025 SIPENJA &mdash; Bengkel Ani Jaya</footer>
+    </div>
+  </div>
+  <!-- ═══════════════════════════════════════════
+         MODAL EDIT SERVIS
+    ═══════════════════════════════════════════ -->
+  <div class="modal fade" id="modalEditServis" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold">
+            <i class="fa-solid fa-screwdriver-wrench me-2 text-warning"></i>Edit Transaksi Servis
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="editServisIdTransaksi">
+          <input type="hidden" id="editServisIdServis">
+          <div id="modalEditServisBody"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+          <button type="button" class="btn btn-warning btn-sm px-4" id="btnSimpanEditServis"
+            onclick="simpanEditServis()">
+            <i class="fa fa-floppy-disk me-1"></i>Simpan
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+         MODAL EDIT PEMBELIAN
+    ═══════════════════════════════════════════ -->
+  <div class="modal fade" id="modalEditPembelian" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold">
+            <i class="fa fa-bag-shopping me-2 text-danger"></i>Edit Transaksi Pembelian Sparepart
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="editPembelianIdTransaksi">
+          <div id="modalEditPembelianBody"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
+          <button type="button" class="btn btn-primary btn-sm px-4" id="btnSimpanCatatanPembelian"
+            onclick="simpanCatatanPembelian()">
+            <i class="fa fa-floppy-disk me-1"></i>Simpan Catatan
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/login.js"></script>
+  <script src="js/perbarui-transaksi-kasir.js"></script>
+  <script>
+    function toggleSidebar() {
+      const sb = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      sb.classList.toggle('open');
+      if (overlay) overlay.classList.toggle('show', sb.classList.contains('open'));
+    }
+    function closeSidebar() {
+      const sb = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      sb.classList.remove('open');
+      if (overlay) overlay.classList.remove('show');
+    }
+    document.addEventListener('click', function (e) {
+      const sb = document.getElementById('sidebar');
+      const btn = document.getElementById('sidebarToggle');
+      if (sb && btn && !sb.contains(e.target) && !btn.contains(e.target)) {
+        closeSidebar();
+      }
+    });
+  </script>
+</body>
+
+</html>
