@@ -26,7 +26,7 @@ var BASE_URL = API_BASE_URL;
     }
 
     // Load logo dari backend
-    $.get(BASE_URL + "/api/laporan/logo", function (res) {
+    $.get(BASE_URL + "/laporan/logo", function (res) {
       LOGO_BASE64 = res.logo;
       $(".logo-bengkel").attr("src", LOGO_BASE64);
     });
@@ -84,7 +84,7 @@ function loadLaporanSparepart() {
   $("#sp-print-date").text("Dicetak Pada " + todayFormatted());
 
   $.ajax({
-    url: BASE_URL + "/api/laporan/laporan-sparepart",
+    url: BASE_URL + "/laporan/laporan-sparepart",
     method: "GET",
     data: { tgl_awal: awal, tgl_akhir: akhir },
     success: function (res) {
@@ -159,7 +159,7 @@ function loadLaporanServis() {
   $("#sv-print-date").text("Dicetak Pada " + todayFormatted());
 
   $.ajax({
-    url: BASE_URL + "/api/laporan/laporan-servis",
+    url: BASE_URL + "/laporan/laporan-servis",
     method: "GET",
     data: { tgl_awal: awal, tgl_akhir: akhir },
     success: function (res) {

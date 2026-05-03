@@ -321,8 +321,8 @@
 (function () {
   // Warna avatar berdasarkan role
   var ROLE_COLORS = {
-    admin: { bg: "#DBEAFE", color: "#1D4ED8" },
-    kasir: { bg: "#DCFCE7", color: "#15803D" },
+    admin:   { bg: "#DBEAFE", color: "#1D4ED8" },
+    kasir:   { bg: "#DCFCE7", color: "#15803D" },
     mekanik: { bg: "#FEF3C7", color: "#B45309" },
   };
 
@@ -330,9 +330,7 @@
     if (!nama) return "?";
     var parts = nama.trim().split(/\s+/);
     if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
-    return (
-      parts[0].charAt(0) + parts[parts.length - 1].charAt(0)
-    ).toUpperCase();
+    return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
   }
 
   function applyAvatar() {
@@ -340,14 +338,14 @@
     if (!user) return;
 
     var initials = getInitials(user.NAMA);
-    var role = (user.ROLE || "").toLowerCase();
-    var scheme = ROLE_COLORS[role] || { bg: "#E2E8F0", color: "#475569" };
+    var role     = (user.ROLE || "").toLowerCase();
+    var scheme   = ROLE_COLORS[role] || { bg: "#E2E8F0", color: "#475569" };
 
     // Update semua elemen #topbarAvatar yang ada di halaman
     document.querySelectorAll("#topbarAvatar").forEach(function (el) {
-      el.textContent = initials;
+      el.textContent      = initials;
       el.style.background = scheme.bg;
-      el.style.color = scheme.color;
+      el.style.color      = scheme.color;
     });
 
     // Update nama & role di topbar jika belum diisi JS lain

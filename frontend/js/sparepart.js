@@ -182,8 +182,10 @@ function renderError(msg) {
 async function loadDropdowns() {
   try {
     const [resKat, resSup] = await Promise.all([
-      fetch(`${API_BASE_URL}/kategori-sparepart/get-all`),
-      fetch(`${API_BASE_URL}/supplier/get-all`),
+      fetch(`${API_BASE_URL}/kategori-sparepart/get-all`, {
+        headers: getAuthHeaders(),
+      }),
+      fetch(`${API_BASE_URL}/supplier/get-all`, { headers: getAuthHeaders() }),
     ]);
     const katJson = await resKat.json();
     const supJson = await resSup.json();

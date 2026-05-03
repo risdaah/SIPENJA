@@ -95,7 +95,10 @@ exports.laporanServis = async (req, res) => {
    tanpa perlu URL relatif yang bisa bermasalah saat print.
 ────────────────────────────────────────────────────────────────────────────── */
 exports.getLogo = (req, res) => {
-  const logoPath = path.join(__dirname, "../../frontend/img/logo-anijaya.jpeg");
+  const logoPath = path.join(
+    __dirname,
+    "../../frontend/img/Any-Jaya Logo Blue 2nd.png",
+  );
   const img = fs.readFileSync(logoPath);
   const base64 = "data:image/jpeg;base64," + img.toString("base64");
   res.json({ logo: base64 });
