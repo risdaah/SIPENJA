@@ -69,7 +69,7 @@ function formatRupiah(angka) {
 /* ===== LOAD DATA ===== */
 async function loadLayanan() {
   try {
-    const res = await fetch(`${API_BASE_URL}/api/layanan-servis/get-all`, {
+    const res = await fetch(`${API_BASE_URL}/layanan-servis/get-all`, {
       headers: getAuthHeaders(),
     });
     if (!res.ok) throw new Error("Gagal mengambil data");

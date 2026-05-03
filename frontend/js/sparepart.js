@@ -45,7 +45,7 @@ function formatRupiah(angka) {
 /* ===== LOAD DATA ===== */
 async function loadSparepart() {
   try {
-    const res = await fetch(`${API_BASE_URL}/api/sparepart/get-all`, {
+    const res = await fetch(`${API_BASE_URL}/sparepart/get-all`, {
       headers: getAuthHeaders(),
     });
     if (!res.ok) throw new Error("Gagal mengambil data");
@@ -182,8 +182,8 @@ function renderError(msg) {
 async function loadDropdowns() {
   try {
     const [resKat, resSup] = await Promise.all([
-      fetch(`${API_BASE_URL}/api/kategori-sparepart/get-all`),
-      fetch(`${API_BASE_URL}/api/supplier/get-all`),
+      fetch(`${API_BASE_URL}/kategori-sparepart/get-all`),
+      fetch(`${API_BASE_URL}/supplier/get-all`),
     ]);
     const katJson = await resKat.json();
     const supJson = await resSup.json();
@@ -287,7 +287,7 @@ async function simpanSparepart() {
     });
 
   try {
-    const res = await fetch(`${API_BASE_URL}/api/sparepart/create`, {
+    const res = await fetch(`${API_BASE_URL}/sparepart/create`, {
       method: "POST",
       headers: getAuthHeaders(),
       body: JSON.stringify(payload),
@@ -351,7 +351,7 @@ async function updateSparepart() {
     });
 
   try {
-    const res = await fetch(`${API_BASE_URL}/api/sparepart/update/${id}`, {
+    const res = await fetch(`${API_BASE_URL}/sparepart/update/${id}`, {
       method: "PUT",
       headers: getAuthHeaders(),
       body: JSON.stringify(payload),
@@ -385,7 +385,7 @@ function konfirmasiHapus(id) {
   }).then(async (result) => {
     if (result.isConfirmed) {
       try {
-        const res = await fetch(`${API_BASE_URL}/api/sparepart/delete/${id}`, {
+        const res = await fetch(`${API_BASE_URL}/sparepart/delete/${id}`, {
           method: "DELETE",
           headers: getAuthHeaders(),
         });
@@ -486,7 +486,7 @@ async function simpanTambahStok() {
   if (!confirm.isConfirmed) return;
 
   try {
-    const res = await fetch(`${API_BASE_URL}/api/pengeluaran/tambah-stok`, {
+    const res = await fetch(`${API_BASE_URL}/pengeluaran/tambah-stok`, {
       method: "POST",
       headers: getAuthHeaders(),
       body: JSON.stringify({

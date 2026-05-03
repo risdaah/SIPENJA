@@ -93,7 +93,7 @@ function badgeStatus(status) {
 /* ===== LOAD DATA ===== */
 async function loadKaryawan() {
   try {
-    const res = await fetch(`${API_BASE_URL}/api/user/get-all`, {
+    const res = await fetch(`${API_BASE_URL}/user/get-all`, {
       headers: getAuthHeaders(),
     });
     if (!res.ok) throw new Error("Gagal mengambil data");
@@ -305,7 +305,7 @@ async function simpanKaryawan() {
   }
 
   try {
-    const res = await fetch(`${API_BASE_URL}/api/user/create`, {
+    const res = await fetch(`${API_BASE_URL}/user/create`, {
       method: "POST",
       headers: getAuthHeaders(),
       body: JSON.stringify(payload),
@@ -380,7 +380,7 @@ async function simpanAdmin() {
   };
 
   try {
-    const res = await fetch(`${API_BASE_URL}/api/user/create-admin`, {
+    const res = await fetch(`${API_BASE_URL}/user/create-admin`, {
       method: "POST",
       headers: getAuthHeaders(), // kirim JWT — backend akan verifikasi role admin
       body: JSON.stringify(payload),
@@ -449,7 +449,7 @@ async function updateKaryawan() {
   }
 
   try {
-    const res = await fetch(`${API_BASE_URL}/api/user/update/${id}`, {
+    const res = await fetch(`${API_BASE_URL}/user/update/${id}`, {
       method: "PUT",
       headers: getAuthHeaders(),
       body: JSON.stringify(payload),
@@ -513,7 +513,7 @@ async function gantiPassword() {
   }
 
   try {
-    const res = await fetch(`${API_BASE_URL}/api/user/update-password/${id}`, {
+    const res = await fetch(`${API_BASE_URL}/user/update-password/${id}`, {
       method: "PUT",
       headers: getAuthHeaders(),
       body: JSON.stringify({ PASSWORD: pass }),
@@ -549,7 +549,7 @@ function konfirmasiHapus(id) {
   }).then(async (result) => {
     if (result.isConfirmed) {
       try {
-        const res = await fetch(`${API_BASE_URL}/api/user/delete/${id}`, {
+        const res = await fetch(`${API_BASE_URL}/user/delete/${id}`, {
           method: "DELETE",
           headers: getAuthHeaders(),
         });

@@ -50,7 +50,7 @@ const itemsPerPage = 10;
 /* ===== LOAD DATA ===== */
 async function loadSupplier() {
   try {
-    const res = await fetch(`${API_BASE_URL}/api/supplier/get-all`, {
+    const res = await fetch(`${API_BASE_URL}/supplier/get-all`, {
       headers: getAuthHeaders(),
     });
     if (!res.ok) throw new Error("Gagal mengambil data");
@@ -234,7 +234,7 @@ async function simpanSupplier() {
   }
 
   try {
-    const res = await fetch(`${API_BASE_URL}/api/supplier/create`, {
+    const res = await fetch(`${API_BASE_URL}/supplier/create`, {
       method: "POST",
       headers: getAuthHeaders(),
       body: JSON.stringify(payload),
@@ -288,7 +288,7 @@ async function updateSupplier() {
   }
 
   try {
-    const res = await fetch(`${API_BASE_URL}/api/supplier/update/${id}`, {
+    const res = await fetch(`${API_BASE_URL}/supplier/update/${id}`, {
       method: "PUT",
       headers: getAuthHeaders(),
       body: JSON.stringify(payload),
@@ -322,7 +322,7 @@ function konfirmasiHapus(id) {
   }).then(async (result) => {
     if (result.isConfirmed) {
       try {
-        const res = await fetch(`${API_BASE_URL}/api/supplier/delete/${id}`, {
+        const res = await fetch(`${API_BASE_URL}/supplier/delete/${id}`, {
           method: "DELETE",
           headers: getAuthHeaders(),
         });

@@ -109,7 +109,7 @@ function getAuthHeaders() {
 
 async function loadKategori() {
   try {
-    const res = await fetch(`${API_BASE_URL}/api/kategori-sparepart/get-all`, {
+    const res = await fetch(`${API_BASE_URL}/kategori-sparepart/get-all`, {
       headers: getAuthHeaders(),
     });
 
@@ -287,7 +287,7 @@ async function simpanKategori() {
   }
 
   try {
-    const res = await fetch(`${API_BASE_URL}/api/kategori-sparepart/create`, {
+    const res = await fetch(`${API_BASE_URL}/kategori-sparepart/create`, {
       method: "POST",
       headers: getAuthHeaders(),
       body: JSON.stringify({ NAMA: nama, KODE: kode }),
@@ -337,7 +337,7 @@ async function updateKategori() {
 
   try {
     const res = await fetch(
-      `${API_BASE_URL}/api/kategori-sparepart/update/${id}`,
+      `${API_BASE_URL}/kategori-sparepart/update/${id}`,
       {
         method: "PUT",
         headers: getAuthHeaders(),
@@ -378,7 +378,7 @@ function konfirmasiHapus(id) {
     if (result.isConfirmed) {
       try {
         const res = await fetch(
-          `${API_BASE_URL}/api/kategori-sparepart/delete/${id}`,
+          `${API_BASE_URL}/kategori-sparepart/delete/${id}`,
           {
             method: "DELETE",
             headers: getAuthHeaders(),

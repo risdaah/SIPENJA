@@ -58,7 +58,7 @@ function formatRupiah(angka) {
 /* ===== LOAD DATA ===== */
 async function loadLayanan() {
   try {
-    const res = await fetch(`${API_BASE_URL}/api/layanan-servis/get-all`, {
+    const res = await fetch(`${API_BASE_URL}/layanan-servis/get-all`, {
       headers: getAuthHeaders(),
     });
     if (!res.ok) throw new Error("Gagal mengambil data");
@@ -242,7 +242,7 @@ async function simpanLayanan() {
   }
 
   try {
-    const res = await fetch(`${API_BASE_URL}/api/layanan-servis/create`, {
+    const res = await fetch(`${API_BASE_URL}/layanan-servis/create`, {
       method: "POST",
       headers: getAuthHeaders(),
       body: JSON.stringify(payload),
@@ -299,7 +299,7 @@ async function updateLayanan() {
   }
 
   try {
-    const res = await fetch(`${API_BASE_URL}/api/layanan-servis/update/${id}`, {
+    const res = await fetch(`${API_BASE_URL}/layanan-servis/update/${id}`, {
       method: "PUT",
       headers: getAuthHeaders(),
       body: JSON.stringify(payload),
@@ -334,7 +334,7 @@ function konfirmasiHapus(id) {
     if (result.isConfirmed) {
       try {
         const res = await fetch(
-          `${API_BASE_URL}/api/layanan-servis/delete/${id}`,
+          `${API_BASE_URL}/layanan-servis/delete/${id}`,
           { method: "DELETE", headers: getAuthHeaders() },
         );
         if (!res.ok) throw new Error("Gagal menghapus data");
