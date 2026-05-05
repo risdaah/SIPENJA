@@ -15,26 +15,6 @@ function getAuthHeaders() {
   };
 }
 
-(function ($) {
-  "use strict";
-  setTimeout(function () {
-    if ($("#spinner").length > 0) $("#spinner").removeClass("show");
-  }, 1);
-  $(window).scroll(function () {
-    $(this).scrollTop() > 300
-      ? $(".back-to-top").fadeIn("slow")
-      : $(".back-to-top").fadeOut("slow");
-  });
-  $(".back-to-top").click(function () {
-    $("html, body").animate({ scrollTop: 0 }, 800);
-    return false;
-  });
-  $(".sidebar-toggler").click(function () {
-    $(".sidebar, .content").toggleClass("open");
-    return false;
-  });
-})(jQuery);
-
 /* ===== STATE ===== */
 let allData = [];
 let filteredData = [];
@@ -80,14 +60,17 @@ async function loadRiwayat() {
 /* ===== RENDER TABLE ===== */
 function renderTable(data) {
   const tbody = document.getElementById("tableBody");
+  const countEl = document.getElementById("table-count");
 
   if (!data || data.length === 0) {
     tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">Tidak ada data transaksi.</td></tr>`;
+    if (countEl) countEl.textContent = "0 transaksi ditemukan";
     renderPagination(0);
     return;
   }
 
   const totalItems = data.length;
+  if (countEl) countEl.textContent = totalItems + " transaksi ditemukan";
   const start = (currentPage - 1) * itemsPerPage;
   const pageData = data.slice(start, start + itemsPerPage);
 

@@ -356,22 +356,13 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script>
     function toggleSidebar() {
-      const sb = document.getElementById('sidebar');
-      const overlay = document.getElementById('sidebarOverlay');
-      sb.classList.toggle('open');
-      if (overlay) overlay.classList.toggle('show', sb.classList.contains('open'));
-    }
-    function closeSidebar() {
-      const sb = document.getElementById('sidebar');
-      const overlay = document.getElementById('sidebarOverlay');
-      sb.classList.remove('open');
-      if (overlay) overlay.classList.remove('show');
+      document.getElementById('sidebar').classList.toggle('open');
     }
     document.addEventListener('click', function (e) {
       const sb = document.getElementById('sidebar');
       const btn = document.getElementById('sidebarToggle');
       if (sb && btn && !sb.contains(e.target) && !btn.contains(e.target)) {
-        closeSidebar();
+        sb.classList.remove('open');
       }
     });
   </script>

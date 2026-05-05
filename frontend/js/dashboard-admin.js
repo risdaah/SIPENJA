@@ -352,7 +352,20 @@
     var target = $("#" + id);
     var isOpen = target.hasClass("show");
     $(".periode-popup").removeClass("show");
-    if (!isOpen) target.addClass("show");
+    if (!isOpen) {
+      target.addClass("show");
+      // Di mobile: posisikan popup agar tidak keluar layar
+      if (window.innerWidth <= 640) {
+        var btn = target.prev(".btn-periode");
+        var btnRect = btn[0] ? btn[0].getBoundingClientRect() : null;
+        if (btnRect) {
+          var topPos = btnRect.bottom + window.scrollY + 8;
+          target.css({ top: topPos + "px" });
+        }
+      } else {
+        target.css({ top: "", left: "", right: "" });
+      }
+    }
   };
 
   // ─── Build query params ────────────────────────────────

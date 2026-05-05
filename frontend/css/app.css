@@ -3815,6 +3815,7 @@ select.form-inp-sm {
     font-size: 26px !important;
   }
 }
+
 /* ═══════════════════════════════════════════════════════════════
    RESPONSIVE IMPROVEMENTS — Complete Mobile / Tablet Overhaul
    Breakpoints:
@@ -3894,8 +3895,8 @@ select.form-inp-sm {
     gap: 10px;
   }
 
-  .page-header > .btn,
-  .page-header > div:last-child {
+  .page-header>.btn,
+  .page-header>div:last-child {
     width: 100%;
     justify-content: flex-end;
   }
@@ -4123,7 +4124,8 @@ select.form-inp-sm {
   /* Form fields */
   .form-control,
   .form-select {
-    font-size: 16px; /* hindari iOS zoom */
+    font-size: 16px;
+    /* hindari iOS zoom */
     height: 40px;
   }
 
@@ -4285,6 +4287,7 @@ select.form-inp-sm {
 
 /* Fix iOS input font size (hindari auto-zoom) */
 @supports (-webkit-touch-callout: none) {
+
   input[type="text"],
   input[type="email"],
   input[type="password"],
@@ -4320,3 +4323,282 @@ select.form-inp-sm {
   }
 }
 
+
+/* ═══════════════════════════════════════════════════════
+   PATCH RESPONSIVE v2 — Filter popup, tabel, & stok null
+═══════════════════════════════════════════════════════ */
+
+/* ── Fix periode-popup keluar layar di mobile ─────────── */
+@media (max-width: 640px) {
+  .periode-popup {
+    position: fixed !important;
+    right: 12px !important;
+    left: 12px !important;
+    top: auto !important;
+    width: auto !important;
+    min-width: unset !important;
+    max-width: calc(100vw - 24px) !important;
+    z-index: 1050 !important;
+  }
+
+  .periode-popup .pp-row {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .periode-popup input,
+  .periode-popup select {
+    width: 100% !important;
+    font-size: 16px;
+    /* cegah iOS zoom */
+  }
+
+  .pp-sep {
+    display: none;
+  }
+}
+
+/* ── Semua tabel card wajib bisa scroll horizontal ───── */
+.table-card,
+.dash-card .dash-card-body,
+.card-body {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.data-table,
+.dash-table {
+  min-width: 520px;
+}
+
+/* ── Tabel responsive per halaman ────────────────────── */
+@media (max-width: 768px) {
+
+  /* Sparepart — 8 kolom */
+  .data-table[data-page="sparepart"] {
+    min-width: 680px;
+  }
+
+  /* Transaksi — banyak kolom */
+  .data-table[data-page="transaksi"] {
+    min-width: 720px;
+  }
+
+  /* Filter bar mobile */
+  .filter-bar {
+    padding: 10px 12px;
+    gap: 6px;
+  }
+
+  .filter-group {
+    flex: 1 1 calc(50% - 6px);
+    min-width: 130px;
+  }
+
+  /* Dash card header wrap di mobile */
+  .dash-card-header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* Bottom grid — stack jadi 1 kolom */
+  .bottom-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Top grid — stack */
+  .top-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Dash table font lebih kecil */
+  .dash-table th,
+  .dash-table td {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+
+  /* Stats grid 1 kolom */
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Semua filter full width */
+  .filter-group {
+    flex: 1 1 100% !important;
+  }
+
+  .filter-actions {
+    width: 100%;
+  }
+
+  .btn-filter {
+    flex: 1;
+    justify-content: center;
+  }
+
+  /* Page header stack */
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .page-header .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Modal fullscreen */
+  .modal-dialog {
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .modal-content {
+    border-radius: 0 !important;
+    min-height: 100dvh;
+  }
+
+  .modal-footer {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .modal-footer .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Topbar compact */
+  .topbar {
+    padding: 0 10px;
+    gap: 6px;
+  }
+
+  .topbar-user-role,
+  .topbar-user-name {
+    display: none;
+  }
+
+  /* Page body */
+  .page-body {
+    padding: 12px 10px;
+  }
+
+  /* Table card header */
+  .table-card-header {
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px 10px;
+  }
+}
+
+/* ── Hint scroll tabel (mobile only) ─────────────────── */
+.scroll-hint {
+  display: none;
+  text-align: center;
+  font-size: 11px;
+  color: var(--ink-4);
+  padding: 3px 0 6px;
+}
+
+@media (max-width: 768px) {
+  .scroll-hint {
+    display: block;
+  }
+}
+
+/* ── Stok null / kosong fallback di tabel ────────────── */
+.stok-null {
+  color: var(--ink-4);
+  font-style: italic;
+  font-size: 12px;
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   PATCH v3 — Fix tabel kepotong di mobile
+═══════════════════════════════════════════════════════ */
+
+/* Pastikan .main tidak overflow keluar layar */
+.main {
+  min-width: 0;
+}
+
+/* Table card tidak boleh lebih lebar dari parent */
+.table-card {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Wrapper scroll tabel */
+.table-card .table-responsive,
+.table-card>div[style*="overflow"] {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+}
+
+/* data-table: min-width dikurangi agar lebih muat di mobile */
+@media (max-width: 640px) {
+  .data-table {
+    min-width: 480px;
+    font-size: 12px;
+  }
+
+  .data-table thead th {
+    padding: 7px 8px;
+    font-size: 10.5px;
+    white-space: nowrap;
+  }
+
+  .data-table tbody td {
+    padding: 8px 8px;
+    white-space: nowrap;
+  }
+
+  /* Kolom nama boleh wrap */
+  .data-table td:nth-child(3) {
+    white-space: normal;
+    min-width: 100px;
+    max-width: 140px;
+  }
+
+  /* Page body lebih sempit */
+  .page-body {
+    padding: 14px 10px;
+  }
+
+  /* table-card padding */
+  .table-card-header {
+    padding: 8px 10px;
+  }
+
+  /* Filter bar full width */
+  .filter-bar {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .data-table {
+    min-width: 420px;
+    font-size: 11.5px;
+  }
+
+  .page-body {
+    padding: 12px 8px;
+  }
+}
+
+
+/* table-responsive Bootstrap class override */
+.table-responsive {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+}

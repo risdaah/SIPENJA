@@ -79,7 +79,7 @@ function renderTable(data) {
 
   tbody.innerHTML = pageData
     .map((item, index) => {
-      const stokRendah = item.STOK <= item.STOKMINIMUM;
+      const stokRendah = item.STOK !== null && item.STOK !== undefined && item.STOK <= item.STOKMINIMUM;
       return `
       <tr>
         <td class="text-center">${start + index + 1}</td>
@@ -88,7 +88,7 @@ function renderTable(data) {
         <td class="text-end">${formatRupiah(item.HARGAJUAL)}</td>
         <td class="text-center">
           <span class="${stokRendah ? "badge bg-danger" : ""}">
-            ${item.STOK}
+            ${item.STOK ?? '<span class="stok-null">-</span>'}
           </span>
           ${stokRendah ? `<i class="fa-solid fa-triangle-exclamation text-danger ms-1" title="Stok di bawah minimum!"></i>` : ""}
         </td>
