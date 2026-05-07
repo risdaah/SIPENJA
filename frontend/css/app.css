@@ -2142,7 +2142,17 @@ select.form-inp-sm {
   border-radius: 14px;
   border: 1px solid var(--line);
   box-shadow: var(--shadow-sm);
+  overflow: visible; /* FIX: was 'hidden', yang menyebabkan periode-popup terpotong */
+}
+
+/* Tetap clip konten card (tabel dll) tapi bukan periode-popup */
+.dash-card-body {
   overflow: hidden;
+  border-radius: 0 0 14px 14px;
+}
+
+.dash-card-header {
+  border-radius: 14px 14px 0 0;
 }
 
 .dash-card-header {
