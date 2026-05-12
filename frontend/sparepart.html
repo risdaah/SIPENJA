@@ -92,13 +92,13 @@
             <table class="data-table">
               <thead>
                 <tr>
-                  <th style="width:46px">No</th>
-                  <th>Kode</th>
-                  <th style="width:180px">Nama</th>
-                  <th style="text-align:right">Harga Jual</th>
+                  <th style="width:46px;text-align:center">No</th>
+                  <th style="text-align:center">Kode</th>
+                  <th style="width:180px;text-align:center">Nama</th>
+                  <th style="text-align:center">Harga Jual</th>
                   <th style="text-align:center;width:100px">Stok</th>
                   <th style="text-align:center;width:80px">Stok Min</th>
-                  <th>Supplier</th>
+                  <th style="text-align:center">Supplier</th>
                   <th style="width:110px;text-align:center">Aksi</th>
                 </tr>
               </thead>
@@ -132,7 +132,10 @@
           <div class="row g-3">
             <div class="col-md-6">
               <label class="form-label">Kode Sparepart</label>
-              <input type="text" class="form-control" id="inputKode" placeholder="Contoh: OLI-3">
+              <input type="text" class="form-control" id="inputKode" readonly
+                style="background:#f8fafc;cursor:not-allowed">
+              <div class="form-text text-muted"><i class="fa-solid fa-circle-info me-1"></i>Kode otomatis diisi setelah
+                pilih kategori</div>
             </div>
             <div class="col-md-6">
               <label class="form-label">Nama Sparepart</label>

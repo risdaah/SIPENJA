@@ -14,11 +14,13 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/app.css" rel="stylesheet">
     <style>
+        /* ── Page Wrap ───────────────────────────────────────────── */
         .detail-page-wrap {
             max-width: 860px;
             margin: 0 auto;
         }
 
+        /* ── Back Button ─────────────────────────────────────────── */
         .back-btn {
             display: inline-flex;
             align-items: center;
@@ -38,6 +40,38 @@
             opacity: .7;
         }
 
+        /* ── Page Title Row ──────────────────────────────────────── */
+        .page-title-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        /* ── Jenis Badge ─────────────────────────────────────────── */
+        .jenis-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: .78rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .jenis-badge.pembelian {
+            background: #e8f4fd;
+            color: #007bbd;
+        }
+
+        .jenis-badge.servis {
+            background: #fff3e0;
+            color: #e65c00;
+        }
+
+        /* ── Detail Card ─────────────────────────────────────────── */
         .detail-card {
             background: #fff;
             border-radius: 14px;
@@ -51,10 +85,10 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 15px 22px;
+            padding: 13px 20px;
             background: #f7f9fc;
             border-bottom: 1.5px solid #eef0f4;
-            font-size: .82rem;
+            font-size: .78rem;
             font-weight: 700;
             color: #6b7a8d;
             text-transform: uppercase;
@@ -62,9 +96,10 @@
         }
 
         .detail-card-body {
-            padding: 18px 22px;
+            padding: 18px 20px;
         }
 
+        /* ── Info Grid ───────────────────────────────────────────── */
         .info-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -92,16 +127,49 @@
 
         .info-val.mono {
             font-family: monospace;
+            word-break: break-all;
         }
 
         .info-val.wide {
             grid-column: span 2;
         }
 
+        /* ── Status Badge (servis) ───────────────────────────────── */
+        .status-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: .78rem;
+            font-weight: 700;
+        }
+
+        .status-badge.selesai {
+            background: #e6f9f0;
+            color: #1a7a4a;
+        }
+
+        .status-badge.proses {
+            background: #e0f0ff;
+            color: #0070b8;
+        }
+
+        .status-badge.belum {
+            background: #f0f2f5;
+            color: #6b7a8d;
+        }
+
+        /* ── Section Table ───────────────────────────────────────── */
+        .table-scroll-wrap {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            width: 100%;
+        }
+
         .section-table {
             width: 100%;
             border-collapse: collapse;
             font-size: .87rem;
+            min-width: 480px;
         }
 
         .section-table th {
@@ -113,6 +181,7 @@
             text-transform: uppercase;
             letter-spacing: .04em;
             border-bottom: 1.5px solid #eef0f4;
+            white-space: nowrap;
         }
 
         .section-table td {
@@ -133,6 +202,7 @@
         .section-table td.num {
             text-align: right;
             font-family: monospace;
+            white-space: nowrap;
         }
 
         .section-table td.center {
@@ -146,14 +216,16 @@
             color: #555;
         }
 
+        /* ── Total Bar ───────────────────────────────────────────── */
         .total-bar {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 16px 22px;
+            padding: 16px 20px;
             background: #f0faff;
             border-top: 2px solid #cce8ff;
             border-radius: 0 0 12px 12px;
+            gap: 10px;
         }
 
         .total-bar .lbl {
@@ -167,9 +239,10 @@
             font-weight: 700;
             color: #009CFF;
             font-family: monospace;
+            white-space: nowrap;
         }
 
-        /* Timeline */
+        /* ── Timeline ────────────────────────────────────────────── */
         .timeline {
             display: flex;
             flex-direction: column;
@@ -179,7 +252,7 @@
 
         .timeline-item {
             display: grid;
-            grid-template-columns: 18px 110px 120px 1fr;
+            grid-template-columns: 18px 110px 130px 1fr;
             align-items: start;
             gap: 12px;
             padding: 12px 0;
@@ -237,11 +310,13 @@
             line-height: 1.5;
         }
 
+        /* ── Action Bar ──────────────────────────────────────────── */
         .action-bar {
             display: flex;
             justify-content: flex-end;
             gap: 10px;
             margin-top: 8px;
+            margin-bottom: 24px;
         }
 
         .btn-edit-page {
@@ -266,6 +341,7 @@
             color: #fff;
         }
 
+        /* ── Skeleton ────────────────────────────────────────────── */
         .skeleton-line {
             height: 14px;
             background: linear-gradient(90deg, #f0f2f5 25%, #e4e8ed 50%, #f0f2f5 75%);
@@ -282,6 +358,252 @@
 
             100% {
                 background-position: -200% 0;
+            }
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           RESPONSIVE — Tablet (≤ 991px)
+        ═══════════════════════════════════════════════════════ */
+        @media (max-width: 991px) {
+            .detail-page-wrap {
+                max-width: 100%;
+            }
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           RESPONSIVE — Mobile (≤ 768px)
+        ═══════════════════════════════════════════════════════ */
+        @media (max-width: 768px) {
+
+            /* Wrap konten */
+            .container-fluid {
+                padding-left: 12px !important;
+                padding-right: 12px !important;
+                padding-top: 16px !important;
+            }
+
+            /* Card padding lebih sempit */
+            .detail-card-header {
+                padding: 11px 14px;
+            }
+
+            .detail-card-body {
+                padding: 14px 14px;
+            }
+
+            /* Info grid: 2 kolom di tablet/mobile besar */
+            .info-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            /* Keluhan span full */
+            .info-item[style*="grid-column:span 2"] {
+                grid-column: span 2 !important;
+            }
+
+            /* Total bar: wrap jika sempit */
+            .total-bar {
+                flex-wrap: wrap;
+                gap: 6px;
+                padding: 14px 14px;
+            }
+
+            .total-bar .val {
+                font-size: 1.1rem;
+            }
+
+            /* Timeline: 3 kolom (hapus kolom status, gabung) */
+            .timeline-item {
+                grid-template-columns: 14px 1fr;
+                grid-template-rows: auto auto auto;
+                gap: 4px 10px;
+                padding: 12px 0;
+            }
+
+            .timeline-dot {
+                grid-row: 1 / 4;
+                margin-top: 6px;
+            }
+
+            .timeline-time {
+                grid-column: 2;
+                grid-row: 1;
+            }
+
+            .timeline-status {
+                grid-column: 2;
+                grid-row: 2;
+                font-size: .83rem;
+            }
+
+            .timeline-keterangan {
+                grid-column: 2;
+                grid-row: 3;
+                font-size: .82rem;
+            }
+
+            /* Action bar: full width */
+            .action-bar {
+                justify-content: stretch;
+            }
+
+            .btn-edit-page {
+                width: 100%;
+                justify-content: center;
+            }
+
+            /* Table scroll hint */
+            .table-scroll-hint-mobile {
+                display: block;
+            }
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           RESPONSIVE — Small Mobile (≤ 480px)
+        ═══════════════════════════════════════════════════════ */
+        @media (max-width: 480px) {
+
+            /* Back button */
+            .back-btn {
+                font-size: .85rem;
+                margin-bottom: 12px;
+            }
+
+            /* Title + badge stack */
+            .page-title-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
+                margin-bottom: 14px;
+            }
+
+            .page-title {
+                font-size: 17px !important;
+            }
+
+            /* Card radius dikurangi */
+            .detail-card {
+                border-radius: 10px;
+                margin-bottom: 14px;
+            }
+
+            .detail-card-header {
+                padding: 10px 12px;
+                font-size: .72rem;
+            }
+
+            .detail-card-body {
+                padding: 12px 12px;
+            }
+
+            /* Info grid: 1 kolom di HP kecil */
+            .info-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            /* Keluhan full width */
+            .info-item[style*="grid-column:span 2"] {
+                grid-column: span 1 !important;
+            }
+
+            .info-val {
+                font-size: .88rem;
+            }
+
+            .info-label {
+                font-size: .7rem;
+            }
+
+            /* Section table font lebih kecil */
+            .section-table {
+                font-size: .8rem;
+                min-width: 420px;
+            }
+
+            .section-table th {
+                font-size: .68rem;
+                padding: 8px 8px;
+            }
+
+            .section-table td {
+                padding: 8px 8px;
+            }
+
+            /* Total bar */
+            .total-bar {
+                padding: 12px 12px;
+            }
+
+            .total-bar .lbl {
+                font-size: .85rem;
+            }
+
+            .total-bar .val {
+                font-size: 1rem;
+            }
+
+            /* Timeline */
+            .timeline-item {
+                font-size: .8rem;
+                gap: 3px 8px;
+                padding: 10px 0;
+            }
+
+            .timeline-dot {
+                width: 10px;
+                height: 10px;
+            }
+
+            /* Edit button */
+            .btn-edit-page {
+                padding: 9px 16px;
+                font-size: .85rem;
+                border-radius: 8px;
+            }
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           RESPONSIVE — Extra Small (≤ 360px)
+        ═══════════════════════════════════════════════════════ */
+        @media (max-width: 360px) {
+
+            .container-fluid {
+                padding-left: 8px !important;
+                padding-right: 8px !important;
+            }
+
+            .detail-card-body {
+                padding: 10px 10px;
+            }
+
+            .detail-card-header {
+                padding: 9px 10px;
+            }
+
+            .section-table {
+                min-width: 380px;
+                font-size: .75rem;
+            }
+
+            .total-bar .val {
+                font-size: .95rem;
+            }
+        }
+
+        /* ── Scroll hint for tables (mobile only) ────────────────── */
+        .table-scroll-hint-mobile {
+            display: none;
+            text-align: center;
+            font-size: 11px;
+            color: #94A3B8;
+            padding: 4px 0 6px;
+        }
+
+        @media (max-width: 768px) {
+            .table-scroll-hint-mobile {
+                display: block;
             }
         }
     </style>
@@ -328,7 +650,7 @@
                 </a>
             </nav>
         </aside>
-  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
         <div class="main">
             <header class="topbar">
                 <button class="topbar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
@@ -357,7 +679,7 @@
                             <i class="fa-solid fa-arrow-left"></i> Kembali ke Transaksi
                         </button>
 
-                        <div class="d-flex align-items-center gap-3 mb-4">
+                        <div class="page-title-row">
                             <h4 class="page-title mb-0" id="page-title">Detail Transaksi</h4>
                             <span id="page-jenis-badge" class="jenis-badge"></span>
                         </div>
@@ -392,18 +714,22 @@
                                 <i class="fa-solid fa-screwdriver-wrench"></i> Layanan Servis
                             </div>
                             <div class="detail-card-body" style="padding:0">
-                                <table class="section-table">
-                                    <thead>
-                                        <tr>
-                                            <th style="width:42px">#</th>
-                                            <th>Nama Layanan</th>
-                                            <th style="width:100px">Kode</th>
-                                            <th>Keterangan</th>
-                                            <th style="text-align:right;width:140px">Biaya</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tbody-layanan"></tbody>
-                                </table>
+                                <p class="table-scroll-hint-mobile"><i class="fa-solid fa-angles-right"></i> Geser untuk
+                                    melihat selengkapnya</p>
+                                <div class="table-scroll-wrap">
+                                    <table class="section-table">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:42px">#</th>
+                                                <th>Nama Layanan</th>
+                                                <th style="width:100px">Kode</th>
+                                                <th>Keterangan</th>
+                                                <th style="text-align:right;width:140px">Biaya</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbody-layanan"></tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
 
@@ -413,19 +739,23 @@
                                 <i class="fa-solid fa-gear"></i> Sparepart Digunakan
                             </div>
                             <div class="detail-card-body" style="padding:0">
-                                <table class="section-table">
-                                    <thead>
-                                        <tr>
-                                            <th style="width:42px">#</th>
-                                            <th>Nama Sparepart</th>
-                                            <th style="width:100px">Kode</th>
-                                            <th style="text-align:center;width:80px">Qty</th>
-                                            <th style="text-align:right;width:140px">Harga Satuan</th>
-                                            <th style="text-align:right;width:130px">Subtotal</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tbody-sparepart"></tbody>
-                                </table>
+                                <p class="table-scroll-hint-mobile"><i class="fa-solid fa-angles-right"></i> Geser untuk
+                                    melihat selengkapnya</p>
+                                <div class="table-scroll-wrap">
+                                    <table class="section-table">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:42px">#</th>
+                                                <th>Nama Sparepart</th>
+                                                <th style="width:100px">Kode</th>
+                                                <th style="text-align:center;width:80px">Qty</th>
+                                                <th style="text-align:right;width:140px">Harga Satuan</th>
+                                                <th style="text-align:right;width:130px">Subtotal</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbody-sparepart"></tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
 
@@ -435,19 +765,23 @@
                                 <i class="fa-solid fa-bag-shopping"></i> Items Pembelian Sparepart
                             </div>
                             <div class="detail-card-body" style="padding:0">
-                                <table class="section-table">
-                                    <thead>
-                                        <tr>
-                                            <th style="width:42px">#</th>
-                                            <th>Sparepart</th>
-                                            <th style="width:100px">Kode</th>
-                                            <th style="text-align:center;width:80px">Jumlah</th>
-                                            <th style="text-align:right;width:140px">Harga Satuan</th>
-                                            <th style="text-align:right;width:130px">Sub Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tbody-items"></tbody>
-                                </table>
+                                <p class="table-scroll-hint-mobile"><i class="fa-solid fa-angles-right"></i> Geser untuk
+                                    melihat selengkapnya</p>
+                                <div class="table-scroll-wrap">
+                                    <table class="section-table">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:42px">#</th>
+                                                <th>Sparepart</th>
+                                                <th style="width:100px">Kode</th>
+                                                <th style="text-align:center;width:80px">Jumlah</th>
+                                                <th style="text-align:right;width:140px">Harga Satuan</th>
+                                                <th style="text-align:right;width:130px">Sub Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbody-items"></tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
 
@@ -487,13 +821,23 @@
     <script src="js/detail-transaksi.js"></script>
     <script>
         function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
+            const sb = document.getElementById('sidebar');
+            const ov = document.getElementById('sidebarOverlay');
+            sb.classList.toggle('open');
+            if (ov) ov.classList.toggle('show');
+        }
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('open');
+            const ov = document.getElementById('sidebarOverlay');
+            if (ov) ov.classList.remove('show');
         }
         document.addEventListener('click', function (e) {
             const sb = document.getElementById('sidebar');
             const btn = document.getElementById('sidebarToggle');
             if (sb && btn && !sb.contains(e.target) && !btn.contains(e.target)) {
                 sb.classList.remove('open');
+                const ov = document.getElementById('sidebarOverlay');
+                if (ov) ov.classList.remove('show');
             }
         });
     </script>

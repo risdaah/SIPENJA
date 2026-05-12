@@ -24,6 +24,9 @@ const itemsPerPage = 10;
 // State struk
 let strukData = null;
 
+// Logo bengkel (base64)
+let LOGO_BASE64 = "";
+
 /* ===== INIT ===== */
 document.addEventListener("DOMContentLoaded", () => {
   if (!Session.guard(["kasir"])) return;
@@ -36,6 +39,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if (elNama) elNama.textContent = _u.NAMA;
     if (elRole) elRole.textContent = _u.ROLE;
   }
+
+  // Load logo bengkel dari backend
+  fetch(`${API_BASE_URL}/laporan/logo`, { headers: getAuthHeaders() })
+    .then((r) => r.json())
+    .then((res) => {
+      if (res.logo) LOGO_BASE64 = res.logo;
+    })
+    .catch(() => {}); // gagal logo tetap bisa lanjut
 
   loadRiwayat();
 });
@@ -214,7 +225,13 @@ function renderStrukContent(t) {
   }
 
   document.getElementById("struk-print-area").innerHTML = `
-    <div class="struk-logo">🏪</div>
+    <div class="struk-logo">
+      ${
+        LOGO_BASE64
+          ? `<img src="${LOGO_BASE64}" alt="Logo" style="max-height:64px;max-width:160px;object-fit:contain;">`
+          : "🏪"
+      }
+    </div>
 
     <div class="struk-header">
       <h5>${BENGKEL.nama}</h5>
@@ -449,25 +466,25 @@ function renderStrukKeCanvas() {
   center(BENGKEL.nama);
   center(BENGKEL.telp);
 
-  /* ── Render ke canvas ───────────────────────────────────────── */
-  var W = 560; // lebar canvas — lebih lebar = lebih besar saat cetak
-  var SCALE = 2; // retina 2x
-  var FONT_SZ = 15;
-  var LINE_H = 23;
-  var PAD_X = 20;
-  var PAD_Y = 24;
+  /* ── Ukuran canvas ───────────────────────────────────────────── */
+  var W = 720;
+  var SCALE = 2;
+  var FONT_SZ = 20;
+  var LINE_H = 30;
+  var PAD_X = 28;
+  var PAD_Y = 30;
 
-  // First pass: hitung tinggi
-  var totalH = PAD_Y * 2;
+  // Tinggi logo (jika ada)
+  var LOGO_H = LOGO_BASE64 ? 80 : 0; // px ruang untuk logo
+  var LOGO_MARGIN = LOGO_BASE64 ? 16 : 0;
+
+  // First pass: hitung tinggi konten teks
+  var textH = PAD_Y * 2;
   lines.forEach(function (l) {
-    if (l.sep) {
-      totalH += 12;
-    } else if (l.itemName) {
-      totalH += LINE_H;
-    } else {
-      totalH += LINE_H;
-    }
+    textH += l.sep ? 12 : LINE_H;
   });
+
+  var totalH = LOGO_H + LOGO_MARGIN + textH;
 
   var canvas = document.createElement("canvas");
   canvas.width = W * SCALE;
@@ -479,50 +496,71 @@ function renderStrukKeCanvas() {
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, W, totalH);
 
-  ctx.font = FONT_SZ + "px 'Courier New', monospace";
-  ctx.fillStyle = "#111111";
-  ctx.textBaseline = "top";
+  /* ── Fungsi render teks (dipakai setelah logo selesai) ───────── */
+  function drawLines(startY) {
+    ctx.font = FONT_SZ + "px 'Courier New', monospace";
+    ctx.fillStyle = "#111111";
+    ctx.textBaseline = "top";
 
-  var y = PAD_Y;
-
-  lines.forEach(function (l) {
-    if (l.sep) {
-      // Dashed line
-      ctx.setLineDash([4, 3]);
-      ctx.strokeStyle = "#888";
-      ctx.lineWidth = 0.8;
-      ctx.beginPath();
-      ctx.moveTo(PAD_X, y + 5);
-      ctx.lineTo(W - PAD_X, y + 5);
-      ctx.stroke();
-      ctx.setLineDash([]);
-      y += 12;
-    } else if (l.center !== undefined) {
-      ctx.font =
-        (l.bold ? "bold " : "") + FONT_SZ + "px 'Courier New', monospace";
-      ctx.fillStyle = "#111";
-      var tw = ctx.measureText(l.center).width;
-      ctx.fillText(l.center, Math.max(PAD_X, (W - tw) / 2), y);
-      y += LINE_H;
-    } else if (l.itemName !== undefined) {
-      ctx.font = "bold " + FONT_SZ + "px 'Courier New', monospace";
-      ctx.fillStyle = "#111";
-      ctx.fillText(l.itemName, PAD_X, y);
-      y += LINE_H;
-    } else {
-      ctx.font =
-        (l.bold ? "bold " : "") + FONT_SZ + "px 'Courier New', monospace";
-      ctx.fillStyle = "#111";
-      // Left text
-      if (l.left) ctx.fillText(l.left, PAD_X, y);
-      // Right text
-      if (l.right) {
-        var rw = ctx.measureText(l.right).width;
-        ctx.fillText(l.right, W - PAD_X - rw, y);
+    var y = startY;
+    lines.forEach(function (l) {
+      if (l.sep) {
+        ctx.setLineDash([4, 3]);
+        ctx.strokeStyle = "#888";
+        ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        ctx.moveTo(PAD_X, y + 5);
+        ctx.lineTo(W - PAD_X, y + 5);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        y += 12;
+      } else if (l.center !== undefined) {
+        ctx.font =
+          (l.bold ? "bold " : "") + FONT_SZ + "px 'Courier New', monospace";
+        ctx.fillStyle = "#111";
+        var tw = ctx.measureText(l.center).width;
+        ctx.fillText(l.center, Math.max(PAD_X, (W - tw) / 2), y);
+        y += LINE_H;
+      } else if (l.itemName !== undefined) {
+        ctx.font = "bold " + FONT_SZ + "px 'Courier New', monospace";
+        ctx.fillStyle = "#111";
+        ctx.fillText(l.itemName, PAD_X, y);
+        y += LINE_H;
+      } else {
+        ctx.font =
+          (l.bold ? "bold " : "") + FONT_SZ + "px 'Courier New', monospace";
+        ctx.fillStyle = "#111";
+        if (l.left) ctx.fillText(l.left, PAD_X, y);
+        if (l.right) {
+          var rw = ctx.measureText(l.right).width;
+          ctx.fillText(l.right, W - PAD_X - rw, y);
+        }
+        y += LINE_H;
       }
-      y += LINE_H;
-    }
-  });
+    });
+  }
+
+  /* ── Render logo (jika ada) lalu teks ───────────────────────── */
+  if (LOGO_BASE64) {
+    var img = new Image();
+    img.onload = function () {}; // sudah preload, langsung pakai
+    img.src = LOGO_BASE64;
+
+    // Hitung dimensi logo agar proporsional, max lebar W*0.45 tinggi LOGO_H
+    var maxLogoW = W * 0.45;
+    var ratio =
+      img.naturalWidth && img.naturalHeight
+        ? img.naturalWidth / img.naturalHeight
+        : 2;
+    var logoW = Math.min(maxLogoW, LOGO_H * ratio);
+    var logoX = (W - logoW) / 2;
+    var logoY = PAD_Y / 2;
+
+    // Gambar logo ke canvas (synchronous — img sudah di-load saat LOGO_BASE64 di-fetch)
+    ctx.drawImage(img, logoX, logoY, logoW, LOGO_H);
+  }
+
+  drawLines(LOGO_H + LOGO_MARGIN + PAD_Y);
 
   return canvas;
 }

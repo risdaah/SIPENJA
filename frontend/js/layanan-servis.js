@@ -7,7 +7,6 @@ function getAuthHeaders() {
     Authorization: "Bearer " + Session.getToken(),
   };
 }
-// Ganti sesuai alamat backend kamu
 
 (function ($) {
   "use strict";
@@ -55,6 +54,21 @@ function formatRupiah(angka) {
   );
 }
 
+/* ===== AUTO-GENERATE KODE LAYANAN =====
+   Pola: SRV-{nomor urut} → lanjut dari nomor terbesar yang ada di data
+*/
+function generateKodeLayanan() {
+  let maxNum = 0;
+  allData.forEach((item) => {
+    const match = (item.KODELAYANAN ?? "").match(/^SRV-(\d+)$/i);
+    if (match) {
+      const n = parseInt(match[1], 10);
+      if (n > maxNum) maxNum = n;
+    }
+  });
+  return "SRV-" + (maxNum + 1);
+}
+
 /* ===== LOAD DATA ===== */
 async function loadLayanan() {
   try {
@@ -96,9 +110,9 @@ function renderTable(data) {
         <tr>
             <td class="text-center">${start + index + 1}</td>
             <td class="text-center">${escapeHtml(item.KODELAYANAN)}</td>
-            <td>${escapeHtml(item.NAMA)}</td>
-            <td class="text-end">${formatRupiah(item.BIAYAPOKOK)}</td>
-            <td>${escapeHtml(item.DESKRIPSI) || '<span class="text-muted fst-italic">-</span>'}</td>
+            <td class="text-center">${escapeHtml(item.NAMA)}</td>
+            <td class="text-center">${formatRupiah(item.BIAYAPOKOK)}</td>
+            <td class="text-center">${escapeHtml(item.DESKRIPSI) || '<span class="text-muted fst-italic">-</span>'}</td>
             <td>
               <div class="action-btns">
                 <button class="btn-action edit" title="Edit" onclick="bukaModalEdit(${item.IDLAYANANSERVIS})">
@@ -209,7 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("navbar-role") &&
       (document.getElementById("navbar-role").textContent = _u.ROLE);
   }
-  // ─────────────────────────────────────────────────────
+
   document.getElementById("searchInput").addEventListener("keyup", function () {
     const keyword = this.value.toLowerCase();
     filteredData = allData.filter(
@@ -220,6 +234,17 @@ document.addEventListener("DOMContentLoaded", () => {
     currentPage = 1;
     renderTable(filteredData);
   });
+
+  // ── Set kode otomatis setiap modal Tambah dibuka ──
+  // Event 'show.bs.modal' terpicu SETELAH user klik tombol Tambah,
+  // sehingga allData sudah pasti terisi dari loadLayanan() sebelumnya.
+  const _modalTambah = document.getElementById("modalTambah");
+  if (_modalTambah) {
+    _modalTambah.addEventListener("show.bs.modal", function () {
+      document.getElementById("inputKode").value = generateKodeLayanan();
+    });
+  }
+
   loadLayanan();
 });
 
@@ -333,10 +358,10 @@ function konfirmasiHapus(id) {
   }).then(async (result) => {
     if (result.isConfirmed) {
       try {
-        const res = await fetch(
-          `${API_BASE_URL}/layanan-servis/delete/${id}`,
-          { method: "DELETE", headers: getAuthHeaders() },
-        );
+        const res = await fetch(`${API_BASE_URL}/layanan-servis/delete/${id}`, {
+          method: "DELETE",
+          headers: getAuthHeaders(),
+        });
         if (!res.ok) throw new Error("Gagal menghapus data");
         await loadLayanan();
         Swal.fire({

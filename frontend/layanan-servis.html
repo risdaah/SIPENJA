@@ -101,11 +101,11 @@
             <table class="data-table">
               <thead>
                 <tr>
-                  <th style="width:46px">No</th>
-                  <th>Kode Layanan</th>
-                  <th>Nama Layanan</th>
-                  <th style="text-align:right">Biaya Pokok</th>
-                  <th>Deskripsi</th>
+                  <th style="width:46px;text-align:center">No</th>
+                  <th style="text-align:center">Kode Layanan</th>
+                  <th style="text-align:center">Nama Layanan</th>
+                  <th style="text-align:center">Biaya Pokok</th>
+                  <th style="width:300px;text-align:center">Deskripsi</th>
                   <th style="width:100px;text-align:center">Aksi</th>
                 </tr>
               </thead>
@@ -136,7 +136,10 @@
         <div class="modal-body">
           <div class="mb-3">
             <label class="form-label">Kode Layanan</label>
-            <input type="text" class="form-control" id="inputKode" placeholder="Contoh: SRV-4">
+            <input type="text" class="form-control" id="inputKode" readonly
+              style="background:#f8fafc;cursor:not-allowed">
+            <div class="form-text text-muted"><i class="fa-solid fa-circle-info me-1"></i>Kode otomatis diisi sistem
+            </div>
           </div>
           <div class="mb-3">
             <label class="form-label">Nama Layanan</label>

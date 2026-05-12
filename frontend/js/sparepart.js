@@ -36,10 +36,47 @@ let filteredData = [];
 let currentPage = 1;
 const itemsPerPage = 10;
 
+// Simpan data kategori untuk lookup kode
+let allKategori = [];
+
 function formatRupiah(angka) {
   return (
     "Rp " + Number(angka).toLocaleString("id-ID", { minimumFractionDigits: 0 })
   );
+}
+
+/* ===== AUTO-GENERATE KODE SPAREPART =====
+   Pola: {KODE_KATEGORI}-{nomor urut per kategori}
+   Contoh: kategori OLI → lihat OLI-1..OLI-14 → generate OLI-15
+   Nomor urut berdasarkan SEMUA data sparepart (bukan hanya yang tampil),
+   sehingga tidak bentrok meski ada yang sudah dihapus di tengah.
+*/
+function generateKodeSparepart(idKategori) {
+  if (!idKategori) return "";
+
+  const kategori = allKategori.find(
+    (k) => String(k.IDKATEGORI) === String(idKategori),
+  );
+  if (!kategori) return "";
+
+  const kodeKat = kategori.KODE.toUpperCase();
+  const prefix = kodeKat + "-";
+  const regex = new RegExp("^" + escapeRegex(prefix) + "(\\d+)$", "i");
+
+  let maxNum = 0;
+  allData.forEach((item) => {
+    const match = (item.KODESPAREPART ?? "").match(regex);
+    if (match) {
+      const n = parseInt(match[1], 10);
+      if (n > maxNum) maxNum = n;
+    }
+  });
+
+  return prefix + (maxNum + 1);
+}
+
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 /* ===== LOAD DATA ===== */
@@ -79,7 +116,10 @@ function renderTable(data) {
 
   tbody.innerHTML = pageData
     .map((item, index) => {
-      const stokRendah = item.STOK !== null && item.STOK !== undefined && item.STOK <= item.STOKMINIMUM;
+      const stokRendah =
+        item.STOK !== null &&
+        item.STOK !== undefined &&
+        item.STOK <= item.STOKMINIMUM;
       return `
       <tr>
         <td class="text-center">${start + index + 1}</td>
@@ -190,9 +230,12 @@ async function loadDropdowns() {
     const katJson = await resKat.json();
     const supJson = await resSup.json();
 
-    const katOpts = (katJson.data ?? [])
+    allKategori = katJson.data ?? [];
+
+    const katOpts = allKategori
       .map(
-        (k) => `<option value="${k.IDKATEGORI}">${escapeHtml(k.NAMA)}</option>`,
+        (k) =>
+          `<option value="${k.IDKATEGORI}" data-kode="${escapeHtml(k.KODE)}">${escapeHtml(k.NAMA)} (${escapeHtml(k.KODE)})</option>`,
       )
       .join("");
     const supOpts = (supJson.data ?? [])
@@ -213,9 +256,24 @@ async function loadDropdowns() {
         el.innerHTML =
           `<option value="">-- Pilih Supplier --</option>` + supOpts;
     });
+
+    // Pasang event change pada inputKategori SETELAH dropdown terisi
+    const inputKat = document.getElementById("inputKategori");
+    if (inputKat) {
+      // Hapus listener lama biar tidak dobel kalau loadDropdowns dipanggil ulang
+      inputKat.removeEventListener("change", onKategoriChange);
+      inputKat.addEventListener("change", onKategoriChange);
+    }
   } catch (err) {
     console.warn("Gagal load dropdown:", err.message);
   }
+}
+
+// Handler perubahan kategori → auto-generate kode sparepart
+function onKategoriChange() {
+  const kode = generateKodeSparepart(this.value);
+  const inputKode = document.getElementById("inputKode");
+  if (inputKode) inputKode.value = kode;
 }
 
 /* ===== SEARCH ===== */
@@ -265,6 +323,18 @@ document.addEventListener("DOMContentLoaded", () => {
     .getElementById("stokHargaBeli")
     ?.addEventListener("input", hitungTotal);
 
+  // ── Reset form saat modal Tambah dibuka ulang ──
+  const _modalTambahSp = document.getElementById("modalTambah");
+  if (_modalTambahSp) {
+    _modalTambahSp.addEventListener("show.bs.modal", function () {
+      // Reset kode dan kategori setiap buka modal biar selalu fresh
+      const inputKode = document.getElementById("inputKode");
+      const inputKat = document.getElementById("inputKategori");
+      if (inputKode) inputKode.value = "";
+      if (inputKat) inputKat.value = "";
+    });
+  }
+
   loadSparepart();
   loadDropdowns();
 });
@@ -286,6 +356,13 @@ async function simpanSparepart() {
       icon: "warning",
       title: "Perhatian",
       text: "Kode dan Nama sparepart wajib diisi.",
+    });
+
+  if (!payload.IDKATEGORI)
+    return Swal.fire({
+      icon: "warning",
+      title: "Perhatian",
+      text: "Kategori wajib dipilih.",
     });
 
   try {

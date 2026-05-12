@@ -12,11 +12,19 @@
  *   - Jika item diedit (qty berkurang) → selisih stok dikembalikan
  *   - Jika item/transaksi dihapus → stok dikembalikan penuh
  *   - TOTAL transaksi di-recalculate otomatis setiap ada perubahan item
+ *   - Transaksi yang sudah lebih dari 1 minggu TIDAK BISA diubah/dihapus itemnya
  */
 
 const db = require('../config/db');
 const TransaksiPembelianSparepart = require('../models/transaksiPembelianSparepartModel');
 const Transaksi = require('../models/transaksiModel');
+
+// ── Helper: cek apakah tanggal transaksi sudah lebih dari 1 minggu ────────────
+const isLebihDariSeminggu = (tanggal) => {
+  const batas = new Date();
+  batas.setDate(batas.getDate() - 7);
+  return new Date(tanggal) < batas;
+};
 
 // Ambil semua transaksi pembelian
 const getAllTransaksiPembelianSparepart = async (req, res) => {
@@ -131,6 +139,10 @@ const updateTransaksiPembelianSparepart = async (req, res) => {
     const existing = await TransaksiPembelianSparepart.getById(id);
     if (!existing) return res.status(404).json({ success: false, message: 'Transaksi pembelian sparepart tidak ditemukan' });
 
+    // ── Validasi 1 minggu ──────────────────────────────────────────────────────
+    if (isLebihDariSeminggu(existing.TANGGAL))
+      return res.status(403).json({ success: false, message: 'Transaksi lebih dari 1 minggu tidak dapat diubah' });
+
     await TransaksiPembelianSparepart.updateCatatan(id, CATATAN);
     res.json({ success: true, message: 'Catatan transaksi berhasil diupdate' });
   } catch (error) {
@@ -152,6 +164,12 @@ const updateItemPembelian = async (req, res) => {
     const existing = await TransaksiPembelianSparepart.getDetailById(id);
     if (!existing) return res.status(404).json({ success: false, message: 'Item tidak ditemukan' });
 
+    // ── Validasi 1 minggu: ambil tanggal dari transaksi induk ─────────────────
+    const transaksi = await TransaksiPembelianSparepart.getById(existing.IDTRANSAKSI);
+    if (!transaksi) return res.status(404).json({ success: false, message: 'Transaksi induk tidak ditemukan' });
+    if (isLebihDariSeminggu(transaksi.TANGGAL))
+      return res.status(403).json({ success: false, message: 'Transaksi lebih dari 1 minggu tidak dapat diubah' });
+
     // updateDetail: selisih qty di-adjust ke stok + recalculate TOTAL transaksi
     const data = await TransaksiPembelianSparepart.updateDetail(id, { JUMLAH });
     res.json({ success: true, message: 'Item pembelian berhasil diupdate', data });
@@ -168,6 +186,12 @@ const deleteItemPembelian = async (req, res) => {
 
     const existing = await TransaksiPembelianSparepart.getDetailById(id);
     if (!existing) return res.status(404).json({ success: false, message: 'Item tidak ditemukan' });
+
+    // ── Validasi 1 minggu: ambil tanggal dari transaksi induk ─────────────────
+    const transaksi = await TransaksiPembelianSparepart.getById(existing.IDTRANSAKSI);
+    if (!transaksi) return res.status(404).json({ success: false, message: 'Transaksi induk tidak ditemukan' });
+    if (isLebihDariSeminggu(transaksi.TANGGAL))
+      return res.status(403).json({ success: false, message: 'Transaksi lebih dari 1 minggu tidak dapat dihapus itemnya' });
 
     // Cegah transaksi kosong tanpa item
     const semuaItem = await TransaksiPembelianSparepart.getDetailByTransaksi(existing.IDTRANSAKSI);

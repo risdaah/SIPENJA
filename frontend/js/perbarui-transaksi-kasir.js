@@ -98,6 +98,15 @@ function filterTabel(jenis) {
 }
 
 /* ===================================================
+   HELPER: cek apakah transaksi sudah lebih dari 1 minggu
+=================================================== */
+function isPembelianTerkunci(tanggal) {
+  var batas = new Date();
+  batas.setDate(batas.getDate() - 7);
+  return new Date(tanggal) < batas;
+}
+
+/* ===================================================
    RENDER TABEL
 =================================================== */
 function renderTable(list) {
@@ -114,6 +123,24 @@ function renderTable(list) {
         t.JENISTRANSAKSI === "SERVIS"
           ? '<span class="badge badge-jenis-servis">Servis</span>'
           : '<span class="badge badge-jenis-pembelian">Pembelian</span>';
+
+      // Cek apakah transaksi PEMBELIAN sudah terkunci (> 1 minggu)
+      var terkunci =
+        t.JENISTRANSAKSI === "PEMBELIAN" && isPembelianTerkunci(t.TANGGAL);
+
+      var tombolAksi = terkunci
+        ? '<button class="btn btn-secondary btn-sm btn-square" ' +
+          'title="Tidak dapat diedit — transaksi sudah lebih dari 1 minggu" disabled>' +
+          '<i class="fa fa-lock"></i>' +
+          "</button>"
+        : '<button class="btn btn-warning btn-sm btn-square" title="Edit" ' +
+          'onclick="bukaModalEdit(' +
+          t.IDTRANSAKSI +
+          ", '" +
+          t.JENISTRANSAKSI +
+          "')\">" +
+          '<i class="fa fa-pen-to-square"></i>' +
+          "</button>";
 
       return (
         "<tr>" +
@@ -136,14 +163,7 @@ function renderTable(list) {
         formatTanggal(t.TANGGAL) +
         "</td>" +
         '<td class="text-center">' +
-        '<button class="btn btn-warning btn-sm btn-square" title="Edit" ' +
-        'onclick="bukaModalEdit(' +
-        t.IDTRANSAKSI +
-        ", '" +
-        t.JENISTRANSAKSI +
-        "')\">" +
-        '<i class="fa fa-pen-to-square"></i>' +
-        "</button>" +
+        tombolAksi +
         "</td>" +
         "</tr>"
       );
@@ -694,6 +714,26 @@ function loadDetailPembelian(idTransaksi) {
     })
     .then(function (res) {
       var t = res.data;
+
+      // ── Validasi 1 minggu: blok modal jika transaksi sudah terkunci ──────────
+      if (isPembelianTerkunci(t.TANGGAL)) {
+        body.innerHTML =
+          '<div class="alert alert-warning d-flex align-items-start gap-2 mb-0">' +
+          '<i class="fa fa-lock mt-1"></i>' +
+          "<div>" +
+          "<strong>Transaksi terkunci</strong><br>" +
+          "Transaksi ini sudah lebih dari 1 minggu dan <strong>tidak dapat diubah</strong>." +
+          "</div></div>";
+        // Sembunyikan tombol simpan catatan
+        var btnSimpan = document.getElementById("btnSimpanCatatanPembelian");
+        if (btnSimpan) btnSimpan.style.display = "none";
+        return;
+      }
+
+      // Pastikan tombol simpan terlihat (bisa terjadi jika modal dibuka ulang)
+      var btnSimpan = document.getElementById("btnSimpanCatatanPembelian");
+      if (btnSimpan) btnSimpan.style.display = "";
+
       var items = t.ITEMS || [];
       var total = items.reduce(function (acc, it) {
         return acc + Number(it.SUB_TOTAL || 0);
