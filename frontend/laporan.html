@@ -57,7 +57,7 @@
                 </a>
             </nav>
         </aside>
-  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
         <div class="main">
             <header class="topbar">
                 <button class="topbar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
@@ -76,6 +76,7 @@
                 </button>
             </header>
             <div class="page-body" style="padding:0">
+
                 <!-- VIEW: MENU -->
                 <div id="view-menu" class="container-fluid pt-4 px-4">
                     <div class="page-header mb-4">
@@ -95,6 +96,12 @@
                             <div class="laporan-card" onclick="showView('servis')">
                                 <div class="card-icon"><i class="fa-solid fa-headset"></i></div>
                                 <div class="card-label">Laporan Pelayanan<br>Servis</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-4">
+                            <div class="laporan-card" onclick="showView('pengeluaran')">
+                                <div class="card-icon"><i class="fa-solid fa-money-bill-trend-up"></i></div>
+                                <div class="card-label">Laporan Pengeluaran<br>Sparepart</div>
                             </div>
                         </div>
                     </div>
@@ -139,8 +146,7 @@
                                 <hr style="border-top:1px solid #111;margin:0 0 10px;">
                             </div>
                             <div class="period-line" id="sp-period-line">Laporan Penjualan Sparepart — pilih periode
-                                lalu
-                                klik Tampilkan</div>
+                                lalu klik Tampilkan</div>
                             <table>
                                 <thead>
                                     <tr>
@@ -215,8 +221,7 @@
                                 <hr style="border-top:1px solid #111;margin:0 0 10px;">
                             </div>
                             <div class="period-line" id="sv-period-line">Laporan Layanan Servis — pilih periode lalu
-                                klik
-                                Tampilkan</div>
+                                klik Tampilkan</div>
                             <table>
                                 <thead>
                                     <tr>
@@ -252,6 +257,81 @@
                     </div>
                 </div>
 
+                <!-- VIEW: LAPORAN PENGELUARAN -->
+                <div id="view-pengeluaran" class="container-fluid pt-4 px-4" style="display:none">
+                    <button class="btn-back" onclick="showView('menu')"><i class="fa-solid fa-arrow-left"></i>
+                        Kembali</button>
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+                        <h4 class="fw-bold mb-0">Laporan Pengeluaran Sparepart Bengkel Any Jaya</h4>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-success btn-cetak" onclick="exportExcel('pengeluaran')">
+                                <i class="fa-solid fa-file-excel me-1"></i>Export Excel
+                            </button>
+                            <button class="btn btn-secondary btn-cetak" onclick="cetakLaporan('pengeluaran')">
+                                <i class="fa-solid fa-print me-1"></i>Cetak / PDF
+                            </button>
+                        </div>
+                    </div>
+                    <div class="period-bar mb-4">
+                        <label>Input Periode</label>
+                        <input type="date" id="pg-tgl-awal">
+                        <span class="dash">——</span>
+                        <input type="date" id="pg-tgl-akhir">
+                        <button class="btn btn-primary btn-sm ms-2" onclick="loadLaporanPengeluaran()">
+                            <i class="fa-solid fa-search me-1"></i>Tampilkan
+                        </button>
+                    </div>
+                    <div class="preview-wrapper">
+                        <div class="preview-paper" id="preview-pengeluaran">
+                            <!-- Header Bengkel -->
+                            <div class="text-center mb-3">
+                                <img class="logo-bengkel" src=""
+                                    style="height:64px;margin-bottom:6px;object-fit:contain;">
+                                <h4 style="margin-bottom:2px;font-size:1.2rem;">Bengkel Any Jaya</h4>
+                                <div style="font-size:.8rem;color:#444;">
+                                    Kalitengah, Kec. Tanggulangin, Kabupaten Sidoarjo, Jawa Timur 61272
+                                </div>
+                                <div style="font-size:.8rem;color:#444;">Telp: +62 897-9980-073</div>
+                                <hr style="border-top:2px solid #111;margin:8px 0 3px;">
+                                <hr style="border-top:1px solid #111;margin:0 0 10px;">
+                            </div>
+                            <div class="period-line" id="pg-period-line">Laporan Pengeluaran Sparepart — pilih periode
+                                lalu klik Tampilkan</div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Tanggal</th>
+                                        <th>Kode Antrian</th>
+                                        <th>Sparepart</th>
+                                        <th>Kategori</th>
+                                        <th>Harga Beli (Rp)</th>
+                                        <th>Qty Pakai</th>
+                                        <th>Sub Total (Rp)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pg-tbody">
+                                    <tr>
+                                        <td colspan="8" class="center" style="color:#888;padding:16px">Pilih periode dan
+                                            klik Tampilkan</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr class="total-row">
+                                        <td colspan="7" class="center"><strong>Total Pengeluaran</strong></td>
+                                        <td class="num" id="pg-total">—</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                            <div class="print-date" id="pg-print-date"></div>
+                            <div class="signature" style="margin-top:32px;">
+                                <div>Mengetahui, Pemilik</div>
+                                <div>Bengkel Any Jaya</div>
+                                <div class="sig-name">Pamuji Slamet</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
             </div>
         </div>
@@ -268,13 +348,22 @@
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
     <script>
         function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
+            const sb = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sb.classList.toggle('open');
+            if (overlay) overlay.classList.toggle('show', sb.classList.contains('open'));
+        }
+        function closeSidebar() {
+            const sb = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sb.classList.remove('open');
+            if (overlay) overlay.classList.remove('show');
         }
         document.addEventListener('click', function (e) {
             const sb = document.getElementById('sidebar');
             const btn = document.getElementById('sidebarToggle');
             if (sb && btn && !sb.contains(e.target) && !btn.contains(e.target)) {
-                sb.classList.remove('open');
+                closeSidebar();
             }
         });
     </script>

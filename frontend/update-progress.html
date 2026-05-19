@@ -94,18 +94,19 @@
       <footer class="page-footer">&copy; 2025 SIPENJA &mdash; Bengkel Ani Jaya</footer>
     </div>
   </div>
-  <!-- Modal Update Progress -->
+
+  <!-- Modal Update Progress — hanya Status & Keterangan -->
   <div class="modal fade" id="modalProgress" tabindex="-1" aria-labelledby="modalProgressLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title fw-bold" id="modalProgressLabel">Update Progress Servis</h5>
+          <h5 class="modal-title fw-bold" id="modalProgressLabel">Update Status Servis</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
           <input type="hidden" id="progressIdServis">
 
-          <!-- Info Servis + Layanan Terdaftar -->
+          <!-- Info Servis + Layanan & Sparepart Terdaftar (read-only) -->
           <div class="alert alert-light border mb-4" id="infoServis"></div>
 
           <!-- Status -->
@@ -120,42 +121,17 @@
           </div>
 
           <!-- Keterangan -->
-          <div class="mb-4">
+          <div class="mb-3">
             <label class="form-label fw-semibold">Keterangan Progress</label>
             <textarea class="form-control" id="progressKeterangan" rows="2"
               placeholder="Contoh: Sedang mengganti oli dan filter..."></textarea>
           </div>
 
-          <hr>
-
-          <!-- Tambah Layanan Tambahan -->
-          <div class="mb-3">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <label class="form-label fw-semibold mb-0">
-                <i class="fa-solid fa-tag me-1 text-warning"></i>Layanan Tambahan <small
-                  class="text-muted fw-normal">(opsional)</small>
-              </label>
-              <button class="btn btn-warning btn-sm" onclick="tambahBarisCariLayanan()">
-                <i class="fa-solid fa-plus me-1"></i>Tambah
-              </button>
-            </div>
-            <div id="listCariLayanan"></div>
-          </div>
-
-          <hr>
-
-          <!-- Tambah Sparepart -->
-          <div class="mb-2">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <label class="form-label fw-semibold mb-0">
-                <i class="fa fa-gear me-1 text-secondary"></i>Sparepart Digunakan <small
-                  class="text-muted fw-normal">(opsional)</small>
-              </label>
-              <button class="btn btn-secondary btn-sm" onclick="tambahBarisCariSparepart()">
-                <i class="fa-solid fa-plus me-1"></i>Tambah
-              </button>
-            </div>
-            <div id="listCariSparepart"></div>
+          <!-- Info: Layanan & sparepart dikelola kasir -->
+          <div class="alert alert-info d-flex align-items-start gap-2 py-2 px-3 mb-0" role="alert">
+            <i class="fa-solid fa-circle-info mt-1 flex-shrink-0"></i>
+            <span class="small">Penambahan <strong>layanan tambahan</strong> dan <strong>sparepart</strong>
+              dilakukan oleh <strong>Kasir</strong> melalui menu <em>Perbarui Transaksi</em>.</span>
           </div>
         </div>
         <div class="modal-footer">
@@ -181,20 +157,16 @@
           <ol class="mb-0">
             <li class="mb-2">Klik tombol <span class="badge bg-primary"><i class="fa fa-pen-to-square"></i></span> pada
               baris servis yang ingin diupdate.</li>
-            <li class="mb-2">Lihat <strong>Layanan Servis Terdaftar</strong> di bagian atas modal untuk
-              memastikan layanan yang perlu dikerjakan.</li>
+            <li class="mb-2">Lihat <strong>Layanan Servis Terdaftar</strong> dan <strong>Sparepart Terdaftar</strong>
+              di bagian atas modal sebagai referensi pekerjaan yang perlu dikerjakan.</li>
             <li class="mb-2">Pilih <strong>Status</strong> terbaru dari servis tersebut.</li>
             <li class="mb-2">Isi <strong>Keterangan</strong> untuk menjelaskan perkembangan servis.</li>
-            <li class="mb-2">Jika ada <strong>Layanan Tambahan</strong>, klik tombol <span
-                class="badge bg-warning text-dark">+ Tambah</span> di bagian Layanan Tambahan, ketik
-              nama layanan lalu pilih dari daftar.</li>
-            <li class="mb-2">Jika ada <strong>Sparepart</strong> yang dipakai, klik tombol <span
-                class="badge bg-secondary">+ Tambah</span> di bagian Sparepart, ketik nama lalu pilih
-              dan isi jumlah.</li>
-            <li class="mb-2">Klik <strong class="text-primary">Simpan Progress</strong> untuk menyimpan.
-            </li>
-            <li>Servis yang sudah berstatus <span class="badge bg-success">Selesai</span> tidak dapat
+            <li class="mb-2">Klik <strong class="text-primary">Simpan Progress</strong> untuk menyimpan.</li>
+            <li class="mb-2">Servis yang sudah berstatus <span class="badge bg-success">Selesai</span> tidak dapat
               diupdate lagi.</li>
+            <li>Untuk menambah <strong>layanan tambahan</strong> atau <strong>sparepart</strong>, hubungi
+              <strong>Kasir</strong> agar diinput melalui menu <em>Perbarui Transaksi</em>.
+            </li>
           </ol>
         </div>
         <div class="modal-footer">
@@ -203,6 +175,7 @@
       </div>
     </div>
   </div>
+
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/login.js"></script>

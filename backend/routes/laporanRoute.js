@@ -5,9 +5,10 @@
  * Menyediakan data laporan dalam rentang tanggal tertentu untuk dicetak.
  *
  * Endpoint:
- *   GET /api/laporan/laporan-sparepart  — Data penjualan sparepart (?tgl_awal=&tgl_akhir=)
- *   GET /api/laporan/laporan-servis     — Data layanan servis yang dikerjakan (?tgl_awal=&tgl_akhir=)
- *   GET /api/laporan/logo               — Ambil logo bengkel dalam format base64 (untuk print preview)
+ *   GET /api/laporan/laporan-sparepart    — Data penjualan sparepart (?tgl_awal=&tgl_akhir=)
+ *   GET /api/laporan/laporan-servis       — Data layanan servis yang dikerjakan (?tgl_awal=&tgl_akhir=)
+ *   GET /api/laporan/laporan-pengeluaran  — Data pemakaian sparepart di servis/HPP (?tgl_awal=&tgl_akhir=)
+ *   GET /api/laporan/logo                 — Ambil logo bengkel dalam format base64 (untuk print preview)
  */
 
 const express = require("express");
@@ -24,6 +25,7 @@ router.use(roleMiddleware("admin"));
 
 router.get("/laporan-sparepart", laporanController.laporanSparepart);
 router.get("/laporan-servis", laporanController.laporanServis);
+router.get("/laporan-pengeluaran", laporanController.laporanPengeluaran);
 router.get("/logo", laporanController.getLogo); // Logo untuk print/PDF
 
 module.exports = router;

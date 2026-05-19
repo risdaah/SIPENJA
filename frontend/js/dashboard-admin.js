@@ -64,23 +64,24 @@
         y +
         "</option>";
     }
-    $("#pend-tahun, #keluar-tahun, #sp-tahun, #lay-tahun, #grafik-tahun").html(
-      opts,
-    );
+    $(
+      "#pend-tahun, #keluar-tahun, #laba-tahun, #sp-tahun, #lay-tahun, #grafik-tahun",
+    ).html(opts);
   }
 
   function setDefaultPeriode() {
     var now = new Date();
     var m = now.getMonth() + 1;
-    $("#pend-bulan, #keluar-bulan, #sp-bulan, #lay-bulan, #grafik-bulan").val(
-      m,
-    );
+    $(
+      "#pend-bulan, #keluar-bulan, #laba-bulan, #sp-bulan, #lay-bulan, #grafik-bulan",
+    ).val(m);
   }
 
   function loadAll() {
     loadStats();
     loadPendapatan();
     loadPengeluaran();
+    loadLaba();
     loadTopSparepart();
     loadTopLayanan();
     loadGrafik();
@@ -113,14 +114,21 @@
   // ─── Pendapatan ────────────────────────────────────────
   function loadPendapatan(params) {
     params = params || buildParams("pend");
-    $.get(API + "/dashboard/pendapatan?" + params, function (res) {
+    $.get(API + "/dashboard/laba?" + params, function (res) {
       if (!res.success) return;
-      $("#keu-pendapatan").text(rupiah(res.data.total));
+      var d = res.data;
+      $("#keu-pendapatan").text(rupiah(d.pendapatan));
+      $("#keu-pendapatan-detail").html(
+        '<span style="color:#28a745">Servis: ' +
+          rupiah(d.pendapatan_servis) +
+          "</span>" +
+          "&nbsp;·&nbsp;" +
+          '<span style="color:#009CFF">Jual: ' +
+          rupiah(d.pendapatan_penjualan) +
+          "</span>",
+      );
       $("#keu-pendapatan-periode").text(
-        "Periode: " +
-          fmtTgl(res.data.tgl_awal) +
-          " — " +
-          fmtTgl(res.data.tgl_akhir),
+        "Periode: " + fmtTgl(d.tgl_awal) + " — " + fmtTgl(d.tgl_akhir),
       );
     });
   }
@@ -135,6 +143,7 @@
     $.get(API + "/dashboard/pengeluaran?" + params, function (res) {
       if (!res.success) return;
       $("#keu-pengeluaran").text(rupiah(res.data.total));
+      $("#keu-pengeluaran-detail").text("Modal beli stok sparepart");
       $("#keu-pengeluaran-periode").text(
         "Periode: " +
           fmtTgl(res.data.tgl_awal) +
@@ -146,6 +155,46 @@
   window.applyPengeluaran = function () {
     loadPengeluaran(buildParams("keluar"));
     $("#pp-pengeluaran").removeClass("show");
+  };
+
+  // ─── Laba ──────────────────────────────────────────────
+  function loadLaba(params) {
+    params = params || buildParams("laba");
+    $.get(API + "/dashboard/laba?" + params, function (res) {
+      if (!res.success) return;
+      var d = res.data;
+      var isUntung = d.status === "untung";
+      var color = isUntung ? "#7c3aed" : "#dc2626";
+      var icon = isUntung ? "fa-arrow-trend-up" : "fa-arrow-trend-down";
+      var badge = isUntung
+        ? '<span style="display:inline-block;background:#ede9fe;color:#7c3aed;font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;margin-left:6px;vertical-align:middle">UNTUNG</span>'
+        : '<span style="display:inline-block;background:#fee2e2;color:#dc2626;font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;margin-left:6px;vertical-align:middle">RUGI</span>';
+      $("#keu-laba")
+        .css("color", color)
+        .html(
+          '<i class="fa-solid ' +
+            icon +
+            ' me-2"></i>' +
+            rupiah(Math.abs(d.laba)) +
+            badge,
+        );
+      $("#keu-laba-detail").html(
+        '<span style="color:#28a745">Pend: ' +
+          rupiah(d.pendapatan) +
+          "</span>" +
+          "&nbsp;−&nbsp;" +
+          '<span style="color:#dc2626">Modal: ' +
+          rupiah(d.pengeluaran) +
+          "</span>",
+      );
+      $("#keu-laba-periode").text(
+        "Periode: " + fmtTgl(d.tgl_awal) + " — " + fmtTgl(d.tgl_akhir),
+      );
+    });
+  }
+  window.applyLaba = function () {
+    loadLaba(buildParams("laba"));
+    $("#pp-laba").removeClass("show");
   };
 
   // ─── Top Sparepart ─────────────────────────────────────

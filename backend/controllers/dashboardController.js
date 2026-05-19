@@ -93,6 +93,64 @@ exports.getPengeluaran = async (req, res) => {
   }
 };
 
+// ── GET LABA ──────────────────────────────────────────────────────────────────
+// Laba = Pendapatan (TRANSAKSI) - HPP/Modal (PENGELUARAN restok stok)
+//
+// Logika bisnis bengkel ini:
+//   • Pendapatan  = semua TRANSAKSI.TOTAL (SERVIS + PEMBELIAN sparepart oleh customer)
+//   • Modal/HPP   = PENGELUARAN.TOTAL (setiap kali beli/restok sparepart dari supplier)
+//   • Laba bersih = Pendapatan − Modal
+//
+// Catatan: PENGELUARAN mencatat harga beli saat restok stok, bukan saat terjual.
+// Untuk usaha skala kecil, matching pendapatan vs pengeluaran per periode sudah cukup akurat.
+// Gunakan filter periode bulanan/tahunan untuk hasil yang lebih representatif.
+exports.getLaba = async (req, res) => {
+  const { tgl_awal, tgl_akhir } = getPeriode(req.query);
+  try {
+    // Total pendapatan semua jenis transaksi
+    const [[totalPend]] = await db.query(
+      `SELECT COALESCE(SUM(TOTAL), 0) AS total FROM TRANSAKSI WHERE DATE(TANGGAL) BETWEEN ? AND ?`,
+      [tgl_awal, tgl_akhir],
+    );
+
+    // Rincian pendapatan: servis vs penjualan sparepart
+    const [[pendServis]] = await db.query(
+      `SELECT COALESCE(SUM(TOTAL), 0) AS total FROM TRANSAKSI WHERE JENISTRANSAKSI = 'SERVIS' AND DATE(TANGGAL) BETWEEN ? AND ?`,
+      [tgl_awal, tgl_akhir],
+    );
+    const [[pendJual]] = await db.query(
+      `SELECT COALESCE(SUM(TOTAL), 0) AS total FROM TRANSAKSI WHERE JENISTRANSAKSI = 'PEMBELIAN' AND DATE(TANGGAL) BETWEEN ? AND ?`,
+      [tgl_awal, tgl_akhir],
+    );
+
+    // Modal = total harga beli sparepart yang direstok di periode ini
+    const [[modal]] = await db.query(
+      `SELECT COALESCE(SUM(TOTAL), 0) AS total FROM PENGELUARAN WHERE DATE(TANGGAL) BETWEEN ? AND ?`,
+      [tgl_awal, tgl_akhir],
+    );
+
+    const pendapatan  = Number(totalPend.total);
+    const pengeluaran = Number(modal.total);
+    const laba        = pendapatan - pengeluaran;
+
+    res.json({
+      success: true,
+      data: {
+        pendapatan,
+        pendapatan_servis:   Number(pendServis.total),
+        pendapatan_penjualan: Number(pendJual.total),
+        pengeluaran,
+        laba,
+        status: laba >= 0 ? "untung" : "rugi",
+        tgl_awal,
+        tgl_akhir,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "DB error", error: err });
+  }
+};
+
 // ── GET TOP SPAREPART ─────────────────────────────────────────────────────────
 // Ranking 10 sparepart paling banyak terjual (dari TRANSAKSIPEMBELIANSPAREPART)
 // Berguna untuk manajemen stok: tahu produk mana yang perlu sering di-restock

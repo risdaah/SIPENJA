@@ -1958,7 +1958,7 @@ select.form-inp-sm {
 
 .keuangan-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 20px;
   margin-bottom: 24px;
 }
@@ -1968,7 +1968,7 @@ select.form-inp-sm {
   border-radius: 14px;
   border: 1px solid var(--line);
   box-shadow: var(--shadow-sm);
-  padding: 22px 28px;
+  padding: 20px 22px;
 }
 
 .keuangan-card .keu-header {
@@ -1985,9 +1985,9 @@ select.form-inp-sm {
 }
 
 .keuangan-card .keu-amount {
-  font-size: 1.9rem;
+  font-size: 1.6rem;
   font-weight: 800;
-  line-height: 1;
+  line-height: 1.1;
 }
 
 .keuangan-card .keu-amount.pendapatan {
@@ -2142,7 +2142,8 @@ select.form-inp-sm {
   border-radius: 14px;
   border: 1px solid var(--line);
   box-shadow: var(--shadow-sm);
-  overflow: visible; /* FIX: was 'hidden', yang menyebabkan periode-popup terpotong */
+  overflow: visible;
+  /* FIX: was 'hidden', yang menyebabkan periode-popup terpotong */
 }
 
 /* Tetap clip konten card (tabel dll) tapi bukan periode-popup */
@@ -2308,6 +2309,12 @@ select.form-inp-sm {
   padding: 24px;
   color: var(--ink-4);
   font-size: .85rem;
+}
+
+@media (max-width: 1200px) {
+  .keuangan-grid {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 @media (max-width: 900px) {

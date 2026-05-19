@@ -10,6 +10,13 @@
     };
   }
 
+  // ─── Helper: cek apakah transaksi PEMBELIAN sudah > 1 minggu ─────────────
+  function isPembelianTerkunci(tanggal) {
+    var batas = new Date();
+    batas.setDate(batas.getDate() - 7);
+    return new Date(tanggal) < batas;
+  }
+
   // ─── State ────────────────────────────────────────────
   var allData = [];
   var filteredData = [];
@@ -268,8 +275,7 @@
         <td>
           <div class="action-btns">
             <a href="detail-transaksi.html?id=${d.IDTRANSAKSI}" class="btn-action view" title="Lihat Detail"><i class="fa-solid fa-eye"></i></a>
-            <a href="edit-transaksi.html?id=${d.IDTRANSAKSI}" class="btn-action edit" title="Edit Transaksi"><i class="fa-solid fa-pen"></i></a>
-            <button class="btn-action del" title="Hapus" onclick="confirmDelete(${d.IDTRANSAKSI}, '${xa(d.NOTRANSAKSI)}', '${d.JENISTRANSAKSI}', '${xa(d.IDSERVIS || "")}')"><i class="fa-solid fa-trash"></i></button>
+            <!-- edit & delete disembunyikan -->
           </div>
         </td>
       </tr>`;
@@ -613,6 +619,9 @@
       pendingLayanan: [],
       pendingSparepart: [],
     };
+    // Reset tombol Simpan & alert terkunci (bersihkan dari modal sebelumnya)
+    $("#btn-submit-edit").show();
+    $(".alert-terkunci").remove();
     $("#edit-layanan-body").html(
       '<tr><td colspan="4" style="text-align:center;padding:16px"><span class="spinner-sm"></span></td></tr>',
     );
@@ -671,6 +680,31 @@
 
         if (isPembelian) {
           $("#edit-pembelian-section").show();
+
+          // ── Validasi 1 minggu: kunci seluruh form edit pembelian ─────────────
+          if (isPembelianTerkunci(d.TANGGAL)) {
+            // Tampilkan pesan lock, sembunyikan tombol simpan
+            $("#edit-pembelian-section").prepend(
+              '<div class="alert-terkunci" style="' +
+                "background:#fff8e1;border:1px solid #f59e0b;border-radius:8px;" +
+                'padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px">' +
+                '<i class="fa-solid fa-lock" style="color:#f59e0b;font-size:1.1rem"></i>' +
+                "<div><strong>Transaksi terkunci</strong><br>" +
+                '<span style="font-size:.85rem;color:#555">Transaksi ini sudah lebih dari 1 minggu dan tidak dapat diubah.</span>' +
+                "</div></div>",
+            );
+            // Nonaktifkan semua input & tombol hapus di section pembelian
+            $(
+              "#edit-pembelian-section input, #edit-pembelian-section button.btn-inline-del",
+            ).prop("disabled", true);
+            // Sembunyikan tombol Simpan Perubahan
+            $("#btn-submit-edit").hide();
+            // Render items read-only (tanpa tombol hapus & input disabled)
+            renderEditItemsReadOnly(d.ITEMS || []);
+            recalcEditTotalPembelian(d.ITEMS || []);
+            return;
+          }
+
           renderEditItems(d.ITEMS || []);
           recalcEditTotalPembelian(d.ITEMS || []);
         }
@@ -843,6 +877,39 @@
         it.IDBELISPAREPART +
         ", this)'>" +
         "<i class='fa-solid fa-trash'></i></button></td></tr>";
+    });
+    $("#edit-items-body").html(html);
+  }
+
+  // ── Render items pembelian read-only (untuk transaksi terkunci) ──
+  function renderEditItemsReadOnly(rows) {
+    if (!rows.length) {
+      $("#edit-items-body").html(
+        '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:12px">Tidak ada item</td></tr>',
+      );
+      return;
+    }
+    var html = "";
+    $.each(rows, function (i, it) {
+      html +=
+        "<tr>" +
+        "<td>" +
+        (i + 1) +
+        "</td>" +
+        "<td style='font-weight:600'>" +
+        xh(it.NAMA_SPAREPART || "—") +
+        "</td>" +
+        "<td style='text-align:center'>" +
+        (it.JUMLAH || 0) +
+        "</td>" +
+        "<td style='text-align:right;font-family:monospace'>" +
+        rupiah(it.HARGA_SATUAN) +
+        "</td>" +
+        "<td style='text-align:right;font-family:monospace'>" +
+        rupiah(it.SUB_TOTAL) +
+        "</td>" +
+        "<td style='text-align:center;color:var(--muted)'>—</td>" +
+        "</tr>";
     });
     $("#edit-items-body").html(html);
   }

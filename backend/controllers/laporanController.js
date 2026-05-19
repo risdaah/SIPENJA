@@ -6,9 +6,10 @@
  *   ?tgl_awal=YYYY-MM-DD&tgl_akhir=YYYY-MM-DD
  *
  * Laporan yang tersedia:
- *   1. Laporan Sparepart  — Rekap penjualan sparepart per item dalam periode
- *   2. Laporan Servis     — Rekap layanan servis yang dikerjakan dalam periode
- *   3. Logo bengkel       — Gambar logo dalam base64 untuk ditampilkan di print preview
+ *   1. Laporan Sparepart    — Rekap penjualan sparepart per item dalam periode
+ *   2. Laporan Servis       — Rekap layanan servis yang dikerjakan dalam periode
+ *   3. Laporan Pengeluaran  — Rekap pemakaian sparepart dalam pengerjaan servis (HPP/cost)
+ *   4. Logo bengkel         — Gambar logo dalam base64 untuk ditampilkan di print preview
  */
 
 const db = require("../config/db");
@@ -81,6 +82,49 @@ exports.laporanServis = async (req, res) => {
     ORDER BY DATE(s.TANGGALMASUK) ASC, ls.KODELAYANAN ASC
   `;
 
+  try {
+    const [results] = await db.query(sql, [tgl_awal, tgl_akhir]);
+    res.json({ data: results });
+  } catch (err) {
+    res.status(500).json({ message: "DB error", error: err });
+  }
+};
+
+/* ── LAPORAN PENGELUARAN ─────────────────────────────────────────────────────
+   Pengeluaran = pemakaian sparepart dalam pengerjaan servis (HPP/biaya bahan).
+   Query JOIN: SERVISSPAREPART → SPAREPART → KATEGORISPAREPART → SERVIS → TRANSAKSI
+   Menghasilkan: tanggal servis, kode antrian, nama sparepart, kategori,
+                 qty pakai, harga satuan (harga beli), subtotal pengeluaran.
+   Harga yang dipakai adalah HARGABELI dari master SPAREPART (bukan harga jual),
+   sehingga angka ini mencerminkan biaya riil yang dikeluarkan bengkel.
+────────────────────────────────────────────────────────────────────────────── */
+exports.laporanPengeluaran = async (req, res) => {
+  const { tgl_awal, tgl_akhir } = req.query;
+
+  if (!tgl_awal || !tgl_akhir) {
+    return res
+      .status(400)
+      .json({ message: "Parameter tgl_awal dan tgl_akhir wajib diisi." });
+  }
+
+  const sql = `
+  SELECT
+    DATE(s.TANGGALMASUK)        AS TANGGAL,
+    s.KODEANTRIAN               AS KODEANTRIAN,
+    s.NAMAPELANGGAN             AS NAMAPELANGGAN,
+    sp.KODESPAREPART            AS KODESPAREPART,
+    sp.NAMA                     AS NAMA_SPAREPART,
+    ks.NAMA                     AS NAMA_KATEGORI,
+    ss.QTY                      AS QTY,
+    ss.HARGASATUAN              AS HARGA_BELI,      
+    ss.SUBTOTAL                 AS SUBTOTAL         -- ✅ langsung pakai SUBTOTAL
+  FROM SERVISSPAREPART ss
+  JOIN SPAREPART sp        ON sp.IDSPAREPART = ss.IDSPAREPART
+  LEFT JOIN KATEGORISPAREPART ks ON ks.IDKATEGORI = sp.IDKATEGORI
+  JOIN SERVIS s            ON s.IDSERVIS    = ss.IDSERVIS
+  WHERE DATE(s.TANGGALMASUK) BETWEEN ? AND ?
+  ORDER BY s.TANGGALMASUK ASC, sp.NAMA ASC
+`;
   try {
     const [results] = await db.query(sql, [tgl_awal, tgl_akhir]);
     res.json({ data: results });

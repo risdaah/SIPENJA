@@ -31,6 +31,7 @@ router.use(roleMiddleware("admin"));
 router.get("/stats", dashboardController.getStats);
 router.get("/pendapatan", dashboardController.getPendapatan);
 router.get("/pengeluaran", dashboardController.getPengeluaran);
+router.get("/laba", dashboardController.getLaba);
 router.get("/top-sparepart", dashboardController.getTopSparepart);
 router.get("/top-layanan", dashboardController.getTopLayanan);
 router.get("/grafik", dashboardController.getGrafik);

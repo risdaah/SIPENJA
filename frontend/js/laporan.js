@@ -38,7 +38,7 @@ var LOGO_BASE64 = "";
 
 /* ─── NAVIGASI VIEW ─────────────────────────────── */
 function showView(name) {
-  $("#view-menu, #view-sparepart, #view-servis").hide();
+  $("#view-menu, #view-sparepart, #view-servis, #view-pengeluaran").hide();
   $("#view-" + name).show();
 }
 
@@ -216,6 +216,84 @@ function renderServis(data) {
   $("#sv-total").text(rupiah(total));
 }
 
+/* ─── LAPORAN PENGELUARAN ────────────────────────── */
+function loadLaporanPengeluaran() {
+  var awal = $("#pg-tgl-awal").val();
+  var akhir = $("#pg-tgl-akhir").val();
+  if (!awal || !akhir) {
+    Swal.fire("Perhatian", "Isi periode terlebih dahulu.", "warning");
+    return;
+  }
+
+  $("#pg-period-line").text(
+    "Laporan Pengeluaran Sparepart Periode: " +
+      fmtDate(awal) +
+      " hingga " +
+      fmtDate(akhir),
+  );
+  $("#pg-print-date").text("Dicetak Pada " + todayFormatted());
+
+  $.ajax({
+    url: BASE_URL + "/laporan/laporan-pengeluaran",
+    method: "GET",
+    data: { tgl_awal: awal, tgl_akhir: akhir },
+    success: function (res) {
+      renderPengeluaran(res.data || []);
+    },
+    error: function () {
+      Swal.fire("Error", "Gagal memuat data laporan pengeluaran.", "error");
+    },
+  });
+}
+
+function renderPengeluaran(data) {
+  var tbody = $("#pg-tbody").empty();
+  var total = 0;
+
+  if (!data.length) {
+    tbody.append(
+      '<tr><td colspan="8" class="center">Tidak ada data pada periode ini</td></tr>',
+    );
+    $("#pg-total").text("Rp0");
+    return;
+  }
+
+  data.forEach(function (item, i) {
+    var sub = Number(item.SUBTOTAL);
+    total += sub;
+    tbody.append(
+      "<tr>" +
+        '<td class="center">' +
+        (i + 1) +
+        "</td>" +
+        '<td class="center">' +
+        fmtDate(item.TANGGAL) +
+        "</td>" +
+        '<td class="center">' +
+        (item.KODEANTRIAN || "-") +
+        "</td>" +
+        "<td>" +
+        (item.NAMA_SPAREPART || "-") +
+        "</td>" +
+        '<td class="center">' +
+        (item.NAMA_KATEGORI || "-") +
+        "</td>" +
+        '<td class="num">' +
+        rupiah(item.HARGABELI) +
+        "</td>" +
+        '<td class="center">' +
+        item.QTY +
+        "</td>" +
+        '<td class="num">' +
+        rupiah(sub) +
+        "</td>" +
+        "</tr>",
+    );
+  });
+
+  $("#pg-total").text(rupiah(total));
+}
+
 /* ─── EXPORT EXCEL ───────────────────────────────── */
 function exportExcel(jenis) {
   var rows = [];
@@ -276,7 +354,7 @@ function exportExcel(jenis) {
     rows.push(["", "", "", "", "", "Bengkel Any Jaya"]);
     rows.push(["", "", "", "", "", ""]);
     rows.push(["", "", "", "", "", "Pamuji Slamet"]);
-  } else {
+  } else if (jenis === "servis") {
     var awal = $("#sv-tgl-awal").val();
     var akhir = $("#sv-tgl-akhir").val();
     var periodeStr = awal.replace(/-/g, "") + "-" + akhir.replace(/-/g, "");
@@ -321,6 +399,52 @@ function exportExcel(jenis) {
     rows.push(["", "", "", "", "", "Bengkel Any Jaya"]);
     rows.push(["", "", "", "", "", ""]);
     rows.push(["", "", "", "", "", "Pamuji Slamet"]);
+  } else if (jenis === "pengeluaran") {
+    var awal = $("#pg-tgl-awal").val();
+    var akhir = $("#pg-tgl-akhir").val();
+    var periodeStr = awal.replace(/-/g, "") + "-" + akhir.replace(/-/g, "");
+    filename = "Laporan_Pengeluaran_Sparepart_" + periodeStr + ".xlsx";
+    namaLaporan = "Laporan Pengeluaran Sparepart";
+    periode = $("#pg-period-line").text();
+
+    rows.push(["Bengkel Any Jaya"]);
+    rows.push([
+      "Kalitengah, Kec. Tanggulangin, Kabupaten Sidoarjo, Jawa Timur 61272",
+    ]);
+    rows.push(["Telp: +62 897-9980-073"]);
+    rows.push([]);
+    rows.push([namaLaporan]);
+    rows.push([periode]);
+    rows.push([]);
+    rows.push([
+      "No",
+      "Tanggal",
+      "Kode Antrian",
+      "Sparepart",
+      "Kategori",
+      "Harga Beli (Rp)",
+      "Qty Pakai",
+      "Sub Total (Rp)",
+    ]);
+
+    $("#pg-tbody tr").each(function () {
+      var cols = [];
+      $(this)
+        .find("td")
+        .each(function () {
+          cols.push($(this).text().trim());
+        });
+      if (cols.length > 1) rows.push(cols);
+    });
+
+    rows.push(["", "", "", "", "", "", "Total", $("#pg-total").text()]);
+    rows.push([]);
+    rows.push(["Dicetak Pada: " + tglCetak]);
+    rows.push([]);
+    rows.push(["", "", "", "", "", "", "Mengetahui, Pemilik"]);
+    rows.push(["", "", "", "", "", "", "Bengkel Any Jaya"]);
+    rows.push(["", "", "", "", "", "", ""]);
+    rows.push(["", "", "", "", "", "", "Pamuji Slamet"]);
   }
 
   var ws = XLSX.utils.aoa_to_sheet(rows);
@@ -331,7 +455,12 @@ function exportExcel(jenis) {
 
 /* ─── CETAK PDF ──────────────────────────────────── */
 function cetakLaporan(jenis) {
-  var elId = jenis === "sparepart" ? "preview-sparepart" : "preview-servis";
+  var elId =
+    jenis === "sparepart"
+      ? "preview-sparepart"
+      : jenis === "servis"
+        ? "preview-servis"
+        : "preview-pengeluaran";
   var el = document.getElementById(elId);
 
   // Pastikan logo sudah ter-load sebagai base64
@@ -400,16 +529,22 @@ function cetakLaporan(jenis) {
         var awal =
           jenis === "sparepart"
             ? $("#sp-tgl-awal").val()
-            : $("#sv-tgl-awal").val();
+            : jenis === "servis"
+              ? $("#sv-tgl-awal").val()
+              : $("#pg-tgl-awal").val();
         var akhir =
           jenis === "sparepart"
             ? $("#sp-tgl-akhir").val()
-            : $("#sv-tgl-akhir").val();
+            : jenis === "servis"
+              ? $("#sv-tgl-akhir").val()
+              : $("#pg-tgl-akhir").val();
         var periodeStr = awal.replace(/-/g, "") + "-" + akhir.replace(/-/g, "");
         var namaFile =
           jenis === "sparepart"
             ? "Laporan_Penjualan_Sparepart_" + periodeStr + ".pdf"
-            : "Laporan_Pelayanan_Servis_" + periodeStr + ".pdf";
+            : jenis === "servis"
+              ? "Laporan_Pelayanan_Servis_" + periodeStr + ".pdf"
+              : "Laporan_Pengeluaran_Sparepart_" + periodeStr + ".pdf";
 
         pdf.save(namaFile);
         Swal.close();

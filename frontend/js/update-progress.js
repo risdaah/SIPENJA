@@ -46,12 +46,6 @@ function getAuthHeaders() {
 })(jQuery);
 
 /* ===================================================
-   STATE MODAL
-=================================================== */
-var layananDipilih = []; // [{IDLAYANANSERVIS, NAMA, BIAYAPOKOK}]
-var sparepartDipilih = []; // [{IDSPAREPART, NAMA, HARGAJUAL, STOK, qty}]
-
-/* ===================================================
    LOAD SERVIS AKTIF
    Hanya servis yang ditugaskan ke mekanik yang login
    dan belum Selesai
@@ -132,7 +126,7 @@ function renderTable(list) {
         formatTanggal(s.TANGGALMASUK) +
         "</td>" +
         '<td class="text-center">' +
-        '<button class="btn btn-primary btn-sm btn-square" title="Update Progress" onclick="bukaModalProgress(' +
+        '<button class="btn btn-primary btn-sm btn-square" title="Update Status" onclick="bukaModalProgress(' +
         s.IDSERVIS +
         ')">' +
         '<i class="fa fa-pen-to-square"></i>' +
@@ -146,16 +140,13 @@ function renderTable(list) {
 
 /* ===================================================
    BUKA MODAL PROGRESS
+   Hanya menampilkan info servis + pilih status + keterangan.
+   Tambah layanan & sparepart sudah dipindahkan ke kasir.
 =================================================== */
 function bukaModalProgress(idServis) {
-  // Reset state
-  layananDipilih = [];
-  sparepartDipilih = [];
   document.getElementById("progressIdServis").value = idServis;
   document.getElementById("progressStatus").value = "";
   document.getElementById("progressKeterangan").value = "";
-  document.getElementById("listCariLayanan").innerHTML = "";
-  document.getElementById("listCariSparepart").innerHTML = "";
   document.getElementById("infoServis").innerHTML =
     '<div class="text-center text-muted py-2">' +
     '<div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>' +
@@ -163,7 +154,7 @@ function bukaModalProgress(idServis) {
 
   new bootstrap.Modal(document.getElementById("modalProgress")).show();
 
-  // Fetch detail servis (sudah include LAYANAN dari getServisById di backend)
+  // Fetch detail servis untuk menampilkan info ringkas
   fetch(API_BASE_URL + "/servis/get/" + idServis, { headers: getAuthHeaders() })
     .then(function (r) {
       return r.json();
@@ -171,7 +162,7 @@ function bukaModalProgress(idServis) {
     .then(function (res) {
       var s = res.data;
 
-      // ── Info Servis + Daftar Layanan + Sparepart yang sudah ada ──
+      // Baris layanan terdaftar (read-only, untuk referensi mekanik)
       var layananRows = "";
       if (s.LAYANAN && s.LAYANAN.length > 0) {
         layananRows = s.LAYANAN.map(function (l) {
@@ -191,6 +182,7 @@ function bukaModalProgress(idServis) {
           '<tr><td colspan="2" class="text-muted fst-italic">Belum ada layanan</td></tr>';
       }
 
+      // Baris sparepart terdaftar (read-only, untuk referensi mekanik)
       var sparepartRows = "";
       if (s.SPAREPART && s.SPAREPART.length > 0) {
         sparepartRows = s.SPAREPART.map(function (sp) {
@@ -233,9 +225,9 @@ function bukaModalProgress(idServis) {
         badgeStatus(s.STATUS) +
         "</div></div>" +
         "</div>" +
-        // Tabel layanan terdaftar
+        // Tabel layanan terdaftar (read-only)
         '<div class="mt-2 mb-3">' +
-        '<p class="mb-1 small fw-semibold text-muted"><i class=\"fa-solid fa-tag me-1 text-warning\"></i>Layanan Servis Terdaftar:</p>' +
+        '<p class="mb-1 small fw-semibold text-muted"><i class="fa-solid fa-tag me-1 text-warning"></i>Layanan Servis Terdaftar:</p>' +
         '<table class="table table-sm table-bordered mb-0">' +
         '<thead class="table-light"><tr>' +
         "<th>Nama Layanan</th>" +
@@ -246,9 +238,9 @@ function bukaModalProgress(idServis) {
         "</tbody>" +
         "</table>" +
         "</div>" +
-        // Tabel sparepart terdaftar
+        // Tabel sparepart terdaftar (read-only)
         '<div class="mt-2">' +
-        '<p class="mb-1 small fw-semibold text-muted"><i class=\"fa fa-gear me-1 text-secondary\"></i>Sparepart Terdaftar:</p>' +
+        '<p class="mb-1 small fw-semibold text-muted"><i class="fa fa-gear me-1 text-secondary"></i>Sparepart Terdaftar:</p>' +
         '<table class="table table-sm table-bordered mb-0">' +
         '<thead class="table-light"><tr>' +
         "<th>Nama Sparepart</th>" +
@@ -272,214 +264,9 @@ function bukaModalProgress(idServis) {
 }
 
 /* ===================================================
-   CARI LAYANAN — per baris
-=================================================== */
-var layananRowCount = 0;
-
-function tambahBarisCariLayanan() {
-  var rowId = "layananRow" + ++layananRowCount;
-  var html =
-    '<div class="input-group mb-2 position-relative" id="' +
-    rowId +
-    '">' +
-    '<input type="text" class="form-control form-control-sm" placeholder="Ketik nama layanan..." ' +
-    "oninput=\"cariLayananInput(this, '" +
-    rowId +
-    "')\">" +
-    '<button class="btn btn-outline-danger btn-sm" onclick="hapusBaris(\'' +
-    rowId +
-    "')\">" +
-    '<i class="fa-solid fa-trash-can"></i>' +
-    "</button>" +
-    '<div class="dropdown-hasil-inline d-none" id="hasil' +
-    rowId +
-    '"></div>' +
-    "</div>";
-  document
-    .getElementById("listCariLayanan")
-    .insertAdjacentHTML("beforeend", html);
-}
-
-function cariLayananInput(input, rowId) {
-  var keyword = input.value.trim().toLowerCase();
-  var $box = document.getElementById("hasil" + rowId);
-
-  if (!keyword) {
-    $box.classList.add("d-none");
-    $box.innerHTML = "";
-    return;
-  }
-
-  fetch(API_BASE_URL + "/layanan-servis/get-all", { headers: getAuthHeaders() })
-    .then(function (r) {
-      return r.json();
-    })
-    .then(function (res) {
-      var list = (res.data || res)
-        .filter(function (l) {
-          return l.NAMA.toLowerCase().includes(keyword);
-        })
-        .slice(0, 6);
-
-      $box.innerHTML = "";
-      if (!list.length) {
-        $box.innerHTML =
-          '<div class="hasil-item text-muted">Tidak ditemukan</div>';
-        $box.classList.remove("d-none");
-        return;
-      }
-      list.forEach(function (item) {
-        var div = document.createElement("div");
-        div.className = "hasil-item";
-        div.innerHTML =
-          '<span class="fw-semibold">' +
-          escapeHtml(item.NAMA) +
-          "</span>" +
-          '<span class="text-muted ms-2">' +
-          formatRupiah(item.BIAYAPOKOK) +
-          "</span>";
-        div.onclick = function () {
-          if (
-            layananDipilih.find(function (l) {
-              return l.IDLAYANANSERVIS === item.IDLAYANANSERVIS;
-            })
-          ) {
-            Swal.fire("Info", "Layanan sudah ditambahkan.", "info");
-            return;
-          }
-          layananDipilih.push(item);
-          input.value = item.NAMA + " — " + formatRupiah(item.BIAYAPOKOK);
-          input.dataset.idLayanan = item.IDLAYANANSERVIS;
-          input.readOnly = true;
-          $box.classList.add("d-none");
-        };
-        $box.appendChild(div);
-      });
-      $box.classList.remove("d-none");
-    });
-}
-
-/* ===================================================
-   CARI SPAREPART — per baris
-=================================================== */
-var sparepartRowCount = 0;
-
-function tambahBarisCariSparepart() {
-  var rowId = "sparepartRow" + ++sparepartRowCount;
-  var html =
-    '<div class="mb-2 position-relative" id="' +
-    rowId +
-    '">' +
-    '<div class="input-group input-group-sm">' +
-    '<input type="text" class="form-control" placeholder="Ketik nama sparepart..." ' +
-    "oninput=\"cariSparepartInput(this, '" +
-    rowId +
-    "')\">" +
-    '<input type="number" class="form-control qty-input" placeholder="Qty" min="1" style="max-width:80px" ' +
-    'id="qty' +
-    rowId +
-    '" disabled>' +
-    '<button class="btn btn-outline-danger" onclick="hapusBaris(\'' +
-    rowId +
-    "', true)\">" +
-    '<i class="fa-solid fa-trash-can"></i>' +
-    "</button>" +
-    "</div>" +
-    '<div class="dropdown-hasil-inline d-none" id="hasil' +
-    rowId +
-    '"></div>' +
-    "</div>";
-  document
-    .getElementById("listCariSparepart")
-    .insertAdjacentHTML("beforeend", html);
-}
-
-function cariSparepartInput(input, rowId) {
-  var keyword = input.value.trim().toLowerCase();
-  var $box = document.getElementById("hasil" + rowId);
-
-  if (!keyword) {
-    $box.classList.add("d-none");
-    $box.innerHTML = "";
-    return;
-  }
-
-  fetch(API_BASE_URL + "/sparepart/get-all", { headers: getAuthHeaders() })
-    .then(function (r) {
-      return r.json();
-    })
-    .then(function (res) {
-      var list = (res.data || res)
-        .filter(function (s) {
-          return s.NAMA.toLowerCase().includes(keyword);
-        })
-        .slice(0, 6);
-
-      $box.innerHTML = "";
-      if (!list.length) {
-        $box.innerHTML =
-          '<div class="hasil-item text-muted">Tidak ditemukan</div>';
-        $box.classList.remove("d-none");
-        return;
-      }
-      list.forEach(function (item) {
-        var div = document.createElement("div");
-        div.className = "hasil-item" + (item.STOK <= 0 ? " disabled-item" : "");
-        div.innerHTML =
-          '<span class="fw-semibold">' +
-          escapeHtml(item.NAMA) +
-          "</span>" +
-          '<span class="text-muted ms-2">' +
-          formatRupiah(item.HARGAJUAL) +
-          "</span>" +
-          (item.STOK <= 0
-            ? '<span class="badge bg-danger ms-2">Stok Habis</span>'
-            : '<span class="text-muted ms-2">Stok: ' + item.STOK + "</span>");
-        div.onclick = function () {
-          if (item.STOK <= 0) {
-            Swal.fire("Peringatan", "Stok habis.", "warning");
-            return;
-          }
-          input.value = item.NAMA;
-          input.dataset.idSparepart = item.IDSPAREPART;
-          input.dataset.stok = item.STOK;
-          input.readOnly = true;
-          var qtyInput = document.getElementById("qty" + rowId);
-          qtyInput.disabled = false;
-          qtyInput.max = item.STOK;
-          qtyInput.value = 1;
-          $box.classList.add("d-none");
-        };
-        $box.appendChild(div);
-      });
-      $box.classList.remove("d-none");
-    });
-}
-
-function hapusBaris(rowId, isSp) {
-  var el = document.getElementById(rowId);
-  if (!el) return;
-  var input = el.querySelector(
-    "input[data-id-layanan], input[data-id-sparepart]",
-  );
-  if (input) {
-    if (isSp && input.dataset.idSparepart) {
-      var id = parseInt(input.dataset.idSparepart);
-      sparepartDipilih = sparepartDipilih.filter(function (s) {
-        return s.IDSPAREPART !== id;
-      });
-    } else if (!isSp && input.dataset.idLayanan) {
-      var id = parseInt(input.dataset.idLayanan);
-      layananDipilih = layananDipilih.filter(function (l) {
-        return l.IDLAYANANSERVIS !== id;
-      });
-    }
-  }
-  el.remove();
-}
-
-/* ===================================================
    SIMPAN PROGRESS
+   Mekanik hanya mengirim STATUS dan KETERANGAN.
+   Layanan & sparepart tidak disertakan.
 =================================================== */
 function simpanProgress() {
   var idServis = document.getElementById("progressIdServis").value;
@@ -489,54 +276,10 @@ function simpanProgress() {
   if (!status)
     return Swal.fire("Peringatan", "Pilih status terlebih dahulu.", "warning");
 
-  // Kumpulkan layanan dari baris input
-  var layananPayload = [];
-  document
-    .querySelectorAll("#listCariLayanan input[readonly]")
-    .forEach(function (inp) {
-      if (inp.dataset.idLayanan) {
-        layananPayload.push({
-          IDLAYANANSERVIS: parseInt(inp.dataset.idLayanan),
-        });
-      }
-    });
-
-  // Kumpulkan sparepart dari baris input
-  var sparepartPayload = [];
-  var valid = true;
-  document.querySelectorAll("#listCariSparepart .mb-2").forEach(function (row) {
-    var spInput = row.querySelector("input[data-id-sparepart]");
-    var qtyInput = row.querySelector(".qty-input");
-    if (!spInput || !qtyInput) return;
-    var qty = parseInt(qtyInput.value);
-    if (!qty || qty <= 0) {
-      Swal.fire("Peringatan", "Isi jumlah sparepart yang valid.", "warning");
-      valid = false;
-      return;
-    }
-    if (qty > parseInt(spInput.dataset.stok)) {
-      Swal.fire(
-        "Peringatan",
-        "Jumlah melebihi stok tersedia (" + spInput.dataset.stok + ").",
-        "warning",
-      );
-      valid = false;
-      return;
-    }
-    sparepartPayload.push({
-      IDSPAREPART: parseInt(spInput.dataset.idSparepart),
-      QTY: qty,
-    });
-  });
-
-  if (!valid) return;
-
   var payload = {
     STATUS: status,
     KETERANGAN: keterangan || null,
   };
-  if (layananPayload.length) payload.LAYANAN = layananPayload;
-  if (sparepartPayload.length) payload.SPAREPART = sparepartPayload;
 
   var $btn = document.getElementById("btnSimpanProgress");
   $btn.disabled = true;
@@ -563,7 +306,7 @@ function simpanProgress() {
       Swal.fire({
         icon: "success",
         title: "Berhasil!",
-        text: "Progress servis berhasil diupdate.",
+        text: "Status servis berhasil diupdate.",
         timer: 1800,
         showConfirmButton: false,
       }).then(function () {

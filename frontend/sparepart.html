@@ -188,7 +188,8 @@
           <div class="row g-3">
             <div class="col-md-6">
               <label class="form-label">Kode Sparepart</label>
-              <input type="text" class="form-control" id="editKode">
+              <input type="text" class="form-control" id="editKode" readonly
+                style="background:#f8fafc;cursor:not-allowed">
             </div>
             <div class="col-md-6">
               <label class="form-label">Nama Sparepart</label>
@@ -196,13 +197,15 @@
             </div>
             <div class="col-md-6">
               <label class="form-label">Kategori</label>
-              <select class="form-select" id="editKategori">
+              <select class="form-select" id="editKategori" disabled
+                style="background:#f8fafc;cursor:not-allowed;opacity:1">
                 <option value="">-- Pilih Kategori --</option>
               </select>
             </div>
             <div class="col-md-6">
               <label class="form-label">Supplier</label>
-              <select class="form-select" id="editSupplier">
+              <select class="form-select" id="editSupplier" disabled
+                style="background:#f8fafc;cursor:not-allowed;opacity:1">
                 <option value="">-- Pilih Supplier --</option>
               </select>
             </div>
